@@ -209,13 +209,13 @@ public class EndOfEverything extends Cycle {
     }
 
     @Override
-    protected void giveDefaultResponse(String outcome) {
+    protected void giveDefaultFailResponse(String outcome) {
         switch (this.currentLocation) {
             case CABIN:
             case STAIRS:
             case BASEMENT: break;
             
-            default: super.giveDefaultResponse(outcome);
+            default: super.giveDefaultFailResponse(outcome);
         }
 
         // responses here depend on whether you have normal heart (Hero) or stranger heart (Hero + Contrarian)

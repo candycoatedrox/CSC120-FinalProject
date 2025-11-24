@@ -352,7 +352,7 @@ public class IOHandler {
             } else {
                 try {
                     outcome = this.parseCommand(cycle, in);
-                    return outcome;
+                    return (outcome.equals("cMeta")) ? this.parseOptionChoice(cycle, options, exclusiveOverride) : outcome;
                 } catch (Exception e) {
                     // Invalid command; re-input, do not show options again
                     

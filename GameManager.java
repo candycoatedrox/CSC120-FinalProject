@@ -77,12 +77,17 @@ public class GameManager {
         return this.nowPlaying;
     }
 
-    public void setNowPlaying(String song) {
-        this.nowPlaying = song;
-
-        if (this.showNowPlaying) {
-            parser.printDialogueLine("------- Now Playing: " + this.nowPlaying + " -------", true);
+    public void setNowPlaying(String song, boolean lineBreak) {
+        if (this.showNowPlaying && !this.nowPlaying.equals(song)) {
+            if (lineBreak) System.out.println();
+            parser.printDialogueLine("------- Now Playing: " + song + " -------", true);
         }
+
+        this.nowPlaying = song;
+    }
+
+    public void setNowPlaying(String song) {
+        this.setNowPlaying(song, false);
     }
 
     public boolean hasVisited(Chapter c) {
@@ -542,16 +547,11 @@ public class GameManager {
         IOHandler.wrapPrint(s);
     }
 
-    public void showGeneralWarnings(boolean slowPrint) {
-        if (slowPrint) {
-            parser.printDialogueLine("General CWs: death; murder; suicide; verbal abuse; gaslighting; gore; mutilation, disembowelment; loss of self; cosmic horror; existential horror; being eaten alive; suffocation; derealisation; forced suicide; loss of bodily autonomy; starvation; unreality; body horror; forced self-mutilation; self-degloving; flaying; self-immolation; drowning; burning to death; loss of control; dismemberment; self-decapitation; memory loss", true);
-        } else {
-            IOHandler.wrapPrintln("General CWs: death; murder; suicide; verbal abuse; gaslighting; gore; mutilation, disembowelment; loss of self; cosmic horror; existential horror; being eaten alive; suffocation; derealisation; forced suicide; loss of bodily autonomy; starvation; unreality; body horror; forced self-mutilation; self-degloving; flaying; self-immolation; drowning; burning to death; loss of control; dismemberment; self-decapitation; memory loss");
-        }
-    }
-
     public void showGeneralWarnings() {
-        this.showGeneralWarnings(false);
+        IOHandler.wrapPrintln("You are guaranteed to encounter: death; murder; verbal abuse; gaslighting; described gore.");
+        IOHandler.wrapPrintln("If suicide is a significantly triggering topic for you, we suggest you take care of yourself while playing the game, or for you to possibly avoid playing it.");
+        System.out.println();
+        IOHandler.wrapPrintln("General CWs: death; murder; suicide; verbal abuse; gaslighting; gore; mutilation, disembowelment; loss of self; cosmic horror; existential horror; being eaten alive; suffocation; derealisation; forced suicide; loss of bodily autonomy; starvation; unreality; body horror; forced self-mutilation; self-degloving; flaying; self-immolation; drowning; burning to death; loss of control; dismemberment; self-decapitation; memory loss");
     }
 
     public void showByChapterWarnings() {

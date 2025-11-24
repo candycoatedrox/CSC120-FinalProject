@@ -13,6 +13,10 @@ public enum GameLocation {
 
     // --- ACCESSORS & CHECKS ---
 
+    public GameLocation getForward(boolean reverse) {
+        return (reverse) ? this.getBackward() : this.getForward();
+    }
+
     public GameLocation getForward() {
         switch (this) {
             case LEAVING: return LEAVING;
@@ -25,15 +29,19 @@ public enum GameLocation {
         }
     }
 
+    public GameLocation getBackward(boolean reverse) {
+        return (reverse) ? this.getForward() : this.getBackward();
+    }
+
     public GameLocation getBackward() {
         switch (this) {
             case PATH: return LEAVING;
-            case HILL: return PATH;
+            case HILL: return LEAVING;
             case CABIN: return HILL;
             case CABINMIRROR: return CABIN;
             case STAIRS: return CABIN;
             case BASEMENT: return STAIRS;
-            case LEAVING: return PATH;
+            case LEAVING: return HILL;
             default: return null;
         }
     }
