@@ -499,7 +499,10 @@ public class StandardCycle extends Cycle {
                     this.currentVoices.put(Voice.SMITTEN, false);
                 }
 
-                if (this.prevEnding.getNewVoice() != null) {
+                if (nextChapter == Chapter.DRAGON) {
+                    this.clearVoices();
+                    this.addVoice(Voice.PRINCESS);
+                } else if (this.prevEnding.getNewVoice() != null) {
                     this.addVoice(this.prevEnding.getNewVoice());
                     if (this.prevEnding.getNewVoice2() != null) {
                         this.addVoice(this.prevEnding.getNewVoice2());
@@ -702,6 +705,8 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding heroAndPrincess() {
+        // You always start with the Voice of the Hero
+        
         boolean canSoft = !(manager.hasVisited(Chapter.BEAST) && manager.hasVisited(Chapter.WITCH) && manager.hasVisited(Chapter.DAMSEL) && manager.hasVisited(Chapter.NIGHTMARE));
         boolean canHarsh = !(manager.hasVisited(Chapter.ADVERSARY) && manager.hasVisited(Chapter.TOWER) && manager.hasVisited(Chapter.SPECTRE) && manager.hasVisited(Chapter.NIGHTMARE) && manager.hasVisited(Chapter.RAZOR) && manager.hasVisited(Chapter.PRISONER));
         boolean canCabin = canSoft || canHarsh;
@@ -3750,6 +3755,8 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding adversary() {
+        // You gain the Voice of the Stubborn
+
         this.chapter2Intro(true, true, false);
 
         // PLACEHOLDER
@@ -3764,6 +3771,12 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding eyeOfNeedle() {
+        /*
+          Possible combinations:
+            - Stubborn + Hunted
+            - Stubborn + Skeptic
+         */
+
         // PLACEHOLDER
         return null;
     }
@@ -3776,6 +3789,13 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding fury() {
+        /*
+          Possible combinations:
+            - Broken + Stubborn (either Chapter)
+            - Stubborn + Cold (Adversary)
+            - Stubborn + Contrarian (Adversary)
+         */
+
         switch (this.prevEnding) {
             case STRIKEMEDOWN: this.jointSource = "pacifism";
             case HEARNOBELL: this.jointSource = "unarmed";
@@ -3795,6 +3815,8 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding tower() {
+        // You gain the Voice of the Broken
+
         boolean unharmed = this.prevEnding == ChapterEnding.TOTOWERUNHARMED;
 
         if (unharmed) this.chapter2Intro(true, false, false, "towerUnharmed");
@@ -3812,6 +3834,12 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding apotheosis() {
+        /*
+          Possible combinations:
+            - Broken + Paranoid
+            - Broken + Contrarian
+         */
+
         // PLACEHOLDER
         return null;
     }
@@ -3824,6 +3852,8 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding spectre() {
+        // You gain the Voice of the Cold
+
         this.isHarsh = false;
 
         this.chapter2Intro(false, true, true);
@@ -3840,6 +3870,8 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding princessAndDragon() {
+        // "You" have Cold + Opportunist, but you do not have any of the voices at the start of the Chapter
+
         // PLACEHOLDER
         return null;
     }
@@ -3852,6 +3884,13 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding wraith() {
+        /*
+          Possible combinations:
+            - Cold + Paranoid (either Chapter)
+            - Cold + Cheated (Spectre)
+            - Paranoid + Opportunist (Nightmare)
+         */
+
         switch (this.prevEnding) {
             case HEARTRIPPER: this.jointSource = "spectre";
             case HEARTRIPPERLEAVE: this.jointSource = "spectre";
@@ -3870,6 +3909,8 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding nightmare() {
+        // You gain the Voice of the Paranoid
+
         boolean ch1fled = this.prevEnding == ChapterEnding.TONIGHTMAREFLED || this.prevEnding == ChapterEnding.TONIGHTMAREFLED;
 
         this.chapter2Intro(true, false, false);
@@ -3886,6 +3927,8 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding momentOfClarity() {
+        // You have all voices
+
         // PLACEHOLDER
         return null;
     }
@@ -3898,6 +3941,8 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding razor() {
+        // You gain the Voice of the Cheated
+
         String source = null;
         switch (this.prevEnding) {
             case TORAZOR:
@@ -3928,6 +3973,13 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding armsRace() {
+        /*
+          Possible starting combinations:
+            - Cheated + Hunted + Stubborn
+            - Cheated + Hunted + Broken
+            - Cheated + Hunted + Paranoid
+         */
+
         // PLACEHOLDER
         return null;
     }
@@ -3940,6 +3992,8 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding mutuallyAssuredDestruction() {
+        // You have all Voices
+
         // PLACEHOLDER
         return null;
     }
@@ -3952,6 +4006,12 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding noWayOut() {
+        /*
+          Possible starting combinations:
+            - Cheated + Contrarian + Broken
+            - Cheated + Contrarian + Paranoid
+         */
+
         // PLACEHOLDER
         return null;
     }
@@ -3964,6 +4024,8 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding emptyCup() {
+        // You have all Voices
+
         // PLACEHOLDER
         return null;
     }
@@ -3976,6 +4038,8 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding beast() {
+        // You gain the Voice of the Hunted
+
         this.chapter2Intro(true, false, false);
         
         // PLACEHOLDER
@@ -3990,6 +4054,12 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding den() {
+        /*
+          Possible combinations:
+            - Hunted + Stubborn
+            - Hunted + Skeptic
+         */
+
         // PLACEHOLDER
         return null;
     }
@@ -4002,6 +4072,19 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding wild() {
+        /*
+          Possible combinations from Beast:
+            - Hunted + Opportunist
+            - Hunted + Stubborn
+            - Hunted + Broken
+            - Hunted + Contrarian
+
+          Possible combinations from Witch:
+            - Opportunist + Stubborn
+            - Opportunist + Paranoid
+            - Opportunist + Cheated
+         */
+
         if (this.hasVoice(Voice.HUNTED)) this.jointSource = "beast";
         else this.jointSource = "witch";
 
@@ -4017,6 +4100,8 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding witch() {
+        // You gain the Voice of the Opportunist
+
         boolean locked = this.prevEnding == ChapterEnding.TOWITCHLOCKED;
 
         if (locked) this.chapter2Intro(false, false, false, "witchNormal");
@@ -4034,6 +4119,12 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding thorn() {
+        /*
+          Possible combinations:
+            - Opportunist + Smitten
+            - Opportunist + Cheated
+         */
+
         // PLACEHOLDER
         return null;
     }
@@ -4046,6 +4137,8 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding stranger() {
+        // You gain the Voice of the Contrarian
+
         this.chapter2Intro(false, false, true);
         
         // PLACEHOLDER
@@ -4060,6 +4153,8 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding prisoner() {
+        // You gain the Voice of the Skeptic
+
         this.chapter2Intro(true, false, true);
         
         // PLACEHOLDER
@@ -4074,6 +4169,13 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding cage() {
+        /*
+          Possible combinations:
+            - Skeptic + Broken
+            - Skeptic + Paranoid
+            - Skeptic + Cheated
+         */
+
         // PLACEHOLDER
         return null;
     }
@@ -4086,6 +4188,12 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding greyDrowned() {
+        /*
+          You gain the Voice of the Cold
+          Possible combinations:
+            - Smitten + Cold
+         */
+
         // PLACEHOLDER
         return null;
     }
@@ -4095,6 +4203,12 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding greyBurned() {
+        /*
+          You gain the Voice of the Cold
+          Possible combinations:
+            - Skeptic + Cold
+         */
+
         // PLACEHOLDER
         return null;
     }
@@ -4107,6 +4221,8 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding damsel() {
+        // You gain the Voice of the Smitten
+
         this.chapter2Intro(true, false, true);
         
         // PLACEHOLDER
@@ -4121,6 +4237,13 @@ public class StandardCycle extends Cycle {
      * @return the Chapter ending reached by the player
      */
     private ChapterEnding happilyEverAfter() {
+        /*
+          You lose the Voice of the Smitten
+          Possible combinations:
+            - Skeptic
+            - Opportunist
+         */
+
         // PLACEHOLDER
         return null;
     }
