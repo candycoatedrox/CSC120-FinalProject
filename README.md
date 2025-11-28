@@ -1,5 +1,9 @@
 # CSC120-FinalProject
 
+The architecture diagram and a map of all routes in the game can be found [here](https://drive.google.com/file/d/1EUzs4jco-MmQYJOuMJLUEatxQLkz1VDW/view?usp=sharing).
+
+(The route map isn't completely finished yet; all Chapter IIIs and Chapter II: The Adversary are currently unfinished.)
+
 ## Deliverables:
  - Your final codebase
  - Your revised annotated architecture diagram
