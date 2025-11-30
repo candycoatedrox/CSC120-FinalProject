@@ -401,4 +401,16 @@ public class OptionsMenu {
         return s;
     }
 
+    /* public static void main(String[] args) {
+        GameManager manager = new GameManager();
+        IOHandler parser = new IOHandler(manager);
+        OptionsMenu testMenu = new OptionsMenu();
+        testMenu.add(new Option(manager, "testID", "This is a test option."));
+        testMenu.add(new Option(manager, "t2", "This is also a test option."));
+        testMenu.add(new Option(manager, "someoneElse", "This, too, is a test option, but it depends.", testMenu.get("testID")));
+
+        parser.promptOptionsMenu(testMenu);
+        parser.promptOptionsMenu(testMenu);
+    } */
+
 }

@@ -359,10 +359,6 @@ public class GameManager {
             parser.printDialogueLine("There are only fresh perspectives and new beginnings.", true);
             Thread.sleep(1000);
             parser.printDialogueLine("This is a love story.");
-
-            System.out.println();
-            System.out.println();
-            System.out.println();
         } catch (InterruptedException e) {
             throw new RuntimeException("Thread interrupted");
         }
@@ -628,10 +624,10 @@ public class GameManager {
                 case STRANGER:
                 case CLARITY:
                 case GREY:
-                    parser.printDialogueLine(c.getFullTitle() + " contains: " + c.getContentWarnings(prevEnding));
+                    IOHandler.wrapPrintln(c.getFullTitle() + " contains: " + c.getContentWarnings(prevEnding));
                     break;
                 default:
-                    parser.printDialogueLine(c.getFullTitle() + " may contain: " + c.getContentWarnings(prevEnding));
+                    IOHandler.wrapPrintln(c.getFullTitle() + " may contain: " + c.getContentWarnings(prevEnding));
             }
         }
     }
@@ -648,10 +644,10 @@ public class GameManager {
                 case STRANGER:
                 case CLARITY:
                 case GREY:
-                    parser.printDialogueLine(c.getFullTitle() + " contains: " + c.getContentWarnings());
+                    IOHandler.wrapPrintln(c.getFullTitle() + " contains: " + c.getContentWarnings());
                     break;
                 default:
-                    parser.printDialogueLine(c.getFullTitle() + " may contain: " + c.getContentWarnings());
+                    IOHandler.wrapPrintln(c.getFullTitle() + " may contain: " + c.getContentWarnings());
             }
         }
     }
@@ -709,10 +705,10 @@ public class GameManager {
     public void toggleAutoWarnings() {
         if (this.autoContentWarnings) {
             this.autoContentWarnings = false;
-            parser.printDialogueLine("[Automatic content warnings have been disabled.]");
+            IOHandler.wrapPrintln("[Automatic content warnings have been disabled.]");
         } else {
             this.autoContentWarnings = true;
-            parser.printDialogueLine("[Automatic content warnings have been enabled.]");
+            IOHandler.wrapPrintln("[Automatic content warnings have been enabled.]");
         }
     }
 
@@ -722,10 +718,10 @@ public class GameManager {
     public void toggleNowPlaying() {
         if (this.showNowPlaying) {
             this.showNowPlaying = false;
-            parser.printDialogueLine("[Soundtrack notifications have been disabled.]");
+            IOHandler.wrapPrintln("[Soundtrack notifications have been disabled.]");
         } else {
             this.showNowPlaying = true;
-            parser.printDialogueLine("[Soundtrack notifications have been enabled.]");
+            IOHandler.wrapPrintln("[Soundtrack notifications have been enabled.]");
         }
     }
 
