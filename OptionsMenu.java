@@ -251,6 +251,20 @@ public class OptionsMenu {
     }
 
     /**
+     * Adds a copy of a given Option with the given ID to this menu
+     * @param o the Option to add to this menu
+     * @param id the new ID of the Option
+     * @return the index of the Option in this menu
+     */
+    public int add(Option o, String id) {
+        Option oCopy = o.clone();
+        oCopy.setID(id);
+
+        this.options.put(id, oCopy);
+        return this.options.getIndex(id);
+    }
+
+    /**
      * Sets conditionMet for the nth Option in this menu to the specified value
      * @param n the index of the Option to modify
      * @throws IllegalArgumentException if the given index is out of range

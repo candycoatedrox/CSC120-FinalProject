@@ -420,6 +420,7 @@ public class GameManager {
 
         boolean confirm = this.parser.promptYesNo("[Are you sure you wish to proceed?]");
         parser.printDialogueLine("[You can turn dynamic content warnings off at any time with TOGGLE WARNINGS.]");
+        System.out.println();
         return confirm;
     }
 
@@ -451,6 +452,7 @@ public class GameManager {
 
         boolean confirm = this.parser.promptYesNo("[Are you sure you wish to proceed?]");
         parser.printDialogueLine("[You can turn dynamic content warnings off at any time with TOGGLE WARNINGS.]");
+        System.out.println();
         return confirm;
     }
 
@@ -470,6 +472,7 @@ public class GameManager {
 
         boolean confirm = this.parser.promptYesNo("[Are you sure you wish to proceed?]");
         parser.printDialogueLine("[You can turn dynamic content warnings off at any time with TOGGLE WARNINGS.]");
+        System.out.println();
         return confirm;
     }
 

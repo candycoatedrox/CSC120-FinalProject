@@ -298,6 +298,14 @@ public class Option {
     }
 
     /**
+     * Manipulator for id
+     * @param newID the new shorthand ID of this Option
+     */
+    public void setID(String newID) {
+        this.id = newID;
+    }
+
+    /**
      * Checks if this Option has been picked at least once
      * @return false if this Option has never been picked; true otherwise
      */
@@ -387,6 +395,15 @@ public class Option {
     @Override
     public String toString() {
         return this.display;
+    }
+
+    /**
+     * Returns a copy of this Option
+     * @return a copy of this Option
+     */
+    @Override
+    public Option clone() {
+        return new Option(this.manager, this.id, this.display, this.maxTimesPicked, this.greyedOut, this.prerequisiteOption, this.leadsToChapter, this.conditionMet);
     }
 
 }
