@@ -199,7 +199,7 @@ public class GameManager {
 
     /**
      * Checks if the player was cruel at the mirror
-     * @return
+     * @return true if the player was cruel to the Voices at the mirror 2+ times; false otherwise
      */
     public boolean mirrorWasCruel() {
         return this.mirrorCruelCount >= 2;
