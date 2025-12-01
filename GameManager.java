@@ -198,6 +198,14 @@ public class GameManager {
     }
 
     /**
+     * Accessor for nVesselsAborted
+     * @return the number of vessels the player has aborted this playthrough
+     */
+    public int nVesselsAborted() {
+        return this.nVesselsAborted;
+    }
+
+    /**
      * Checks if the player was cruel at the mirror
      * @return true if the player was cruel to the Voices at the mirror 2+ times; false otherwise
      */

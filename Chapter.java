@@ -133,6 +133,14 @@ public enum Chapter {
     }
 
     /**
+     * Accessor for number
+     * @return the "true" number of this Chapter, even if it is usually displayed without a chapter number
+     */
+    public int getNumber() {
+        return this.number;
+    }
+
+    /**
      * Accessor for prefix
      * @return the prefix of this Chapter's title (most commonly "Chapter [n]")
      */

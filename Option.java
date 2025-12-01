@@ -306,6 +306,17 @@ public class Option {
     }
 
     /**
+     * Manipulator for display
+     * @param newDisplay the new text displayed to the player for this Option
+     * @return the previous display text of this Option
+     */
+    public String setDisplay(String newDisplay) {
+        String prevDisplay = this.display;
+        this.display = newDisplay;
+        return prevDisplay;
+    }
+
+    /**
      * Checks if this Option has been picked at least once
      * @return false if this Option has never been picked; true otherwise
      */
@@ -318,7 +329,7 @@ public class Option {
      * @return true if this Option is visible
      */
     public boolean isShown() {
-        if (this.timesPicked >= this.maxTimesPicked && this.maxTimesPicked != 0) {
+        if (this.maxTimesPicked != 0 && this.timesPicked >= this.maxTimesPicked) {
             return false;
         } else if (!this.conditionMet) {
             return false;

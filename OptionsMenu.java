@@ -70,7 +70,7 @@ public class OptionsMenu {
             throw new IllegalArgumentException("Option out of range");
         }
         
-        return options.getValue(n).toString();
+        return this.get(n).toString();
     }
 
     /**
@@ -79,7 +79,32 @@ public class OptionsMenu {
      * @return the display text of the first Option with the given ID in this menu
      */
     public String getDisplay(String id) {
-        return options.get(id).toString();
+        return this.get(id).toString();
+    }
+
+    /**
+     * Sets the display text of the nth Option in this menu
+     * @param n the index of the Option to retrieve
+     * @param newDisplay the new text displayed to the player for the Option
+     * @return the previous display text of the nth Option in this menu
+     * @throws IllegalArgumentException if the given index is out of range
+     */
+    public String setDisplay(int n, String newDisplay) {
+        if (n < 0 || n >= this.size()) {
+            throw new IllegalArgumentException("Option out of range");
+        }
+        
+        return this.get(n).setDisplay(newDisplay);
+    }
+
+    /**
+     * Sets the display text of the first Option with the given ID in this menu
+     * @param id the ID of the Option to retrieve
+     * @param newDisplay the new text displayed to the player for the Option
+     * @return the previous display text of the first Option with the given ID in this menu
+     */
+    public String setDisplay(String id, String newDisplay) {
+        return this.get(id).setDisplay(newDisplay);
     }
 
     /**

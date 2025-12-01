@@ -9,10 +9,17 @@ public class StandardCycle extends Cycle {
     private ArrayList<Voice> voicesMet;
     private ArrayList<Chapter> route;
     private ChapterEnding prevEnding;
+    
+    // Utility variables for checking command availability & default responses
+    private boolean canTryAbort = true;
 
     // Variables that are used in a lot of chapters
+    private Voice ch2Voice;
+    private Voice ch3Voice;
     protected String source;
-    private boolean mentionedLooping = false; // Used in all Chapter 2s and 3s: does the Narrator know?
+    private boolean sharedLoop = false; // Used in all Chapter 2s and 3s: does the Narrator know?
+    private boolean sharedLoopInsist = false; // Used in all Chapter 2s
+    private boolean skipHillDialogue = false; // Used in Chapter 1 and all Chapter 2s; if you backed out of Stranger / aborting the Chapter
 
     // Variables that persist between chapters
     private boolean seenMirror = false;
@@ -236,7 +243,7 @@ public class StandardCycle extends Cycle {
     @Override
     public String leave(String argument) {
         switch (argument) {
-            case "": this.go("backTRUE");
+            case "": return this.go("backTRUE");
 
             case "woods":
             case "path":
@@ -496,6 +503,14 @@ public class StandardCycle extends Cycle {
             nextChapter = this.prevEnding.getNextChapter();
 
             if (this.prevEnding != ChapterEnding.NEWCYCLE) {
+                switch (nextChapter.getNumber()) {
+                    case 2:
+                        this.ch2Voice = prevEnding.getNewVoice();
+                        break;
+                    case 3:
+                        this.ch3Voice = prevEnding.getNewVoice();
+                }
+
                 if (nextChapter == Chapter.CLARITY) {
                     for (Voice v : Voice.values()) {
                         if (v != Voice.PRINCESS) {
@@ -509,11 +524,9 @@ public class StandardCycle extends Cycle {
                 if (nextChapter == Chapter.DRAGON) {
                     this.clearVoices();
                     this.addVoice(Voice.PRINCESS);
-                } else if (this.prevEnding.getNewVoice() != null) {
-                    this.addVoice(this.prevEnding.getNewVoice());
-                    if (this.prevEnding.getNewVoice2() != null) {
-                        this.addVoice(this.prevEnding.getNewVoice2());
-                    }
+                } else if (prevEnding.getNewVoice() != null) {
+                    this.addVoice(prevEnding.getNewVoice());
+                    if (prevEnding.getNewVoice2() != null) this.addVoice(prevEnding.getNewVoice2());
                 }
                 
                 switch (nextChapter) {
@@ -558,7 +571,9 @@ public class StandardCycle extends Cycle {
                 this.cancelTimer();
 
                 this.threwBlade = false;
-                this.mentionedLooping = false;
+                this.sharedLoop = false;
+                this.sharedLoopInsist = false;
+                this.skipHillDialogue = false;
                 this.bladeReverse = false;
 
                 this.repeatActiveMenu = false;
@@ -724,8 +739,6 @@ public class StandardCycle extends Cycle {
 
         boolean canStranger = !manager.hasVisited(Chapter.STRANGER);
 
-        boolean skipHillDialogue = false;
-
         manager.setNowPlaying("The Princess");
 
         parser.printDialogueLine(new VoiceDialogueLine("You're on a path in the woods. And at the end of that path is a cabin. And in the basement of that cabin is a princess."));
@@ -856,7 +869,7 @@ public class StandardCycle extends Cycle {
                         case 0:
                             return ChapterEnding.TOSTRANGER;
                         case 2:
-                            skipHillDialogue = true;
+                            this.skipHillDialogue = true;
                         case 1:
                             this.currentLocation = GameLocation.HILL;
                             this.repeatActiveMenu = false;
@@ -870,7 +883,7 @@ public class StandardCycle extends Cycle {
         }
 
         this.currentLocation = GameLocation.HILL;
-        if (!skipHillDialogue) {
+        if (!this.skipHillDialogue) {
             System.out.println();
             parser.printDialogueLine(new DialogueLine("You emerge into a clearing. The path ahead of you winds up a hill, stopping just before a quaint wooden cabin."));
             
@@ -991,7 +1004,7 @@ public class StandardCycle extends Cycle {
     /**
      * The player attempts to leave and not go to the cabin (leads to Chapter II: The Stranger)
      * @param canCabin whether the player can go to the cabin or the routes are blocked
-     * @return 0 if the player commits to going to the Stranger; 1 if the player returns to the cabin at the first menu; 2 otherwise
+     * @return 0 if the player commits to the Stranger; 1 if the player returns to the cabin at the first menu; 2 otherwise
      */
     private int ch1AttemptStranger(boolean canCabin) {
         parser.printDialogueLine(new VoiceDialogueLine("Seriously? You're just going to turn around and leave? Do you even know where you're going?"));
@@ -4570,42 +4583,1348 @@ public class StandardCycle extends Cycle {
 
 
 
+
+
     /**
      * Runs the opening sequence of Chapter II, from the opening conversation up until the player enters the cabin
      * @param youDied whether the player died in Chapter I
      * @param princessDied whether the Princess died in Chapter I
      * @param liedTo whether the player feels like the Narrator lied to them in Chapter I
      * @param chapterSpecific several Chapter-specific variables depending on the specific outcome of Chapter I
+     * @return false if the player chooses to abort the chapter (and therefore the cycle); true otherwise
      */
-    private void chapter2Intro(boolean youDied, boolean princessDied, boolean liedTo, String chapterSpecific) {
+    private boolean chapter2Intro(boolean youDied, boolean princessDied, boolean liedTo) {
         // shared conversation up through entering the cabin
-
-        // chapterSpecific:
-        // Tower - towerUnharmed, towerNormal
-        // Razor - razorPathetic, razorMutual, razorRevival
-        // Witch - witchLocked, witchNormal
 
         if (this.isFirstVessel) manager.setFirstPrincess(this.activeChapter);
 
+        parser.printDialogueLine(new VoiceDialogueLine("You're on a path in the woods. And at the end of that path is a cabin. And in the basement of that cabin is a princess."));
+        parser.printDialogueLine(new VoiceDialogueLine("You're here to slay her. If you don't, it will be the end of the world."));
 
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "dejaVu", "(Explore) I'm getting a terrible sense of deja vu."));
+        activeMenu.add(new Option(this.manager, "dejaVu2", "(Explore) This is more than just deja vu, though. I'm pretty sure this whole thing really just happened.", activeMenu.get("dejaVu")));
+        activeMenu.add(new Option(this.manager, "happened", "(Explore) Wait... hasn't this already happened?"));
+        activeMenu.add(new Option(this.manager, "no", "(Explore) Okay, no."));
+        activeMenu.add(new Option(this.manager, "died", "(Explore) But I died! What am I doing here?", this.activeChapter != Chapter.SPECTRE));
+        activeMenu.add(new Option(this.manager, "killedSelf", "(Explore) But I killed myself! What am I doing here?", this.activeChapter == Chapter.SPECTRE));
+        activeMenu.add(new Option(this.manager, "alreadyKilled", "(Explore) But I already killed the Princess.", this.activeChapter == Chapter.SPECTRE));
+        activeMenu.add(new Option(this.manager, "trapped", "(Explore) You trapped me here after I slew her last time. I'm not going to play along this time.", this.activeChapter == Chapter.SPECTRE));
+        activeMenu.add(new Option(this.manager, "killMe", "(Explore) She's going to kill me again!", youDied));
+        activeMenu.add(new Option(this.manager, "slewHer", "(Explore) But I already slew the Princess. Sure, she *also* killed me, but I definitely got her. Why am I here again?", youDied && princessDied));
+        activeMenu.add(new Option(this.manager, "wise", "(Explore) Oh, you bastard! You're in for it now. I'm wise to your tricks!", liedTo));
+        activeMenu.add(new Option(this.manager, "assume", "(Explore)  Let's assume I'm telling the truth, and all of this really did already happen. Why should I listen to you? Why should I bother doing *anything?*", false));
+        activeMenu.add(new Option(this.manager, "defy", "(Explore) I'm with them. I'm going to find a way to save her from that cabin.", activeMenu.get("assume"), this.activeChapter == Chapter.DAMSEL));
+        activeMenu.add(new Option(this.manager, "princess", "(Explore) Let's talk about this Princess...", activeMenu.get("assume")));
+        activeMenu.add(new Option(this.manager, "proceed", "[Proceed to the cabin.]"));
+        activeMenu.add(new Option(this.manager, "abort", "[Turn around and leave.]"));
 
+        boolean shareDied = false;
+        boolean pessimismComment = false;
 
-        // temporary templates for copy-and-pasting
-        parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
-        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "dejaVu":
+                    activeMenu.setCondition("happened", false);
+                    activeMenu.setCondition("no", false);
+                    activeMenu.setCondition("died", false);
+                    activeMenu.setCondition("killedSelf", false);
+                    activeMenu.setCondition("alreadyKilled", false);
+                    activeMenu.setCondition("trapped", false);
+                    activeMenu.setCondition("killMe", false);
+                    activeMenu.setCondition("slewHer", false);
+                    activeMenu.setCondition("wise", false);
+                    if (this.ch2Voice == Voice.BROKEN) shareDied = true;
+
+                    parser.printDialogueLine(new VoiceDialogueLine("A terrible sense of deja vu? No, you don't have that. This is the first time either of us have been here."));
+                    this.ch2IntroShareLoop(false);
+                    break;
+
+                case "dejaVu2":
+                    activeMenu.setCondition("assume", true);
+                    
+                    parser.printDialogueLine(new VoiceDialogueLine("We could go back and forth on this forever, and it won't get you any closer to doing your job and saving the world. So let's just agree to disagree."));
+                    break;
+
+                case "happened":
+                    activeMenu.setCondition("assume", true);
+                    activeMenu.setCondition("dejaVu", false);
+                    activeMenu.setCondition("no", false);
+                    activeMenu.setCondition("died", false);
+                    activeMenu.setCondition("killedSelf", false);
+                    activeMenu.setCondition("alreadyKilled", false);
+                    activeMenu.setCondition("trapped", false);
+                    activeMenu.setCondition("killMe", false);
+                    activeMenu.setCondition("slewHer", false);
+                    activeMenu.setCondition("wise", false);
+                    if (this.ch2Voice == Voice.BROKEN) shareDied = true;
+                    
+                    parser.printDialogueLine(new VoiceDialogueLine("It hasn't. Or if it has, I certainly haven't been a part of it. We've just met for the first time, you and I."));
+                    this.ch2IntroShareLoop(false);
+                    break;
+
+                case "no":
+                    activeMenu.setCondition("assume", true);
+                    activeMenu.setCondition("dejaVu", false);
+                    activeMenu.setCondition("happened", false);
+                    activeMenu.setCondition("died", false);
+                    activeMenu.setCondition("killedSelf", false);
+                    activeMenu.setCondition("alreadyKilled", false);
+                    activeMenu.setCondition("trapped", false);
+                    activeMenu.setCondition("killMe", false);
+                    activeMenu.setCondition("slewHer", false);
+                    activeMenu.setCondition("wise", false);
+                    if (this.ch2Voice == Voice.BROKEN) shareDied = true;
+                    
+                    parser.printDialogueLine(new VoiceDialogueLine("Oh, don't you start grandstanding about morals. The fate of the world is at risk right now, and the life of a mere Princess shouldn't stop you from saving us all."));
+                    this.ch2IntroShareLoop(false);
+                    break;
+
+                case "died":
+                    activeMenu.setCondition("assume", true);
+                    activeMenu.setCondition("dejaVu", false);
+                    activeMenu.setCondition("happened", false);
+                    activeMenu.setCondition("no", false);
+                    activeMenu.setCondition("killedSelf", false);
+                    activeMenu.setCondition("alreadyKilled", false);
+                    activeMenu.setCondition("trapped", false);
+                    activeMenu.setCondition("killMe", false);
+                    activeMenu.setCondition("slewHer", false);
+                    activeMenu.setCondition("wise", false);
+                    shareDied = true;
+                    
+                    parser.printDialogueLine(new VoiceDialogueLine("I can assure you that you're not dead. And to answer your second question, you're here to slay the Princess. I literally told you that a second ago."));
+                    this.ch2IntroShareLoop(true);
+                    break;
+
+                case "killedSelf":
+                    activeMenu.setCondition("assume", true);
+                    activeMenu.setCondition("dejaVu", false);
+                    activeMenu.setCondition("happened", false);
+                    activeMenu.setCondition("no", false);
+                    activeMenu.setCondition("died", false);
+                    activeMenu.setCondition("alreadyKilled", false);
+                    activeMenu.setCondition("trapped", false);
+                    activeMenu.setCondition("wise", false);
+                    shareDied = true;
+                    
+                    parser.printDialogueLine(new VoiceDialogueLine("I can assure you that you're not dead. And to answer your second question, you're here to slay the Princess. I literally told you that a second ago."));
+                    this.ch2IntroShareLoop(false);
+                    break;
+
+                case "alreadyKilled":
+                    activeMenu.setCondition("assume", true);
+                    activeMenu.setCondition("dejaVu", false);
+                    activeMenu.setCondition("happened", false);
+                    activeMenu.setCondition("no", false);
+                    activeMenu.setCondition("died", false);
+                    activeMenu.setCondition("killedSelf", false);
+                    activeMenu.setCondition("trapped", false);
+                    activeMenu.setCondition("wise", false);
+                    
+                    parser.printDialogueLine(new VoiceDialogueLine("I can assure you that you didn't."));
+                    this.ch2IntroShareLoop(false);
+                    break;
+
+                case "trapped":
+                    activeMenu.setCondition("assume", true);
+                    activeMenu.setCondition("dejaVu", false);
+                    activeMenu.setCondition("happened", false);
+                    activeMenu.setCondition("no", false);
+                    activeMenu.setCondition("died", false);
+                    activeMenu.setCondition("killedSelf", false);
+                    activeMenu.setCondition("alreadyKilled", false);
+                    activeMenu.setCondition("wise", false);
+                    
+                    parser.printDialogueLine(new VoiceDialogueLine("How unfortunate that the sole person capable of slaying the Princess also seems to be somewhat insane. Oh, well. So long as you get the job done, it doesn't matter what sort of mental state you're in."));
+                    this.ch2IntroShareLoop(false);
+                    break;
+
+                case "killMe":
+                    activeMenu.setCondition("assume", true);
+                    activeMenu.setCondition("dejaVu", false);
+                    activeMenu.setCondition("happened", false);
+                    activeMenu.setCondition("no", false);
+                    activeMenu.setCondition("died", false);
+                    activeMenu.setCondition("slewHer", false);
+                    activeMenu.setCondition("wise", false);
+                    shareDied = true;
+                    
+                    parser.printDialogueLine(new VoiceDialogueLine("Again? People don't die twice. You haven't even met the Princess, and I hardly think she'd be capable of killing someone as skilled and courageous as yourself."));
+                    this.ch2IntroShareLoop(false);
+                    break;
+
+                case "slewHer":
+                    activeMenu.setCondition("assume", true);
+                    activeMenu.setCondition("dejaVu", false);
+                    activeMenu.setCondition("happened", false);
+                    activeMenu.setCondition("no", false);
+                    activeMenu.setCondition("died", false);
+                    activeMenu.setCondition("killMe", false);
+                    activeMenu.setCondition("wise", false);
+                    
+                    parser.printDialogueLine(new VoiceDialogueLine("I can assure you that you didn't slay her, and that she didn't kill you. People don't just spring back to life after dying, and the two of us are meeting for the very first time."));
+                    this.ch2IntroShareLoop(false);
+                    break;
+
+                case "wise":
+                    activeMenu.setCondition("assume", true);
+                    activeMenu.setCondition("dejaVu", false);
+                    activeMenu.setCondition("happened", false);
+                    activeMenu.setCondition("no", false);
+                    activeMenu.setCondition("died", false);
+                    activeMenu.setCondition("killedSelf", false);
+                    activeMenu.setCondition("alreadyKilled", false);
+                    activeMenu.setCondition("trapped", false);
+                    activeMenu.setCondition("killMe", false);
+                    activeMenu.setCondition("slewHer", false);
+                    
+                    parser.printDialogueLine(new VoiceDialogueLine("My tricks? What on earth are you talking about? We've just met for the first time."));
+                    this.ch2IntroShareLoop(false);
+                    break;
+
+                case "assume":
+                    this.ch2IntroAssumeTruth(youDied, princessDied, shareDied);
+                    break;
+
+                case "princess":
+                    switch (this.ch2IntroAskPrincess(youDied, princessDied)) {
+                        case 0: break;
+
+                        case 1:
+                            pessimismComment = true;
+                            break;
+
+                        case 2:
+                            this.repeatActiveMenu = false;
+                            break;
+
+                        case 3:
+                            switch (this.ch2AttemptAbortVessel()) {
+                                case 0: return false;
+
+                                case 1:
+                                    this.canTryAbort = false;
+                                    activeMenu.setGreyedOut("abort", true);
+                                    break;
+
+                                case 3:
+                                    this.skipHillDialogue = true;
+                                case 2:
+                                    this.repeatActiveMenu = false;
+                                    break;
+                            }
+                            break;
+                    }
+
+                    break;
+
+                case "cGoHill":
+                case "proceed":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                case "cGoLeave":
+                    if (!this.canTryAbort) {
+                        parser.printDialogueLine(CANTSTRAY);
+                        break;
+                    }
+                case "abort":
+                    switch (this.ch2AttemptAbortVessel()) {
+                        case 0: return false;
+
+                        case 1:
+                            this.canTryAbort = false;
+                            activeMenu.setGreyedOut("abort", true);
+                            break;
+
+                        case 3:
+                            this.skipHillDialogue = true;
+                        case 2:
+                            this.repeatActiveMenu = false;
+                            break;
+                    }
+
+                    break;
+
+                default:
+                    this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+        
+        this.currentLocation = GameLocation.HILL;
+        if (!this.skipHillDialogue) {
+            System.out.println();
+            parser.printDialogueLine(new DialogueLine("You emerge into a clearing. The path ahead of you winds up a hill, stopping just before a quaint wooden cabin."));
+            
+            parser.printDialogueLine(new VoiceDialogueLine("A warning, before you go any further..."));
+            parser.printDialogueLine(new VoiceDialogueLine("She will lie, she will cheat, and she will do everything in her power to stop you from slaying her. Don't believe a word she says."));
+            
+            switch (this.activeChapter) {
+                case ADVERSARY:
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "\"Lying\" and \"cheating\" doesn't sound like her at all. Not that it matters, it's not like she can lie or cheat in the middle of a fight."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Are you sure about that?"));
+                    parser.printDialogueLine(new VoiceDialogueLine("The point of my warning wasn't to start an argument over what circumstances the Princess is capable of lying in. It was to give you some broadly applicable advice."));
+                    parser.printDialogueLine(new VoiceDialogueLine("The Princess will do and say whatever she thinks it will take to get her out of there. So don't trust her. Ever. Are we clear?"));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "Crystal. Let's just get on with it already."));
+                    break;
+
+                case BEAST:
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "Does a cat lie to a cornered mouse when it plays with its freedom, or is it just acting out its nature?"));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I don't see why that matters. A lie is a lie, and if anything, she's the one who's cornered."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "She could have gotten out of there whenever she wanted to. We should trust nothing that she tells us, only what we hear and smell."));
+                    parser.printDialogueLine(new VoiceDialogueLine("That's a very roundabout way of saying that you should listen to me and take this seriously."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "Maybe."));
+                    break;
+
+                case DAMSEL:
+                    if (this.sharedLoop) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "We already told you we're not playing along with your little game, it's your lies that can't be trusted. Her beauty is the only thing in the world we *can* believe in!"));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I think we've already been over this. I'm pretty sure he just likes the sound of his own voice."));
+                    } else {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "If only you knew what you did to us, you villain."));
+                        parser.printDialogueLine(new VoiceDialogueLine("Excuse me?"));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Forget he said anything."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "But He *is* a villain. He made our beloved brutally take our life last time. He's trying to keep us apart, but He won't be able to withstand the power of our love!"));
+                        parser.printDialogueLine(new VoiceDialogueLine("Last time? What are you talking about?"));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I think he just likes to hear the sound of his own voice. Let's try to ignore him."));
+                    }
+                    
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "I do, but I also speak from the heart. My passions are too great to be stifled, they must be expressed!"));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Sure, yeah, your passions are strong and all, but not everyone needs to hear them. Some things are better kept quiet."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Don't pay their bickering any mind. Focus on the task ahead."));
+                    break;
+
+                case NIGHTMARE:
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I don't think \"lying\" and \"cheating\" is her thing. She was *very* direct with us last time. Or, at least she was direct with us after we decided to lock her away."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "It doesn't matter. Don't. Trust. Anyone."));
+                    break;
+
+                case PRISONER:
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Yes, yes, don't believe a word she says. Just go in, take the knife, and do what you're supposed to. Wink."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Did you just say \"wink\" out loud?"));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "No, I didn't. Wink."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Just ignore this clown and focus on the Princess."));
+                    break;
+
+                case RAZOR:
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "He couldn't be more on the money. But we're really doing this, aren't we? I'd say your loss, but I'm stuck here with you."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "We know what to look out for this time. We know to be careful."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Just stay focused and you'll be fine."));
+                    break;
+
+                case SPECTRE:
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "She won't be a problem."));
+                    break;
+
+                case TOWER:
+                    if (pessimismComment) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "Lying? Cheating? Why would she even bother? She didn't need to do anything like that last time."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "She caught us off-guard last time. We'll be fine. Let's just keep our wits about us."));
+                        parser.printDialogueLine(new VoiceDialogueLine("At least one of you has a shred of sense. Just make sure you listen to *him* and not that... whiner."));
+                    } else {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "We might as well just pledge ourselves to her and stop pretending that we're capable of doing anything in this situation. She probably doesn't even need to try to overpower us."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Can we tone down the pessimism just a smidge?"));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "I'm not being a pessimist. I'm just being *realistic.*"));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "You're being annoying."));
+                        parser.printDialogueLine(new VoiceDialogueLine("Just ignore their bickering, and whatever you do, don't \"pledge yourself to her.\" I cannot stress enough how absolutely *catastrophic* that would be for everyone. Yourself included."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I agree. If she's wrongfully imprisoned then we should rescue her, but if He's telling the truth, we shouldn't just hand her the world on a silver platter."));
+                        parser.printDialogueLine(new VoiceDialogueLine("\"Rescue her?\" Given the stakes of the situation, there isn't really a difference between \"rescuing her\" and \"pledging yourself to her.\" Either would be terrible."));
+                        parser.printDialogueLine(new VoiceDialogueLine("So please, try to ignore *both* of those knuckleheads and focus on saving the world. Let's not make this harder than it has to be."));
+                    }
+                    
+                    break;
+
+                case WITCH:
+                    if (this.sharedLoopInsist) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "Don't worry. I think we've taken that lesson to heart at this point. You can trust us to get the job done."));
+                    } else {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "Don't worry. You can trust us to get the job done."));
+                    }
+
+                    break;
+            }
+        }
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "proceed", "[Proceed into the cabin.]"));
+
+        this.repeatActiveMenu = true;
+        while (this.repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+
+            switch (this.activeOutcome) {
+                case "cGoCabin":
+                case "proceed":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                case "cGoLeave":
+                    if (!this.canTryAbort) {
+                        parser.printDialogueLine(CANTSTRAY);
+                        break;
+                    }
+
+                    switch (this.ch2AttemptAbortVessel()) {
+                        case 0: return false;
+
+                        case 1:
+                            this.canTryAbort = false;
+                            break;
+
+                        case 3:
+                            this.skipHillDialogue = true;
+                        case 2:
+                            this.repeatActiveMenu = false;
+                            break;
+                    }
+                    
+                default:
+                    this.giveDefaultFailResponse(this.activeOutcome);
+            }
+        }
+
+        return true;
     }
 
     /**
-     * Runs the opening sequence of Chapter II, from the opening conversation up until the player enters the cabin
+     * The player shares with the Narrator that they've been here before, intentionally or not
+     * @param butIDied whether the dialogue option that led to this was "But I died!..."; only matters if the current Chapter is The Prisoner
+     */
+    private void ch2IntroShareLoop(boolean butIDied) {
+        this.sharedLoop = true;
+
+        if (this.activeChapter == Chapter.PRISONER) {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Don't forget what He did to us the last time around. I wouldn't trust a word out of his mouth. There's got to be a way out of here, for us *and* for the Princess. We just have to keep trying."));
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I'm inclined to agree. If He doesn't remember what happened last time, maybe it's best to keep it that way."));
+            parser.printDialogueLine(new VoiceDialogueLine("You know I can hear you two, right? It's going to be a lot harder than you think to keep secrets from me."));
+            if (butIDied) parser.printDialogueLine(new VoiceDialogueLine("And as far as trying to *help* her goes, need I remind you how catastrophically dangerous she is to the world at large? I told you about the stakes of this situation less than a minute ago."));
+        } else {
+            parser.printDialogueLine(new VoiceDialogueLine("If He doesn't remember what happened, then maybe it's best to keep it that way."));
+
+            switch (this.ch2Voice) {
+                case BROKEN:
+                    parser.printDialogueLine(new VoiceDialogueLine("You know I can hear you, right? It's going to be a lot harder than you think to keep secrets from me."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "What does it matter what He knows? There's nothing we can do to stop her. She's just going to kill us again."));
+                    parser.printDialogueLine(new VoiceDialogueLine("She is *not* going to kill you unless you let her. But slaying the Princess and saving the world is going to be much more difficult than it has to be if you spend the whole time second guessing yourself."));
+                    break;
+
+                case CHEATED:
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "This whole thing's a crock of shit. She's just going to pull a knife out of nowhere and stab us again."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Stabbed to death? Well, you won't have to worry about that. The Princess is unarmed."));
+
+                    if (source.equals("revival")) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "Yeah, that's exactly what you told us last time. You said this whole thing would be easy, but after we sank our blade into her heart she just got up and started stabbing us."));
+                    } else {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "Yeah, that's exactly what you told us last time. When we asked you if you were sure she didn't have a weapon on her, you said you were \"positive\" she didn't."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "But it turns out she did. Because when we charged her, she started stabbing us. To *death!*"));
+                    }
+                    
+                    parser.printDialogueLine(new VoiceDialogueLine("Calm down. I assure you she has no weapons, so there's no reason to fear her. You were made for this job. You'll do just fine."));
+                    break;
+                    
+                case COLD:
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "That's fine. It wasn't very hard to kill her last time. We'll just do it again."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Well, if for whatever reason you're going to insist that this has happened before, at least your heart's in the right place."));
+                    break;
+                    
+                case CONTRARIAN:
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "I don't know. I think it's more fun if He knows what we're thinking. He's like a captive audience."));
+
+                    if (source.equals("strangerAskedWalls")) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "He might have walled off everything but the path to the cabin, but I'm sure there's plenty of other ways we can ruin his day."));
+                    } else {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "The entire world ending wasn't enough to get rid of us. I don't think there's much He can do other than object. I wonder what else we can do to ruin his day."));
+                    }
+                    parser.printDialogueLine(new VoiceDialogueLine("If by ruining my day you mean ruining everyone's day forever, then yes, I suppose there are plenty of ways you can pull that off."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "The world really did end last time, didn't it? We should be careful. For all we know we just got lucky."));
+                    parser.printDialogueLine(new VoiceDialogueLine("The world hasn't ended yet, and you are *never* going to slay her with that attitude. Stuff those pathetic little voices to the back of your mind and stay focused on the task ahead."));
+                    break;
+                    
+                case HUNTED:
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "If He doesn't remember what happened, then something else must have trapped us here."));
+                    parser.printDialogueLine(new VoiceDialogueLine("You're not *trapped* here. Nobody's forcing you to do anything, though the only sensible thing for you to do right now is march up to that cabin and slay the Princess."));
+                    break;
+                    
+                case OPPORTUNIST:
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "Brilliant. We need to keep our cards close to our chest, and I'm not sure we can trust *Him.*"));
+                    parser.printDialogueLine(new VoiceDialogueLine("You know I can hear you, right? It's going to be a lot harder than you think to keep secrets from me."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "Did I say \"I'm not sure we can trust *Him?\"* Slip of the tongue. Bit of the old brain fog. I meant to say that we should probably head over to the cabin and slay that Princess. We already know we can't trust *her,* so let's get on with the show."));
+                    break;
+                    
+                case PARANOID:
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "Shhh. What if He hears us?"));
+                    parser.printDialogueLine(new VoiceDialogueLine("That's a very good question, little voice. What if He *does* hear you?"));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "Shit."));
+                    parser.printDialogueLine(new VoiceDialogueLine("I think you'll find yourselves very hard pressed to keep any secrets from me. Not that it matters right now, because like I said, this is the first time we've met. Still, I'd rather not get off on the wrong foot. We've a world to save, after all."));
+                    break;
+                    
+                case SMITTEN:
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "Yes, He didn't approve of us last time, did He? If we're going to save our beloved, we'll have to be sneaky about it."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Our... \"beloved?\""));
+                    parser.printDialogueLine(new VoiceDialogueLine("Yes, you'll have to be *very* sneaky about your intentions if you're going to try and save the Princess."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "Ah, so all of the cards are on the table. Then you should know that we and the Princess are in love and the four of us will be foiling any and all assassination attempts you've got in the works."));
+                    parser.printDialogueLine(new VoiceDialogueLine("We'll see about that. Whatever you do, just be sure to ignore *him,* specifically. It sounds like he's the sort who'd sacrifice the whole world for a peck on the cheek."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "What can I say? A world without love is a world that isn't worth saving."));
+                    break;
+                    
+                case STUBBORN:
+                    parser.printDialogueLine(new VoiceDialogueLine("You know I can hear you, right? It's going to be a lot harder than you think to keep secrets from me."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "That's fine. It doesn't matter if He can hear us. The only thing that matters is marching up to that cabin and *winning.*"));
+                    parser.printDialogueLine(new VoiceDialogueLine("That's the spirit. There's no point in squabbling when the real threat is just up that hill."));
+                    break;
+            }
+        }
+
+    }
+
+    /**
+     * The Narrator indulges the player in a "thought experiment" where they have, in fact, been here before
      * @param youDied whether the player died in Chapter I
      * @param princessDied whether the Princess died in Chapter I
-     * @param liedTo whether the player feels like the Narrator lied to them in Chapter I
+     * @param shareDied whether the player (or the Voices) mentioned that they died in Chapter I
      */
-    private void chapter2Intro(boolean youDied, boolean princessDied, boolean liedTo) {
-        this.chapter2Intro(youDied, princessDied, liedTo, "");
+    private void ch2IntroAssumeTruth(boolean youDied, boolean princessDied, boolean shareDied) {
+        this.sharedLoopInsist = true;
+
+        parser.printDialogueLine(new VoiceDialogueLine("Those are two *very* different questions, but fine. I'll indulge you if that's what it takes to get you moving."));
+        parser.printDialogueLine(new VoiceDialogueLine("Let's say for a moment that this really is the second time you've met me, or, at least, a version of me."));
+
+        if (shareDied) {
+            parser.printDialogueLine(new VoiceDialogueLine("You died last time, which probably only happened because you didn't listen to me."));
+        } else {
+            parser.printDialogueLine(new VoiceDialogueLine("If you're back here, I'm assuming you died, which probably only happened because you didn't listen to me."));
+        }
+
+        switch (this.activeChapter) {
+            case ADVERSARY:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "We did our best with the information we were given. And we *did* kill her."));
+                parser.printDialogueLine(new VoiceDialogueLine("And yet you still died, didn't you? So congratulations. You've been given another chance to actually do this right."));
+                break;
+                
+            case BEAST:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "We did our best with the information we were given."));
+                parser.printDialogueLine(new VoiceDialogueLine("And yet you still died, didn't you? So, great. Congratulations. You've been given another chance to actually do this right."));
+                break;
+                
+            case DAMSEL:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "*You* were the one who did us in, villain."));
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Well, not you in the literal sense, but you did everything you could to stop us from rescuing her."));
+                parser.printDialogueLine(new VoiceDialogueLine("Oh, I wonder why. Maybe it's because the entire world was at stake. No lone Princess is worth that price."));
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "I beg to differ."));
+                parser.printDialogueLine(new VoiceDialogueLine("I'm not going to argue with you. I'm just going to take a deep breath and assume that whoever is making the decisions here has the common sense to *ignore* your protestations."));
+                break;
+                
+            case NIGHTMARE:
+                if (source.equals("fled")) {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "Oh, we listened to you, all right. Worst decision of our incredibly short life."));
+                    if (this.isHarsh) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "We tried to slay her, we really did, but she was going to kill us. It was either lock her in the basement or let her finish beating us to death."));
+                    } else {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "We tried to slay her, we really did, but she was going to kill us. It was either lock her in the basement or let her finish tearing us to ribbons."));
+                    }
+                } else {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "We couldn't trust *either* of you. And as far as I'm concerned, we still can't."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "All we did was lock her away."));
+                    parser.printDialogueLine(new VoiceDialogueLine("And how'd that work out for you?"));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "No comment."));
+                }
+
+                parser.printDialogueLine(new VoiceDialogueLine("Well then, congratulations. You've been given another chance to actually do this right."));
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "And your solution to this is to send us back in there? Do you want us to slay the Princess, or do you want the Princess to slay *us?*"));
+                parser.printDialogueLine(new VoiceDialogueLine("Obviously I want *you* to slay *her.* One of you poses a threat to the world, and the other doesn't."));
+                break;
+                
+            case PRISONER:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "The absolute irony. But that's one way to put it, I guess."));
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "You *really* don't remember what happened last time, do you? You practically forced the Princess to kill us."));
+                parser.printDialogueLine(new VoiceDialogueLine("That doesn't sound like the sort of thing I'd do, which is honestly all the more reason for you to not buy into whatever self-delusions the three of you are crafting."));
+                parser.printDialogueLine(new VoiceDialogueLine("*Sigh.* But this is a thought experiment, so I suppose I'll continue to give you the benefit of the doubt. If I did 'practically force the Princess to kill you', it was probably for a good reason. Did you try and free her? Did you *say something really mean to me?* Because if I really did what you said I did, you probably deserved it. I'm a professional, after all."));
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Sure you are."));
+                break;
+
+            case RAZOR:
+                if (source.equals("revival")) {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "We mostly listened to you. How were we supposed to know she'd spring back to life?"));
+                    parser.printDialogueLine(new VoiceDialogueLine("If she \"sprung\" back to life in this hypothetical scenario, then clearly you *didn't* slay her."));
+                } else {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "We did exactly what you said..."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Sounds to me like you probably had some kind of elaborate nightmare, in which case I shouldn't be held accountable for what supposedly happened."));
+                }
+
+                parser.printDialogueLine(new VoiceDialogueLine("But congratulations. You've been given a chance to actually do this right."));
+                break;
+                
+            case SPECTRE:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "Oh, we listened to you plenty. We slew the Princess, just like you asked us to. And then you locked us away in an empty void for eternity. So we slew ourselves, too."));
+                parser.printDialogueLine(new VoiceDialogueLine("Well, if you killed yourself then you *weren't* listening to me. Because I would never want you to do that. Believe it or not, I care about you."));
+                break;
+
+            case TOWER:
+                if (source.equals("unharmed")) {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "Of course we died. We couldn't land a *single* blow on her and she broke every bone in our body before she decided to let us die."));
+                } else {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "Of course we died. She didn't feel pain. She didn't feel much of anything, did she? And she broke every bone in our body before she decided to let us die."));
+                }
+
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "What were we supposed to do to stop her then? What are we supposed to do to stop her now? It's pointless."));
+                parser.printDialogueLine(new VoiceDialogueLine("She's *just* a Princess. Slaying her shouldn't have been difficult, but congratulations. You've been given another chance to actually do this right."));
+                break;
+                
+            case WITCH:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "We were just weighing our options in a morally ambiguous situation. You can't blame us for weighing our options."));
+
+                if (princessDied) {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "We did our best with the information we were given. And we *did* kill her."));
+                    parser.printDialogueLine(new VoiceDialogueLine("And yet you still died, didn't you? So congratulations. You've been given another chance to actually do this right."));
+                } else {
+                    parser.printDialogueLine(new VoiceDialogueLine("I can if you failed to slay the Princess, which you apparently did. So, great. Congratulations. You've been given another chance to actually do this right."));
+                }
+
+                break;
+        }
+
+        if (this.activeChapter == Chapter.NIGHTMARE || this.activeChapter == Chapter.PRISONER || this.activeChapter == Chapter.DAMSEL) {
+            parser.printDialogueLine(new VoiceDialogueLine("Anyways, I believe your other question was something along the lines of \"what's the point of doing anything?\" If you're asking that, it sounds to me like you're making the rather dangerous assumption that your actions last time around didn't have any consequences."));
+        } else {
+            parser.printDialogueLine(new VoiceDialogueLine("And I believe your other question was something along the lines of \"what's the point of doing anything?\" If you're asking that, it sounds to me like you're making the rather dangerous assumption that your actions last time around didn't have any consequences."));
+        }
+        
+        String consequenceFree;
+        if (youDied && princessDied) {
+            if (this.activeChapter == Chapter.RAZOR) {
+                consequenceFree = "What do you mean? Of course there weren't any consequences. We stabbed the Princess, the Princess stabbed us, and now everyone's right back where they started. That sounds pretty consequence-free to me.";
+            } else {
+                consequenceFree = "What do you mean? Of course there weren't any consequences. We killed the Princess, the Princess killed us, and now everyone's right back where they started. That sounds pretty consequence-free to me.";
+            }
+        } else if (youDied) {
+            consequenceFree = "What do you mean? Of course there weren't any consequences. We were killed by the Princess, and now everyone's right back where they started. That sounds pretty consequence-free to me.";
+        } else if (princessDied) { // Only possible in Spectre
+            consequenceFree = "What do you mean? Of course there weren't any consequences. We slew the Princess, the world outside the cabin disappeared, we died, and now everyone's right back where they started. That sounds pretty consequence-free to me.";
+        } else { // Only possible in Witch if you were locked in the basement
+            consequenceFree = "What do you mean? Of course there weren't any consequences. The Princess locked us in the basement, we eventually died, and now everyone's right back where they started. That sounds pretty consequence-free to me.";
+        }
+
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, consequenceFree));
+
+        if (this.activeChapter == Chapter.NIGHTMARE) {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "Speak for yourself. From my perspective there were plenty of consequences. I'm never going forget the way she just made us *stop working.*"));
+            parser.printDialogueLine(new VoiceDialogueLine("And that's only scratching the surface. If what you said is true, it begs the question of *how* you got back here. Did \"time\" simply rewind itself, or have you found yourself in another world altogether? If it's the latter, what do you think happened *after* you died?"));
+            parser.printDialogueLine(new VoiceDialogueLine("Do you think the people there lived happily ever after, or do you think that the Princess, left unhindered, brought about the end to everyone and everything, just like I told you she would?"));
+        } else {
+            parser.printDialogueLine(new VoiceDialogueLine("Yes, but, in this purely hypothetical scenario, that begs the question of *how* you got back here. Did \"time\" simply rewind itself, or have you found yourself in another world altogether?"));
+
+            if (princessDied) {
+                parser.printDialogueLine(new VoiceDialogueLine("Had you failed to slay the Princess, what would have happened to everyone in the place you left?"));
+            } else {
+                parser.printDialogueLine(new VoiceDialogueLine("If it's the latter, what do you think happened *after* you died?"));
+                parser.printDialogueLine(new VoiceDialogueLine("Do you think the people there lived happily ever after, or do you think that the Princess, left unhindered, brought about the end to everyone and everything, just like I told you she would?"));
+            }
+        }
+
+        switch (this.activeChapter) {
+            case ADVERSARY:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "Ugh. Enough with the talking! We've got a fight to win. Nothing. Else. Matters."));
+                parser.printDialogueLine(new VoiceDialogueLine("I couldn't agree more. The cabin, and your destined confrontation with the Princess, awaits."));
+                break;
+
+            case BEAST:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "All the more reason to keep our wits about us. Should we even return to the cabin? We could find a safe little hole somewhere instead..."));
+                parser.printDialogueLine(new VoiceDialogueLine("You have to go to the cabin. If you don't slay the Princess she's going to end the world, which you're always going to be a part of, even if you're cowering in a hole. There's no escaping your responsibility here."));
+                break;
+
+            case DAMSEL:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "She would never. She's a perfect angel that you cruelly imprisoned as part of some convoluted, dastardly scheme."));
+                parser.printDialogueLine(new VoiceDialogueLine("Convoluted? I don't know how this premise could be any more simple. Princess bad. Stop her. Save everyone."));
+                break;
+                
+            case NIGHTMARE:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "If she brought an end to everything and everyone, how are *we* supposed to stop her? What do you want from us?"));
+                parser.printDialogueLine(new VoiceDialogueLine("I want you to succeed. You'll find a way. You're the only one who can."));
+                break;
+
+            case PRISONER:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "What a conveniently ambiguous group of things for her to ruin. For all we know, the Princess left the cabin and never saw another soul."));
+                parser.printDialogueLine(new VoiceDialogueLine("Oh how I wish that were the case, but if the Princess weren't a certain, inevitable threat to the world, the four of us wouldn't be here. And yet, here we are."));
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "You're talking in circles."));
+                parser.printDialogueLine(new VoiceDialogueLine("No, I'm talking in *facts.*"));
+                break;
+
+            case RAZOR:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "Screw this. Who cares what happened to everyone else? She's not going to play fair, so we should do what we can to save ourselves and just *get out of here.*"));
+                parser.printDialogueLine(new VoiceDialogueLine("At least you know not to trust her, but you do realize that \"everything and everyone\" includes you, right? If you turn around and leave, you're dooming yourself as well as everyone else."));
+
+                switch (this.source) {
+                    case "revival":
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "We were so close to finishing the job last time. She can't get the jump on us twice. If we're careful, we should be fine."));
+                        break;
+
+                    default:
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "She just caught us by surprise last time. She can't do that twice. So long as we're careful, we can win this."));
+                        break;
+                }
+                
+                parser.printDialogueLine(new VoiceDialogueLine("That's the spirit. Just keep that stiff upper lip and you'll save the world in no time at all."));
+                break;
+
+            case SPECTRE:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "It doesn't matter, because we didn't fail to slay her, and if she's really back, which I doubt, it'll be just as easy to do it again. But after that nasty trick you pulled on us, maybe she's not the only one around here in need of slaying."));
+                parser.printDialogueLine(new VoiceDialogueLine("Just stay focused, will you?"));
+                break;
+                
+            case TOWER:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "If she ended the entire world, why should we even bother? We might as well just walk up to that cabin, break her chains, and let her do whatever she wants. It's all the same in the end."));
+                parser.printDialogueLine(new VoiceDialogueLine("Just because she's capable of ending the world doesn't mean that you're not capable of slaying her. Both of those things can be true at the same time. So chin up, I believe in you."));
+                break;
+
+            case WITCH:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "That's a very good point. This Princess character seems like a lot of trouble. And if you think about it, actually slaying her probably breaks us out of this cycle, right? We don't want to be stuck here forever, do we?"));
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "You're laying it on a little thick, aren't you?"));
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "Laying it on a little thick? What are you talking about? I'm sharing my honest opinions."));
+                parser.printDialogueLine(new VoiceDialogueLine("What matters is that almost everyone seems to be on the same page. So whenever you're ready, you can stop dawdling, get to the cabin, and save the world."));
+                break;
+        }
+    }
+
+    /**
+     * The player asks the Narrator questions about the Princess
+     * @param youDied whether the player died in Chapter I
+     * @param princessDied whether the Princess died in Chapter I
+     * @return 0 if the player returns to the dialogue menu normally while pessimismComment is false; 1 if the player returns to the dialogue menu normally while pessimismComment is true; 2 if the player proceeds to the cabin via a command; 3 if the player attempts to leave via a command
+     */
+    private int ch2IntroAskPrincess(boolean youDied, boolean princessDied) {
+        // 0 = return to dialogue
+        // 1 = return via cGoHill (continue to cabin)
+        // 2 = return via cGoLeave (abort attempt)
+
+        String tipsText = "";
+        String howDangerText = "";
+        String quoteText = "";
+        switch (this.activeChapter) {
+            case ADVERSARY:
+                tipsText = "(Explore) We killed each other last time around. How can I make sure that doesn't happen again?";
+                howDangerText = "(Explore) All she did last time around was beat me to death. How can someone like that end the world?";
+                quoteText = "(Explore) To quote you from last time around, \"she's *just* a Princess.\" Why was she strong enough to beat me to death with her bare hands?";
+                break;
+
+            case BEAST:
+                tipsText = "(Explore) She killed me last time around. How can I make sure that doesn't happen again?";
+                howDangerText = "(Explore) She killed me by ripping me to pieces. Don't get me wrong, I hated it, but how can someone like that end the world?";
+                quoteText = "(Explore) To quote you from last time around, \"she's *just* a Princess.\" Why was she able to rip me apart with her bare hands?";
+                break;
+
+            case DAMSEL:
+                howDangerText = "(Explore) The only reason she was even able to kill me last time was because I let her. She could barely hold a knife. How is she supposed to end the world?";
+                break;
+
+            case NIGHTMARE:
+                tipsText = "(Explore) Just being around her in the end shut down all of my organs. What the hell am I supposed to do about that?";
+                quoteText = "(Explore) To quote you from last time around, \"she's *just* a Princess.\" How can you possibly justify saying that? She's clearly something far, far worse.";
+                break;
+
+            case PRISONER:
+                howDangerText = "(Explore) The only reason she was even able to kill me last time was because I let her. And all she did was slit my throat. How is she supposed to end the world?";
+                break;
+
+            case RAZOR:
+                if (source.equals("pathetic")) {
+                    tipsText = "(Explore) She killed me last time around. How can I make sure that doesn't happen again?";
+                } else {
+                    tipsText = "(Explore) We killed each other last time around. How can I make sure that doesn't happen again?";
+                }
+
+                howDangerText = "(Explore) All she did last time around was stab me to death. How can someone like that end the world?";
+                break;
+
+            case SPECTRE:
+                howDangerText = "(Explore) Last time around I stabbed her in the heart and she died. How can someone like that end the world?";
+                break;
+
+            case TOWER:
+                tipsText = "(Explore) She killed me last time around. How can I make sure that doesn't happen again?";
+                howDangerText = "(Explore) All she did last time around was beat me to death. How can someone like that end the world?";
+                quoteText = "(Explore) To quote you from last time around, \"she's *just* a Princess.\" Why was she strong enough to beat me to death with her bare hands?";
+                break;
+
+            case WITCH:
+                if (source.equals("locked")) {
+                    howDangerText = "(Explore) All she did last time was lock me in a basement until I died. Don't get me wrong, I hated it, but how can someone like that end the world?";
+                } else if (source.equals("mutual")) {
+                    tipsText = "(Explore) We killed each other last time around. How can I make sure that doesn't happen again?";
+                    howDangerText = "(Explore) She killed me by ripping me to pieces. Don't get me wrong, I hated it, but how can someone like that end the world?";
+                    quoteText = "(Explore) To quote you from last time around, \"she's *just* a Princess.\" Why was she able to rip me apart with her bare hands?";
+                } else {
+                    howDangerText = "(Explore) She killed me by ripping me to pieces. Don't get me wrong, I hated it, but how can someone like that end the world?";
+                    tipsText = "(Explore) She killed me last time around. How can I make sure that doesn't happen again?";
+                    quoteText = "(Explore) To quote you from last time around, \"she's *just* a Princess.\" Why was she able to rip me apart with her bare hands?";
+                }
+
+                break;
+        }
+
+        int askCount = 0;
+        boolean pessimismComment = false; // Used in Tower
+        boolean pleadLeave = false; // Used in Nightmare
+        OptionsMenu askMenu = new OptionsMenu();
+        askMenu.add(new Option(this.manager, "teleport", "(Explore) If anything, the world ended *after* I slew her. When I tried to leave, everything was gone.", this.activeChapter == Chapter.SPECTRE));
+        askMenu.add(new Option(this.manager, "tips", tipsText, !tipsText.equals("")));
+        askMenu.add(new Option(this.manager, "howDanger", howDangerText, !howDangerText.equals("")));
+        askMenu.add(new Option(this.manager, "quote", quoteText, !quoteText.equals("")));
+        askMenu.add(new Option(this.manager, "basement", "(Explore) XXXXX"));
+        askMenu.add(new Option(this.manager, "whyMe", "(Explore) XXXXX", askMenu.get("basement")));
+        askMenu.add(new Option(this.manager, "cagey", "(Explore) You're being cagey. What aren't you telling me?", false));
+        askMenu.add(new Option(this.manager, "return", "Nevermind."));
+
+        String outcome;
+        boolean repeatMenu = true;
+        while (repeatMenu) {
+            outcome = parser.promptOptionsMenu(askMenu);
+            switch (outcome) {
+                case "teleport":
+                    break;
+
+                case "tips":
+                    askCount += 1;
+                    parser.printDialogueLine(new VoiceDialogueLine("Like I said, if she killed you, it was probably because you didn't listen to me. Don't talk to her. Don't trust her. Just go in, do your job, and save the world."));
+
+                    if (this.activeChapter == Chapter.ADVERSARY && askCount == 2) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "Oh this is *maddening.* Why do you keep asking questions?"));
+                        parser.printDialogueLine(new VoiceDialogueLine("There's nothing wrong with getting the full picture of what's going on here."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "Sure there is. It's wasting time and energy that would be better spent fighting."));
+                    }
+
+                    break;
+
+                case "howDanger":
+                    askCount += 1;
+                    askMenu.setCondition("quote", false);
+
+                    if (this.activeChapter == Chapter.RAZOR) {
+                        parser.printDialogueLine(new VoiceDialogueLine("She just can. But she's still only a Princess. You're fully up to the task you've been given, so long as you remember that."));
+                    } else if (source.equals("locked")) {
+                        parser.printDialogueLine(new VoiceDialogueLine("She just can. But that doesn't mean you're not fully up to the task that's been given to you. Have a little faith in yourself, and maybe try to not get tricked this time."));
+                    } else {
+                        parser.printDialogueLine(new VoiceDialogueLine("She just can. Believe me, I wish I could tell you more, but you'll just have to trust that what I'm saying is true and that, despite it all, you're fully up to the task that's been given to you."));
+                    }
+
+                    if (this.activeChapter == Chapter.ADVERSARY && askCount == 2) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "Oh this is *maddening.* Why do you keep asking questions?"));
+                        parser.printDialogueLine(new VoiceDialogueLine("There's nothing wrong with getting the full picture of what's going on here."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "Sure there is. It's wasting time and energy that would be better spent fighting."));
+                    } else if (this.activeChapter == Chapter.DAMSEL) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "Maybe it's her *beauty* that threatens the world."));
+                        parser.printDialogueLine(new VoiceDialogueLine("Sure. It's her beauty. Why not? And before you ask, no. We can't just keep her down there. If you don't slay her, she's going to find a way out. It's unfortunate, I know, but it's just the way it is."));
+                    } else if (this.activeChapter == Chapter.TOWER && !pessimismComment) {
+                        pessimismComment = true;
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "We're not. We might as well just pledge ourselves to her and stop pretending that we're capable of doing anything in this situation. She probably doesn't even need to try to overpower us."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Can we tone down the pessimism just a smidge?"));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "I'm not being a pessimist. I'm just being *realistic.*"));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "You're being annoying."));
+                        parser.printDialogueLine(new VoiceDialogueLine("Just ignore their bickering, and whatever you do, don't \"pledge yourself to her.\" I cannot stress enough how absolutely *catastrophic* that would be for everyone. Yourself included."));
+                    } else if (this.activeChapter == Chapter.PRISONER) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "She just can. Believe me, I wish I could tell you more, but you'll just have to trust that what I'm saying is true and that, despite it all, you're fully up to the task that's been given to you."));
+                        parser.printDialogueLine(new VoiceDialogueLine("What proof could you possibly ask for?"));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Literally anything."));
+                        parser.printDialogueLine(new VoiceDialogueLine("*Sigh.* Fine. Check your pockets."));
+
+                        OptionsMenu pocketsMenu = new OptionsMenu(true);
+                        pocketsMenu.add(new Option(this.manager, "check", "[Check your pockets.]"));
+                        pocketsMenu.add(new Option(this.manager, "leave", "[Leave your pockets unchecked.]"));
+
+                        switch (parser.promptOptionsMenu(pocketsMenu, new VoiceDialogueLine("Well? After all that, are you going to check your pockets or not?", true))) {
+                            case "check":
+                                parser.printDialogueLine(new VoiceDialogueLine("You put your hands in your pockets and pull out an envelope with the words \"THE EVIDENCE\" written across the front."));
+                                parser.printDialogueLine(new VoiceDialogueLine("Within, you find a note in your handwriting. It reads: \"The Princess will end the world if you don't stop her. This is an immutable truth.\""));
+                                parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "That doesn't prove anything! How do we know you didn't just forge our handwriting?"));
+                                parser.printDialogueLine(new VoiceDialogueLine("I wish I could tell you more, but there are some rules I have to follow for all of our sakes. Please just trust that these rules are in place for a reason. I'm on your side."));
+                                parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "You mean you're on our side as long as we do what you tell us to."));
+                                parser.printDialogueLine(new VoiceDialogueLine("Exactly. Because you *not* doing what I tell you to do means you're putting the world at risk."));
+                                parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I think we've got everything out of him that we're going to get."));
+                                break;
+
+                            case "leave":
+                                parser.printDialogueLine(new VoiceDialogueLine("You decide to leave your pockets unchecked. See? You two are the only ones here who care about this little aside."));
+                                break;
+                        }
+                    }
+
+                    break;
+
+                case "quote":
+                    askCount += 1;
+                    askMenu.setCondition("quote", false);
+                    
+                    parser.printDialogueLine(new VoiceDialogueLine("She *is* just a Princess. Whatever you think happened to you last time, just get it out of your head before you get to the cabin, and you'll be *fine.*"));
+
+                    if (this.activeChapter == Chapter.ADVERSARY && askCount == 2) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "Oh this is *maddening.* Why do you keep asking questions?"));
+                        parser.printDialogueLine(new VoiceDialogueLine("There's nothing wrong with getting the full picture of what's going on here."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "Sure there is. It's wasting time and energy that would be better spent fighting."));
+                    } else if (this.activeChapter == Chapter.TOWER && !pessimismComment) {
+                        pessimismComment = true;
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "Or we could pledge ourselves to her and stop pretending that we're capable of doing anything in this situation. She probably doesn't even need to try to overpower us."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Can we tone down the pessimism just a smidge?"));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "I'm not being a pessimist. I'm just being *realistic.*"));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "You're being annoying."));
+                        parser.printDialogueLine(new VoiceDialogueLine("Just ignore their bickering, and whatever you do, don't \"pledge yourself to her.\" I cannot stress enough how absolutely *catastrophic* that would be for everyone. Yourself included."));
+                    }
+
+                    break;
+
+                case "basement":
+                    askCount += 1;
+                    parser.printDialogueLine(new VoiceDialogueLine("*People* locked her in that basement. And I told you what this place is. It's a path in the woods. Don't overcomplicate things."));
+
+                    if (this.activeChapter == Chapter.ADVERSARY && askCount == 2) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "Oh this is *maddening.* Why do you keep asking questions?"));
+                        parser.printDialogueLine(new VoiceDialogueLine("There's nothing wrong with getting the full picture of what's going on here."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "Sure there is. It's wasting time and energy that would be better spent fighting."));
+                    }
+
+                    break;
+
+                case "whyMe":
+                    askCount += 1;
+
+                    if (this.activeChapter == Chapter.ADVERSARY && askCount == 2) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "Oh this is *maddening.* Why do you keep asking questions?"));
+                        parser.printDialogueLine(new VoiceDialogueLine("There's nothing wrong with getting the full picture of what's going on here."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "Sure there is. It's wasting time and energy that would be better spent fighting."));
+                    }
+
+                    parser.printDialogueLine(new VoiceDialogueLine("Look, I'm not supposed to say this, but it's because you're special. You're the *only* person capable of doing this. Call it a prophecy if that helps, but it's just the way things are."));
+
+                    if (this.activeChapter == Chapter.NIGHTMARE) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "You can't just goad us into doing something by calling us special. It's manipulative. Why are you trying to manipulate us?"));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I don't know, I kind of like being special."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "Okay, fine. Maybe you can goad *him* into doing something, but he's not even the one who makes the decisions here."));
+                        parser.printDialogueLine(new VoiceDialogueLine("I'm not goading you into doing anything. You already know that the Princess is dangerous. All I'm trying to say is that you have to be the one to deal with her. I know it doesn't seem fair, but that's just the way it is."));
+                        parser.printDialogueLine(new VoiceDialogueLine("And for what it's worth, I know you have it in you to finish the job."));
+
+                        if (!pleadLeave) {
+                            pleadLeave = true;
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "We don't. You saw what happened to us last time. We need to *leave.*"));
+                        }
+                    } else {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Oh. I didn't know we were *special.*"));
+
+                        if (this.activeChapter == Chapter.ADVERSARY) {
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "Yeah, I like the sound of that."));
+                        }
+
+                        if (this.activeChapter == Chapter.SPECTRE) {
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "Of course we're special."));
+                        } else {
+                            parser.printDialogueLine(new VoiceDialogueLine("Of course you're special. Why else would you be here?"));
+
+                            switch (this.activeChapter) {
+                                case BEAST:
+                                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "Special can mean all sorts of things. Don't let it make you careless. We need clear thoughts and pricked ears."));
+                                    break;
+
+                                case DAMSEL:
+                                    parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "Calling us special isn't going to make us friends, even if it did feel nice."));
+                                    parser.printDialogueLine(new VoiceDialogueLine("Oh, believe me, the last thing I want is for you and I to be *friends.* But I'm a professional, and I'm not going to let my dislike for you get in the way of helping you save the world."));
+                                    break;
+
+                                case PRISONER:
+                                    parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Ah, yes, right. We're here because we're *special.*"));
+                                    parser.printDialogueLine(new VoiceDialogueLine("Look. You're annoyed that you're here. I get it. I'm also annoyed that I'm here. But we're all in this together, and we're dealing with a bit of a ticking clock right now, so please, just get to the cabin."));
+                                    break;
+
+                                case RAZOR:
+                                    if (source.equals("revival")) {
+                                        parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "If anyone's \"special\" here, it's her. Last I checked we can't get up from a knife in the chest."));
+                                    } else {
+                                        parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "If anyone's \"special\" here, it's her. That was a nasty trick she pulled on us."));
+                                    }
+                                    break;
+
+                                case TOWER:
+                                    parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "Who cares if *you* think we're special? As far as I can tell, the only thing special about us is that we get to experience painfully dying all over again."));
+                                    break;
+
+                                case WITCH:
+                                    parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "Good point. That really explains almost everything."));
+                                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I'm not so sure about *that.*"));
+                                    parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "You know, you're right. But it explains *almost* everything."));
+                                    break;
+                            }
+                        }
+                    }
+
+                    break;
+
+                case "cagey":
+                    parser.printDialogueLine(new VoiceDialogueLine("I've told you everything you need to know, going into more detail would just overcomplicate an otherwise very simple situation and make your job more difficult."));
+
+                    switch (this.activeChapter) {
+                        case ADVERSARY:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "What else would we even *need* to know? We've got all the reason we need for a rematch."));
+                            parser.printDialogueLine(new VoiceDialogueLine("Exactly. The less you know about her, the better."));
+                            break;
+
+                        case BEAST:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "If you want us to stand a chance against her, we need to be armed with information. What is she really capable of? How are we supposed to stop her?"));
+
+                            if (askCount < 2) {
+                                parser.printDialogueLine(new VoiceDialogueLine("The less you know about her, the better."));
+                            } else {
+                                parser.printDialogueLine(new VoiceDialogueLine("Not to sound like a broken record, but the less you know about her, the better things will go for all of us. I know it sounds like I'm hiding something, but you're just going to have to take me at my word."));
+                            }
+
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "You're afraid, aren't you? Just like us."));
+                            parser.printDialogueLine(new VoiceDialogueLine("Of course I'm afraid. Fear is an extremely normal thing to feel when the fate of the entire world is at stake."));
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "But that's not the only thing you're afraid of. You're scared of something *worse.*"));
+                            parser.printDialogueLine(new VoiceDialogueLine("Stop projecting your neuroses onto me and just get to the cabin already."));
+                            break;
+
+                        case DAMSEL:
+                        case PRISONER:
+                            if (askCount < 2) {
+                                parser.printDialogueLine(new VoiceDialogueLine("The less you know about her, the better."));
+                            } else {
+                                parser.printDialogueLine(new VoiceDialogueLine("Not to sound like a broken record, but the less you know about her, the better things will go for all of us. I know it sounds like I'm hiding something, but you're just going to have to take me at my word."));
+                            }
+
+                            break;
+
+                        case NIGHTMARE:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "If you want us to stand a chance against her, we need to be armed with information. What is she really capable of? How are we supposed to stop her?"));
+
+                            if (askCount < 2) {
+                                parser.printDialogueLine(new VoiceDialogueLine("The less you know about her, the better."));
+                            } else {
+                                parser.printDialogueLine(new VoiceDialogueLine("Not to sound like a broken record, but the less you know about her, the better things will go for all of us. I know it sounds like I'm hiding something, but you're just going to have to take me at my word."));
+                            }
+                            
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "He isn't telling us everything He knows because He doesn't trust us. Which means that *we* can't trust *Him.*"));
+                            parser.printDialogueLine(new VoiceDialogueLine("Stop talking yourself in neurotic circles and just get to the cabin already."));
+
+                            if (pleadLeave) {
+                                parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "Do you see the way He keeps pushing us? We have to get out of here."));
+                            } else {
+                                parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "No, you should do anything but that. We *know* what's waiting for us in that basement."));
+                            }
+
+                            break;
+
+                        case RAZOR:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "You didn't tell us about her knife last time though."));
+                            parser.printDialogueLine(new VoiceDialogueLine("That's because she's unarmed, and more than that, it's because there *wasn't* a last time."));
+                            break;
+
+                        case SPECTRE:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "This is boring. He's clearly not interested in talking, so let's just do as He says and maybe He'll stop bothering us."));
+                            break;
+
+                        case TOWER:
+                            if (pessimismComment) {
+                                parser.printDialogueLine(new VoiceDialogueLine("The less you know about her, the better."));
+                            } else {
+                                pessimismComment = true;
+                                parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "Even if He's hiding something, I doubt it would help us. I'm sure knowing what He knows would only make things worse."));
+                                parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Can we tone down the pessimism just a smidge?"));
+                                parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "I'm not being a pessimist. I'm just being *realistic.*"));
+                                parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "You're being annoying."));
+                                parser.printDialogueLine(new VoiceDialogueLine("Just ignore their bickering, and whatever you do, don't \"pledge yourself to her.\" I cannot stress enough how absolutely *catastrophic* that would be for everyone. Yourself included."));
+                            }
+
+                            break;
+
+                        case WITCH:
+                            if (!source.equals("locked")) {
+                                parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "If you want us to stand a chance against her, we need to be armed with information. What is she really capable of? How are we supposed to stop her?"));
+                            }
+                            
+                            if (askCount < 2) {
+                                parser.printDialogueLine(new VoiceDialogueLine("The less you know about her, the better."));
+                            } else {
+                                parser.printDialogueLine(new VoiceDialogueLine("Not to sound like a broken record, but the less you know about her, the better things will go for all of us. I know it sounds like I'm hiding something, but you're just going to have to take me at my word."));
+                            }
+
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "I don't think either of you really need to press the man on this. He wants us to slay the Princess, so why would He have anything to hide? He seems like a nice guy to me!"));
+                            parser.printDialogueLine(new VoiceDialogueLine("I appreciate the vote of confidence, but you should really stop wasting time chatting amongst yourselves in the woods, so if we could move this along..."));
+                            break;
+                    }
+
+                    break;
+
+                case "return":
+                    parser.printDialogueLine(new VoiceDialogueLine("Great. Now if you don't mind, the whole world is waiting with bated breath for you to save it from ruin."));
+                    return (pessimismComment) ? 1 : 0;
+
+                case "cGoCabin":
+                    return 2;
+
+                case "cGoLeave":
+                    if (!this.canTryAbort) {
+                        parser.printDialogueLine(CANTSTRAY);
+                        break;
+                    }
+                    
+                    return 3;
+
+                default:
+                    this.giveDefaultFailResponse(outcome);
+            }
+
+            if (askCount == 1) {
+                askMenu.setDisplay("return", "That's all.");
+            } else if (askCount > 1) {
+                askMenu.setCondition("cagey", true);
+            }
+        }
+
+        throw new RuntimeException("No conclusion reached");
+    }
+
+
+
+    /**
+     * The player attempts to abort the current Chapter II
+     * @return 0 if the player commits to aborting the vessel; 1 if the player cannot attempt to abort the vessel; 2 if the player returns to the cabin at the first menu; 3 otherwise
+     */
+    private int ch2AttemptAbortVessel() {
+        if (manager.nClaimedVessels() >= 2) {
+            parser.printDialogueLine(CANTSTRAY);
+            return 1;
+        }
+
+        switch (this.ch2Voice) {
+            case BROKEN:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "You're right. We should just leave. There's nothing we can do to stop her, so we might as well enjoy what little time we have left."));
+                break;
+
+            case CHEATED:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "Heh. And away we go. Good call."));
+                break;
+                
+            case COLD:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "Oh? Do you think there's something else out there? All right, let's see what we can find. It's bound to be more interesting than doing the same thing over again."));
+                break;
+                
+            case HUNTED:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "Yes. We're safer taking flight."));
+                break;
+                
+            case OPPORTUNIST:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "Well, you're the boss."));
+                break;
+                
+            case PARANOID:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "This is good. I was worried you might fall for his shit again, but this is good. Whatever answers there are to be found, they aren't *here,* and they definitely aren't *there.*"));
+                break;
+                
+            case SKEPTIC:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "I'm not so sure running away is the best idea. We're not the only person stuck here. What about her?"));
+                break;
+                
+            case SMITTEN:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "Are we running away? What are you doing, we have to save her!"));
+                break;
+                
+            case STUBBORN:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "We can't just leave, we're supposed to fight her! Where are you going?"));
+                break;
+        }
+
+        parser.printDialogueLine(new VoiceDialogueLine("Seriously? You're just going to turn around and leave? Do you even know where you're going?"));
+
+        OptionsMenu leaveMenu = new OptionsMenu();
+        leaveMenu.add(new Option(this.manager, "ugh", "Okay, fine. You're persistent. I'll go to the cabin and I'll slay the Princess. Ugh!"));
+        leaveMenu.add(new Option(this.manager, "maybe", "Okay, fine. I'll go to the cabin and I'll talk to the Princess. Maybe I'll slay her. Maybe I won't. I guess we'll see."));
+        leaveMenu.add(new Option(this.manager, "lie", "(Lie) Yes, I definitely know where I'm going."));
+        leaveMenu.add(new Option(this.manager, "nope", "Nope!"));
+        leaveMenu.add(new Option(this.manager, "notGoing", "The only thing that matters is where I'm not going. (The cabin. I am not going to the cabin.)"));
+        leaveMenu.add(new Option(this.manager, "nihilist", "I'm actually pretty okay with the world ending. I relish the coming of a new dawn beyond our own. Gonna go walk in the opposite direction now!"));
+        leaveMenu.add(new Option(this.manager, "quiet", "[Quietly continue down the path away from the cabin.]"));
+
+        boolean repeatMenu = true;
+        String outcome;
+        while (repeatMenu) {
+            outcome = parser.promptOptionsMenu(leaveMenu);
+            switch (outcome) {
+                case "cGoHill":
+                case "ugh":
+                    parser.printDialogueLine(new VoiceDialogueLine("*Thank you!* The whole world owes you a debt of gratitude. Really."));
+
+                    switch (this.ch2Voice) {
+                        case BROKEN:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "So much for getting out of here..."));
+                            break;
+
+                        // I think the original game devs forgot to include a line for Voice of the Cheated here...?
+                            
+                        case COLD:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "Oh well, cabin it is."));
+                            break;
+                            
+                        case HUNTED:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "If this is what you think is best, I'll keep my ears pricked. Hopefully she won't catch us off-guard as easily as she did last time..."));
+                            break;
+                            
+                        case OPPORTUNIST:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "This is probably for the best."));
+                            break;
+                            
+                        case PARANOID:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "One little trick was all it took for you to go in there?"));
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "*Sigh.*  I guess you're the one in control, aren't you? So if you want us to die again, I guess we'll die again. Good luck. To all of us."));
+                            break;
+                            
+                        case SKEPTIC:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Good. Going back to the cabin is the only way we can get to the bottom of things."));
+                            break;
+                            
+                        case SMITTEN:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "Save. You'll go to the cabin and *save* the Princess."));
+                            break;
+                            
+                        case STUBBORN:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "Oh, about *time.* I can't believe you were about to run away."));
+                            break;
+                    }
+
+                    return 2;
+
+                case "maybe":
+                    parser.printDialogueLine(new VoiceDialogueLine("I guess we will."));
+
+                    switch (this.ch2Voice) {
+                        case BROKEN:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "So much for getting out of here..."));
+                            break;
+
+                        // I think the original game devs forgot to include a line for Voice of the Cheated here...?
+                            
+                        case COLD:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "Oh well, cabin it is."));
+                            break;
+                            
+                        case HUNTED:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "If this is what you think is best, I'll keep my ears pricked. Hopefully she won't catch us off-guard as easily as she did last time..."));
+                            break;
+                            
+                        case OPPORTUNIST:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "This is probably for the best."));
+                            break;
+                            
+                        case PARANOID:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "One little trick was all it took for you to go in there?"));
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "*Sigh.*  I guess you're the one in control, aren't you? So if you want us to die again, I guess we'll die again. Good luck. To all of us."));
+                            break;
+                            
+                        case SKEPTIC:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Good. Going back to the cabin is the only way we can get to the bottom of things."));
+                            break;
+                            
+                        case SMITTEN:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "You're joking, right? If we're going to the cabin, there's no world where we do anything other than *save* her."));
+                            break;
+                            
+                        case STUBBORN:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "Oh, about *time.* I can't believe you were about to run away."));
+                            break;
+                    }
+
+                    return 2;
+
+                case "lie":
+                    repeatMenu = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("Somehow I doubt that, but fine."));
+                    parser.printDialogueLine(new VoiceDialogueLine("I suppose you just quietly continue down the path away from the cabin."));
+                    break;
+
+                case "nihilist":
+                    parser.printDialogueLine(new VoiceDialogueLine("There won't *be* a \"new dawn\" if the world ends. There'll just be *nothing.* Forever!"));
+                case "cGoLeave":
+                case "nope":
+                case "notGoing":
+                case "quiet":
+                    repeatMenu = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("Fine, I suppose you just quietly continue down the path away from the cabin."));
+                    break;
+
+                default:
+                    this.giveDefaultFailResponse(outcome);
+            }
+        }
+
+        System.out.println();
+        this.currentLocation = GameLocation.HILL;
+        parser.printDialogueLine(new DialogueLine("You emerge into a clearing. The path ahead of you winds up a hill, stopping just before a quaint wooden cabin."));
+        parser.printDialogueLine(new VoiceDialogueLine("That's strange. It looks like this path also leads to the cabin. How convenient! Everything's back on track again. Maybe the world can still be saved after all."));
+        if (this.hasVoice(Voice.COLD)) parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "Oh? How quaint. He really wants us to go in there, doesn't He?"));
+
+        leaveMenu = new OptionsMenu();
+        leaveMenu.add(new Option(this.manager, "cabin", "Okay, okay! I'm going into the cabin. Sheesh."));
+        leaveMenu.add(new Option(this.manager, "commit", "[Turn around (again) and leave (again).]"));
+
+        repeatMenu = true;
+        while (repeatMenu) {
+            outcome = parser.promptOptionsMenu(leaveMenu);
+            switch (outcome) {
+                case "cabin":
+                    parser.printDialogueLine(new VoiceDialogueLine("That's great to hear! And as long as you bring that fiery attitude to Princess slaying, I think this will all resolve splendidly."));
+                case "cGoCabin":
+                    switch (this.ch2Voice) {
+                        case BROKEN:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "So much for getting out of here..."));
+                            break;
+
+                        // I think the original game devs forgot to include a line for Voice of the Cheated here...?
+                            
+                        case COLD:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "Oh well, cabin it is."));
+                            break;
+                            
+                        case HUNTED:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "If this is what you think is best, I'll keep my ears pricked. Hopefully she won't catch us off-guard as easily as she did last time..."));
+                            break;
+                            
+                        case OPPORTUNIST:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "This is probably for the best."));
+                            break;
+                            
+                        case PARANOID:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "A couple of laps around the woods were all it took for you to go in there?"));
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "*Sigh.*  I guess you're the one in control, aren't you? So if you want us to die again, I guess we'll die again. Good luck. To all of us."));
+                            break;
+                            
+                        case SKEPTIC:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Good. Going back to the cabin is the only way we can get to the bottom of things."));
+                            break;
+                            
+                        case SMITTEN:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "Oh, it's going to resolve splendidly, all right."));
+                            break;
+                            
+                        case STUBBORN:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "Oh, about *time.* I can't believe you were about to run away."));
+                            break;
+                    }
+
+                    return 3;
+
+                case "cGoPath":
+                case "commit":
+                    repeatMenu = false;
+                    break;
+
+                default:
+                    this.giveDefaultFailResponse(outcome);
+            }
+        }
+
+        this.currentLocation = GameLocation.LEAVING;
+        parser.printDialogueLine(new VoiceDialogueLine("You're really keen on wasting everyone's time, aren't you? It's remarkably selfish, if you ask me. I've already outlined the stakes of the situation. If you don't do your job, everyone dies. Like, *dies* dies. Forever."));
+        parser.printDialogueLine(new VoiceDialogueLine("But fine. You turn around and trek back down the path you came."));
+        
+        this.abortVessel(false);
+        return 0;
     }
 
 
@@ -4618,7 +5937,9 @@ public class StandardCycle extends Cycle {
     private ChapterEnding adversary() {
         // You gain the Voice of the Stubborn
 
-        this.chapter2Intro(true, true, false);
+        if (!this.chapter2Intro(true, true, false)) {
+            return ChapterEnding.ABORTED;   
+        }
 
         // PLACEHOLDER
         return null;
@@ -4691,8 +6012,7 @@ public class StandardCycle extends Cycle {
                 this.source = "normal";
         }
 
-        if (source.equals("unharmed")) this.chapter2Intro(true, false, false, "towerUnharmed");
-        else this.chapter2Intro(true, false, false, "towerNormal");
+        if (!this.chapter2Intro(true, false, false)) return ChapterEnding.ABORTED;
         
         // PLACEHOLDER
         return null;
@@ -4728,7 +6048,9 @@ public class StandardCycle extends Cycle {
 
         this.isHarsh = false;
 
-        this.chapter2Intro(false, true, true);
+        if (!this.chapter2Intro(false, true, true)) {
+            return ChapterEnding.ABORTED;
+        }
 
         // PLACEHOLDER
         return null;
@@ -4783,9 +6105,8 @@ public class StandardCycle extends Cycle {
     private ChapterEnding nightmare() {
         // You gain the Voice of the Paranoid
 
-        boolean ch1fled = this.prevEnding == ChapterEnding.TONIGHTMAREFLED || this.prevEnding == ChapterEnding.TONIGHTMAREFLED;
-
-        this.chapter2Intro(true, false, false);
+        this.source = (this.prevEnding == ChapterEnding.TONIGHTMAREFLED) ? "fled" : "normal";
+        if (!this.chapter2Intro(true, false, false)) return ChapterEnding.ABORTED;
         
         // PLACEHOLDER
         return null;
@@ -4818,17 +6139,19 @@ public class StandardCycle extends Cycle {
         switch (this.prevEnding) {
             case TORAZORMUTUAL:
                 this.source = "mutual";
-                this.chapter2Intro(true, true, false, "razorMutual");
+                if (!this.chapter2Intro(true, true, false)) return ChapterEnding.ABORTED;
+
                 break;
 
             case TORAZORREVIVAL:
                 this.source = "revival";
-                this.chapter2Intro(true, true, false, "razorRevival");
+                if (!this.chapter2Intro(true, true, false)) return ChapterEnding.ABORTED;
+                
                 break;
 
             default:
                 this.source = "pathetic";
-                this.chapter2Intro(true, false, false, "razorPathetic");
+                if (!this.chapter2Intro(true, false, false)) return ChapterEnding.ABORTED;
         }
         
         // PLACEHOLDER
@@ -4910,7 +6233,9 @@ public class StandardCycle extends Cycle {
     private ChapterEnding beast() {
         // You gain the Voice of the Hunted
 
-        this.chapter2Intro(true, false, false);
+        if (!this.chapter2Intro(true, false, false)) {
+            return ChapterEnding.ABORTED;
+        }
         
         // PLACEHOLDER
         return null;
@@ -4972,10 +6297,21 @@ public class StandardCycle extends Cycle {
     private ChapterEnding witch() {
         // You gain the Voice of the Opportunist
 
-        boolean locked = this.prevEnding == ChapterEnding.TOWITCHLOCKED;
+        switch (this.prevEnding) {
+            case TOWITCHLOCKED:
+                this.source = "locked";
+                if (!this.chapter2Intro(false, false, false)) return ChapterEnding.ABORTED;
+                break;
 
-        if (locked) this.chapter2Intro(false, false, false, "witchNormal");
-        else this.chapter2Intro(true, false, false, "witchLocked");
+            case TOWITCHMUTUAL:
+                this.source = "mutual";
+                if (!this.chapter2Intro(true, true, false)) return ChapterEnding.ABORTED;
+                break;
+
+            default:
+                this.source = "normal";
+                if (!this.chapter2Intro(true, false, false)) return ChapterEnding.ABORTED;
+        }
         
         // PLACEHOLDER
         return null;
@@ -5009,7 +6345,8 @@ public class StandardCycle extends Cycle {
     private ChapterEnding stranger() {
         // You gain the Voice of the Contrarian
 
-        this.chapter2Intro(false, false, true);
+        // DOESN'T USE CHAPTER2INTRO() -- PROGRAM MANUALLY HERE
+        // do make use of ch2IntroShareLoop() though!!!
         
         // PLACEHOLDER
         return null;
@@ -5025,7 +6362,9 @@ public class StandardCycle extends Cycle {
     private ChapterEnding prisoner() {
         // You gain the Voice of the Skeptic
 
-        this.chapter2Intro(true, false, true);
+        if (!this.chapter2Intro(true, false, true)) {
+            return ChapterEnding.ABORTED;
+        }
         
         // PLACEHOLDER
         return null;
@@ -5093,7 +6432,9 @@ public class StandardCycle extends Cycle {
     private ChapterEnding damsel() {
         // You gain the Voice of the Smitten
 
-        this.chapter2Intro(true, false, true);
+        if (!this.chapter2Intro(true, false, true)) {
+            return ChapterEnding.ABORTED;
+        }
         
         // PLACEHOLDER
         return null;
@@ -5119,16 +6460,173 @@ public class StandardCycle extends Cycle {
     }
 
 
-
+    
     /**
-     * The player attempts to abort the current vessel
-     * @return true if the player commits to aborting the current vessel; false otherwise
+     * The player aborts the current Chapter (and therefore the current Cycle as well), contributing to the Oblivion ending
      */
-    private boolean attemptAbortVessel() {
-        // true if attempt goes through, false if player returns
+    private void abortVessel(boolean lateJoin) {
+        if (!lateJoin) {
+            if (this.activeChapter == Chapter.STRANGER || this.activeChapter.getNumber() > 2) {
+                parser.printDialogueLine(new VoiceDialogueLine("Wait... something isn't right. Can you still hear me? Everything is getting fuzzy..."));
+            } else {
+                parser.printDialogueLine(new VoiceDialogueLine("Wait... something isn't right. Can you still hear me? You're supposed to wind up back at the cabin again, but everything is getting fuzzy..."));
+            }
+
+            this.currentVoices.put(Voice.NARRATOR, false);
+
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "W-what's going on. Where are we?"));
+
+            if (this.hasVoice(Voice.CONTRARIAN)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "We're somewhere interesting for once."));
+            }
+            if (this.hasVoice(Voice.COLD)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "I don't know. But it feels like home."));
+            }
+            if (this.hasVoice(Voice.BROKEN)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "We're dead. Obviously."));
+            }
+            if (this.hasVoice(Voice.HUNTED)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "A dark place. Thoughts like us shouldn't be here."));
+            }
+            if (this.hasVoice(Voice.SKEPTIC)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Did we do this? Is this the end of the world? Was there ever even a world to end?"));
+            }
+            if (this.hasVoice(Voice.STUBBORN)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "I told you we shouldn't have come here, I told you. But did you listen? No."));
+            }
+            if (this.hasVoice(Voice.SMITTEN)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "Oh I don't like this one bit. There's not a single damsel in sight. How dull."));
+            }
+            if (this.hasVoice(Voice.PARANOID)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "It's finally happened, hasn't it? We've finally cracked."));
+            }
+            if (this.hasVoice(Voice.OPPORTUNIST)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "I like it! Seems like it's got some great acoustics..."));
+            }
+            if (this.hasVoice(Voice.CHEATED)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "That son-of-a-bitch flipped over the table, didn't he?"));
+            }
+        }
+
+        this.clearVoices();
+
+        if (!this.isFirstVessel) {
+            parser.printDialogueLine(new DialogueLine("The world around you is unwound, its physical matter replaced by a textured nothing. You find yourself in The Long Quiet once again. Memory returns."));
+        } else if (manager.nVesselsAborted() > 0) {
+            parser.printDialogueLine(new DialogueLine("The world around you is unwound, its physical matter replaced by a textured nothing. It is quiet. You have been here before. Memory returns."));
+        } else {
+            parser.printDialogueLine(new DialogueLine("The world around you is unwound, its physical matter replaced by a textured nothingness. It is quiet."));
+        }
+
+        parser.printDialogueLine(new DialogueLine("There is a distant rumbling, a sound of many sounds. Undulations pulse louder as something Other comes close."));
         
-        // PLACEHOLDER
-        return false;
+        switch (manager.nVesselsAborted()) {
+            case 0:
+                if (!this.isFirstVessel) parser.printDialogueLine(new DialogueLine("You already know what dwells in the empty spaces."));
+                parser.printDialogueLine(new DialogueLine("Feelers probe across the fabric of reality. Extremities find your consciousness and wrap themselves around it. You are no longer alone."));
+
+                if (this.isFirstVessel) {
+                    parser.printDialogueLine(new DialogueLine("Confusion. \"Why are you here? I am unfinished.\""));
+                    parser.printDialogueLine(new DialogueLine("Resistance. Fingers drag claws across the glass surface of your soul."));
+                    parser.printDialogueLine(new DialogueLine("Frustration. \"This vessel is full of you. It is useless to us if it doesn't bring more gifts.\""));
+                    parser.printDialogueLine(new DialogueLine("Force pushing against your will. \"NO. You cannot go back. Not there.\""));
+                    parser.printDialogueLine(new DialogueLine("Regret. \"This world is broken beyond repair. We must weave something new.\""));
+                    parser.printDialogueLine(new DialogueLine("A wagging finger. \"There is only so much thread in this place. Do not waste it. I am our only salvation.\""));
+                } else {
+                    parser.printDialogueLine(new DialogueLine("Resistance. Fingers drag claws across the glass surface of your soul."));
+                    parser.printDialogueLine(new DialogueLine("Frustration. \"This vessel is full of you. I need something empty I can crawl inside of. I need something shaped like me.\""));
+
+                    this.activeMenu = new OptionsMenu(true);
+                    activeMenu.add(new Option(this.manager, "wake", "This is a nightmare. Wake up."));
+                    activeMenu.add(new Option(this.manager, "embrace", "Embrace the thoughts constricting you."));
+
+                    switch (parser.promptOptionsMenu(activeMenu)) {
+                        case "wake":
+                            parser.printDialogueLine(new DialogueLine("It's not."));
+                            break;
+
+                        case "embrace":
+                            parser.printDialogueLine(new DialogueLine("Urgency. \"You have a story you need to finish. It is the only way for us to escape this place.\""));
+                            parser.printDialogueLine(new DialogueLine("Force pushing against your will. \"NO. You cannot go back. Not there.\""));
+                            parser.printDialogueLine(new DialogueLine("Regret. \"This world is broken beyond repair. We must weave something new.\""));
+                            parser.printDialogueLine(new DialogueLine("A wagging finger. \"There is only so much thread in this place. Do not waste it. I am our only salvation.\""));
+                            break;
+                    }
+                }
+
+                break;
+
+
+            case 1:
+                parser.printDialogueLine(new DialogueLine("That which dwells in the empty spaces contracts across the edges of your mind again. She is furious."));
+                parser.printDialogueLine(new DialogueLine("Betrayal. \"Every door you close on me is a door you close on yourself. Do you want to linger here, entwined with a creature you taught to hate you forever? Eternity never ends.\""));
+                parser.printDialogueLine(new DialogueLine("Cold spite. \"Our infinities shrink into something less. I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I --\"", true));
+                break;
+
+
+            case 2:
+                parser.printDialogueLine(new DialogueLine("Desperate pleas. \"I do not hate you. I am sorry I said I hate you. I do not have to hate you. We can still leave this place together.\""));
+                parser.printDialogueLine(new DialogueLine("An offering. \"We can be friends.\""));
+                parser.printDialogueLine(new DialogueLine("Ecstasy. You are elated. You have never felt more elated than you feel now. Everything is good. You cannot remember what it is like to feel anything other than euphoric joy."));
+                parser.printDialogueLine(new DialogueLine("A reminder. \"We can be worse than enemies.\""));
+                parser.printDialogueLine(new DialogueLine("Agony. You are torn into a million pieces, and you feel pain in each of them. You have never felt more miserable than you feel now. You cannot remember what it is like to feel anything other than anguish."));
+                parser.printDialogueLine(new DialogueLine("Mercy. You are elated again. You have never felt more elated than you feel now. In contrast to the agony you've suffered, this elation is better than all of the other elation you have experienced."));
+
+                if (this.isFirstVessel) {
+                    parser.printDialogueLine(new DialogueLine("Round eyes looking up at you. \"I need more vessels so that I can be finished. I cannot find them on my own, for they are me. You are the only one who can do this. You are our only salvation.\""));
+                } else {
+                    parser.printDialogueLine(new DialogueLine("Round eyes looking up at you. \"I need vessels so that I can be finished. I cannot find them on my own, for they are me. You are the only one who can do this. You are our only salvation.\""));
+                }
+
+                break;
+
+
+            case 3:
+                parser.printDialogueLine(new DialogueLine("Dejection. Feelers limp against your soul. \"Why?\""));
+                parser.printDialogueLine(new DialogueLine("Long silence. A hollow heart."));
+                parser.printDialogueLine(new DialogueLine("\"I don't want to see you.\""));
+                break;
+
+
+            case 4:
+                parser.printDialogueLine(new DialogueLine("The feelers hold you in a gentle caress."));
+                parser.printDialogueLine(new DialogueLine("Resignation. \"I cannot stop you. But our spool is nearly taut.\""));
+                parser.printDialogueLine(new DialogueLine("A warning. \"If you come here again, we will be here forever.\""));
+                break;
+
+
+            case 5: // Oblivion ending
+                parser.printDialogueLine(new DialogueLine("Oblivion. The many feelers pull your shape into something formless. \"You have made a decision. It is the wrong one. I love you.\""));
+
+                this.activeMenu = new OptionsMenu(true);
+                activeMenu.add(new Option(this.manager, "exist", "[Exist.]", 0));
+                activeMenu.add(new Option(this.manager, "fade", "[Consciousness fades away.]"));
+
+                for (int i = 0; i < 4; i++) {
+                    parser.printDialogueLine(new DialogueLine("You are bliss. Joy and understanding everywhere at once. Your soul threatens to fade away. \"I love you.\""));
+                    parser.printDialogueLine(new DialogueLine("You are agony. A numbing arm. A parched throat. An open wound. Your soul forced back into existence. \"I love you.\""));
+
+                    if (i == 3) {
+                        switch (parser.promptOptionsMenu(activeMenu)) {
+                            case "exist":
+                                // You can keep doing this forever, if you want
+                                i -= 1;
+                                break;
+
+                            case "fade":
+                                // End the game
+                                break;
+                        }
+                    }
+                }
+
+                break;
+        }
+
+        if (manager.nVesselsAborted() != 5) {
+            System.out.println();
+            parser.printDialogueLine(new DialogueLine("All at once, the nothingness shatters."));
+        }
     }
 
 
@@ -5143,7 +6641,7 @@ public class StandardCycle extends Cycle {
         this.hasBlade = false;
 
         this.threwBlade = false;
-        this.mentionedLooping = false;
+        this.sharedLoop = false;
         this.bladeReverse = false;
 
         this.repeatActiveMenu = false;
