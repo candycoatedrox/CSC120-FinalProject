@@ -609,6 +609,7 @@ public class GameManager {
         if (c == null) throw new RuntimeException("Invalid command");
 
         this.showCommandHelp(c);
+        System.out.println();
     }
 
     /**
@@ -626,19 +627,23 @@ public class GameManager {
         IOHandler.wrapPrintln("You are guaranteed to encounter: death; murder; verbal abuse; gaslighting; described gore.");
         IOHandler.wrapPrintln("If suicide is a significantly triggering topic for you, we suggest you take care of yourself while playing the game, or for you to possibly avoid playing it.");
         System.out.println();
-        IOHandler.wrapPrintln("General CWs: death; murder; suicide; verbal abuse; gaslighting; gore; mutilation, disembowelment; loss of self; cosmic horror; existential horror; being eaten alive; suffocation; derealisation; forced suicide; loss of bodily autonomy; starvation; unreality; body horror; forced self-mutilation; self-degloving; flaying; self-immolation; drowning; burning to death; loss of control; dismemberment; self-decapitation; memory loss");
+        IOHandler.wrapPrintln("General CWs: death; murder; suicide; verbal abuse; gaslighting; described gore; mutilation, disembowelment; loss of self; cosmic horror; existential horror; being eaten alive; suffocation; derealisation; forced suicide; loss of bodily autonomy; starvation; unreality; body horror; forced self-mutilation; self-degloving; flaying; self-immolation; drowning; burning to death; loss of control; dismemberment; self-decapitation; memory loss");
     }
 
     /**
      * Displays content warnings for each Chapter in the game
      */
     public void showByChapterWarnings() {
+        boolean breakLoop = false;
         String s = "";
         
         for (Chapter c : Chapter.values()) {
             switch (c) {
                 case CH1: continue;
-                case MUTUALLYASSURED: break;
+
+                case MUTUALLYASSURED:
+                    breakLoop = true;
+                    break;
 
                 case ADVERSARY:
                     s += "----- Possible content warnings for Chapter II -----";
@@ -650,7 +655,7 @@ public class GameManager {
                     break;
 
                 case ARMSRACE:
-                    s += "\n  - " + c.getTitle() + " & " + Chapter.MUTUALLYASSURED.getFullTitle();
+                    s += "\n  - " + c.getTitle() + " & Mutually Assured Destruction";
                     break;
                 case NOWAYOUT:
                     s += "\n  - " + c.getTitle() + " & " + Chapter.EMPTYCUP.getFullTitle();
@@ -659,7 +664,11 @@ public class GameManager {
                 default: s += "\n  - " + c.getTitle();
             }
 
-            s += ": " + c.getContentWarnings();
+            if (breakLoop) break;
+
+            if (c.hasContentWarnings()) {
+                s += ": " + c.getContentWarnings();
+            }
         }
 
         IOHandler.wrapPrintln(s);

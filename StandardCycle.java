@@ -7306,7 +7306,7 @@ public class StandardCycle extends Cycle {
         // You have all voices
 
         // PLACEHOLDER
-        return null;
+        return ChapterEnding.MOMENTOFCLARITY;
     }
 
 

@@ -9,7 +9,7 @@ public enum Command {
     WALK("walk", "Move in a given direction.", "forward", "forwards", "f", "back", "backward", "backwards", "b", "inside", "in", "i", "outside", "out", "o", "down", "d", "up", "u"),
     ENTER("enter", "Enter a given location or the nearest appropriate location.", "", "cabin", "basement"),
     LEAVE("leave", "Leave the current location.", "", "cabin", "basement", "woods", "path"),
-    PROCEED("proceed", "Move forward.", ""),
+    PROCEED("proceed", "Press onwards.", ""),
     TURN("turn", "Turn back.", "", "around", "back"),
     APPROACH("approach", "Approach the mirror.", "the mirror", "mirror"),
     SLAY("slay", "Slay the Princess or yourself.", "the princess", "princess", "self", "yourself", "you", "myself", "me", "ourself", "ourselves", "us"),
@@ -160,6 +160,9 @@ public enum Command {
                 s += "PROCEED\n\n";
 
                 s += "- Arguments -\n";
+                s += "None.\n\n";
+
+                s += "- Variations -\n";
                 s += "None.\n";
                 break;
 
@@ -212,7 +215,7 @@ public enum Command {
                 s += "  - [blade]: The blade.\n\n";
 
                 s += "- Variations -\n";
-                s += "  - DROP [PRISTINE BLADE / THE BLADE / BLADE]: Drop the blade,\n";
+                s += "  - DROP [PRISTINE BLADE / THE BLADE / BLADE]: Drop the blade.\n";
                 break;
 
             case THROW:

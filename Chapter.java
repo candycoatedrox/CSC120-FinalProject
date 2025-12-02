@@ -228,8 +228,8 @@ public enum Chapter {
             case DEN: return "cannibalism; extreme gore; extreme violence; starvation";
             case WILD: return "gore; body horror";
             case THORN: return "self-mutilation";
-            case CAGE: return "Existentialism; decapitation; gore";
-            case GREY: return "Self-immolation; description of a bloated corpse; drowning; burning to death; body horror"; // combined warnings
+            case CAGE: return "existentialism; decapitation; gore";
+            case GREY: return "self-immolation; description of a bloated corpse; drowning; burning to death; body horror"; // combined warnings
             case HAPPY: return "derealization; existentialism; end-of-relationship; some people have experienced triggers related to emotional domestic abuse while playing this chapter";
 
             // Chapter IV
