@@ -2,7 +2,6 @@ public enum GameLocation {
     PATH,
     HILL,
     CABIN,
-    CABINMIRROR,
     STAIRS,
     BASEMENT,
 
@@ -56,7 +55,6 @@ public enum GameLocation {
             case PATH: return LEAVING;
             case HILL: return LEAVING;
             case CABIN: return HILL;
-            case CABINMIRROR: return CABIN;
             case STAIRS: return CABIN;
             case BASEMENT: return STAIRS;
             case LEAVING: return HILL;
@@ -124,7 +122,6 @@ public enum GameLocation {
             case PATH: return "path";
             case HILL: return "hill";
             case CABIN: return "cabin";
-            case CABINMIRROR: return "mirror (cabin)";
             case STAIRS: return "stairs";
             case BASEMENT: return "basement";
 

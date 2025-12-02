@@ -20,9 +20,10 @@ public class StandardCycle extends Cycle {
     private boolean sharedLoop = false; // Used in all Chapter 2s and 3s: does the Narrator know?
     private boolean sharedLoopInsist = false; // Used in all Chapter 2s
     private boolean skipHillDialogue = false; // Used in Chapter 1 and all Chapter 2s; if you backed out of Stranger / aborting the Chapter
+    private boolean localMirrorComment = false; // Whether you've commented on the mirror this Chapter
 
     // Variables that persist between chapters
-    private boolean seenMirror = false;
+    private boolean mirrorComment = false; // Used in all Chapter 2s and 3s
     private boolean touchedMirror = false; // Used in all Chapter 2s and 3s
     private boolean whatWouldYouDo = false; // Used in Chapter 1, Damsel
     private boolean knowsDestiny = false; // Used in Chapter 1, Tower, Fury
@@ -406,7 +407,7 @@ public class StandardCycle extends Cycle {
                 
             case "cApproachFail":
                 parser.printDialogueLine(new VoiceDialogueLine("What are you talking about? There isn't a mirror."));
-                if (this.seenMirror && this.hasVoice(Voice.HERO)) parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "He's actually right this time. The mirror really isn't here."));
+                if ((this.mirrorComment || this.touchedMirror) && this.hasVoice(Voice.HERO)) parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "He's actually right this time. The mirror really isn't here."));
                 break;
                 
 
@@ -578,6 +579,7 @@ public class StandardCycle extends Cycle {
                 this.sharedLoop = false;
                 this.sharedLoopInsist = false;
                 this.skipHillDialogue = false;
+                this.localMirrorComment = false;
                 this.bladeReverse = false;
 
                 this.repeatActiveMenu = false;
@@ -5120,6 +5122,10 @@ public class StandardCycle extends Cycle {
             }
         }
 
+        this.currentLocation = GameLocation.CABIN;
+        this.mirrorPresent = true;
+        this.knowsBlade = true;
+        this.withBlade = true;
         return true;
     }
 
@@ -6066,6 +6072,371 @@ public class StandardCycle extends Cycle {
         return 0;
     }
 
+    /**
+     * The player asks the Narrator about the mirror in the cabin during Chapter II
+     * @return true if the player chooses to approach the mirror; false otherwise
+     */
+    private boolean ch2AskMirror() {
+        this.localMirrorComment = true;
+        this.mirrorComment = true;
+        
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "There's *definitely* a mirror."));
+        parser.printDialogueLine(new VoiceDialogueLine("There isn't."));
+
+        boolean defaultCareLie = false;
+        boolean defaultWhyLie = false;
+        boolean defaultNoMatter = true;
+        boolean defaultHandsomeCare = false;
+        switch (this.activeChapter) {
+            case ADVERSARY:
+                defaultCareLie = true;
+                defaultNoMatter = false;
+                defaultHandsomeCare = true;
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "Oh, stop bickering and just get on with it. Who even cares if there's a mirror?"));
+                break;
+
+            case BEAST:
+                defaultWhyLie = true;
+                if (this.sharedLoop) {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "What a strange thing to lie about. Maybe He doesn't see it, much like He hasn't seen what's already happened."));
+                } else {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "What a strange thing to lie about. Maybe He doesn't see it."));
+                }
+                break;
+
+            case DAMSEL:
+                defaultWhyLie = true;
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "I'm sure the Princess would tell us there was a mirror if *she* were up here."));
+                parser.printDialogueLine(new VoiceDialogueLine("In which case she'd be lying to you, because again, there isn't a mirror."));
+                break;
+
+            case NIGHTMARE:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "We have to look at it... unless that's what He wants us to do and pretending it isn't there is a trick to get us to do exactly what He wants."));
+                break;
+
+            case PRISONER:
+                defaultWhyLie = true;
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "I think you know what we have to do."));
+                break;
+
+            case RAZOR:
+                defaultCareLie = true;
+                defaultNoMatter = false;
+                defaultHandsomeCare = true;
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "Can you two stop arguing? It's stressful enough in here without all of this extra noise."));
+                break;
+
+            case SPECTRE:
+                defaultCareLie = true;
+                defaultNoMatter = false;
+                defaultHandsomeCare = true;
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "Who cares if there's a mirror? Let's just go into the basement and find her body so we can be done with this."));
+                break;
+
+            case STRANGER:
+                defaultWhyLie = true;
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "You insisting it isn't there just makes me want to look at it even more."));
+                break;
+
+            case TOWER:
+                defaultNoMatter = false;
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "Who cares if there's a mirror? We're all going to die anyway, and I'm sure that if we looked in there we'd just see something sad and miserable looking back at us. We don't need any reminders of what we are. It would only make things worse."));
+                parser.printDialogueLine(new VoiceDialogueLine("*Sigh.* For the last time, you're not going to die unless you let it happen. And luckily for you, there isn't a mirror, so no one needs to worry about confronting a grisly visage any time in the near future."));
+                parser.printDialogueLine(new VoiceDialogueLine("Though, for what it's worth, if there were a mirror, I'm sure that you wouldn't find anything \"sad\" or \"miserable\" in it looking back at you. You probably look perfectly normal."));
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "\"Probably?\" Do you not know what we look like?"));
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "He knows. He just doesn't have the heart to tell us."));
+                break;
+
+            case WITCH:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "But He says there isn't one. That's got to count for something, right?"));
+                break;
+        }
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "careLie", "I care about whether I'm being lied to.", defaultCareLie));
+        activeMenu.add(new Option(this.manager, "careLieTower", "I care about whether I'm being lied to. There's a mirror.", this.activeChapter == Chapter.TOWER));
+        activeMenu.add(new Option(this.manager, "whyLie", "Why *would* you lie about that? What's the point?", defaultWhyLie));
+        activeMenu.add(new Option(this.manager, "whyLieNightmare", "Why *would* you lie about there not being a mirror when it's clearly right there? What's the point?", this.activeChapter == Chapter.NIGHTMARE));
+        activeMenu.add(new Option(this.manager, "whyLieWitch", "I trust my eyes. Why would He lie about there not being a mirror? What's the point?", this.activeChapter == Chapter.WITCH));
+        activeMenu.add(new Option(this.manager, "handsome", "I want to look at myself. I want to see how *handsome* I am.", !defaultHandsomeCare && this.activeChapter != Chapter.STRANGER));
+        activeMenu.add(new Option(this.manager, "handsomeCare", "I care. I want to look at myself. I want to see how *handsome* I am.", defaultHandsomeCare));
+        activeMenu.add(new Option(this.manager, "handsomeStranger", "I also want to look at myself. I want to see how *handsome* I am.", this.activeChapter == Chapter.STRANGER));
+        activeMenu.add(new Option(this.manager, "noMatter", "It doesn't matter.", defaultNoMatter));
+        activeMenu.add(new Option(this.manager, "noMatterRight", "You're right. It doesn't matter.", !defaultNoMatter && this.activeChapter != Chapter.TOWER));
+        activeMenu.add(new Option(this.manager, "noMatterTower", "It doesn't matter whether there's a mirror.", this.activeChapter == Chapter.TOWER));
+        activeMenu.add(new Option(this.manager, "silent", "[Remain silent.]"));
+        activeMenu.add(new Option(this.manager, "approach", "[Approach the mirror.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu)) {
+                case "careLie":
+                    this.repeatActiveMenu = false;
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "As do I."));
+                    parser.printDialogueLine(new VoiceDialogueLine("I'm not lying to you. Use your eyes, there is no mirror. Why would I lie about something so meaningless? What good would a mirror even do? Let you waste time preening yourself instead of doing what needs to be done?"));
+                    break;
+
+                case "careLieTower":
+                    this.repeatActiveMenu = false;
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "As do I, and yeah, there is."));
+                    parser.printDialogueLine(new VoiceDialogueLine("I'm not lying to you. Use your eyes, there is no mirror. Why would I lie about something so meaningless? What good would a mirror even do? Let you waste time preening yourself instead of doing what needs to be done?"));
+                    break;
+
+                case "whyLieWitch":
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "Come on, now. He's pretty much in charge here. When have authority figures ever lied about anything? If there were a mirror in this cabin and we were supposed to look at it, He would have told us about it."));
+                case "whyLieNightmare":
+                case "whyLie":
+                    this.repeatActiveMenu = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("Exactly. Why would I lie about something so meaningless? What good would a mirror even do? Let you waste time preening yourself instead of doing what needs to be done?"));
+                    break;
+
+                case "handsomeCare":
+                    this.repeatActiveMenu = false;
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I care less about that and more about whether we're being lied to. If He's willing to lie about something as innocuous as a mirror, what else is He hiding from us?"));
+                    parser.printDialogueLine(new VoiceDialogueLine("I'm not lying to you. Use your eyes, there is no mirror. Why would I lie about something so meaningless? What good would it even do?"));
+                    break;
+
+                case "handsome":
+                case "handsomeStranger":
+                    this.repeatActiveMenu = false;
+
+                    if (this.activeChapter == Chapter.PRISONER) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Let's not get caught up in vanity, but we should definitely take a closer look. Whatever it is, He must not want us to know about it."));
+                        parser.printDialogueLine(new VoiceDialogueLine("Is this some sort of rehearsed bit? Use your eyes, there is no mirror. Why would I lie about something so meaningless? What good would it even do?"));
+                    } else if (this.activeChapter == Chapter.TOWER) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "Please don't. I'd rather the Princess kill us again than see how dreadful we are."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I care less about what we look like and more about whether we're being lied to. If He's willing to lie about something as innocuous as a mirror, what else is He hiding from us?"));
+                        parser.printDialogueLine(new VoiceDialogueLine("I'm not lying to you. Use your eyes, there is no mirror. Why would I lie about something so meaningless? What good would it even do?"));
+                    } else if (this.activeChapter == Chapter.WITCH) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "Oh, I'm sure we'd look great. If only there were some sort of reflective surface we could examine. Absolute shame there isn't anything like that around here."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "You... you *do* see it, right? I don't know how to read you."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "I-I... see all sorts of things."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But do you see the mirror? It's a simple yes or no question."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "Uh... I, um... help me out here, will you?"));
+                        parser.printDialogueLine(new VoiceDialogueLine("I'm not lying to you. Use your eyes, there is no mirror. Why would I lie about something so meaningless? What good would a mirror even do? Let you waste time preening yourself instead of doing what needs to be done?"));
+                    } else {
+                        if (this.activeChapter == Chapter.DAMSEL) {
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "That's a great idea. We have to make sure we're looking our best before we save her."));
+                        }
+
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "We shouldn't waste time *preening,* but if He *is* lying about the mirror, it might be important."));
+
+                        if (this.activeChapter == Chapter.BEAST) {
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "Or it's dangerous."));
+                        }
+
+                        parser.printDialogueLine(new VoiceDialogueLine("I'm not lying to you. Use your eyes, there is no mirror. Why would I lie about something so meaningless? What good would it even do?"));
+
+                        if (this.activeChapter == Chapter.NIGHTMARE) {
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "Maybe He's trying to keep us from looking because there's something horribly wrong with us."));
+                            parser.printDialogueLine(new VoiceDialogueLine("No. There isn't something horribly wrong with you. You look exactly how you're supposed to look, now stop second-guessing my every word."));
+                        }
+                    }
+
+                    break;
+
+                case "noMatter":
+                case "noMatterRight":
+                case "noMatterTower":
+                    this.repeatActiveMenu = false;
+                    this.mirrorPresent = false;
+
+                    if (this.activeChapter == Chapter.PRISONER) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "We should treat everything in here like it matters."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Exactly, don't you care if we're being lied to? If He's willing to lie about something as innocuous as a mirror, what else is He hiding from us?"));
+                    } else {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But it *does* matter! Don't you care if we're being lied to? If He's willing to lie about something as innocuous as a mirror, what else is He hiding from us?"));
+                    }
+
+                    parser.printDialogueLine(new VoiceDialogueLine("I'm not lying to you. Use your eyes, there is no mirror. Why would I lie about something so meaningless? What good would a mirror even do? Let you waste time preening yourself instead of doing what needs to be done?"));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But there *was* a mirror a second ago."));
+
+                    switch (this.activeChapter) {
+                        case ADVERSARY:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "And now it's gone, so all of us can stop arguing about it and get to fightin'."));
+                            break;
+
+                        case BEAST:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "And now it's gone."));
+                            break;
+
+                        case DAMSEL:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "And now it's gone. Pity. We could have a feather out of place and now we'll never know. We can't gallantly sweep her off her feet if we have a feather out of place."));
+                            break;
+
+                        case NIGHTMARE:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "Did *He* make it go away? Clearly there was something in there worth investigating if He wants it hidden so bad..."));
+                            break;
+
+                        case PRISONER:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "And now it's gone. If He doesn't want us to know about it, it must be important. We should keep our eyes peeled. Maybe it'll be back."));
+                            break;
+
+                        case RAZOR:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "And now it's gone. Yet another thing in here playing tricks on us. I hate this place."));
+                            break;
+
+                        case SPECTRE:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "And now it's gone. Let's not spend much longer worrying over it. Clearly it's not even important enough to be acknowledged."));
+                            break;
+
+                        case STRANGER:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "And now it's gone. You know that taking the mirror away from us isn't going to change things, right? We'll find it again, and then we'll see whatever it is that you don't want us to see."));
+                            break;
+
+                        case TOWER:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "We should count ourselves lucky. Some things are better left unseen."));
+                            break;
+
+                        case WITCH:
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "Well, at least we can all agree now that there's nothing to see here. Case closed. Good work everyone."));
+                            break;
+                    }
+
+                    break;
+
+                case "silent":
+                    this.repeatActiveMenu = false;
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I care if we're being lied to. If He's willing to lie about something as innocuous as a mirror, what else could He hiding from us?"));
+                    parser.printDialogueLine(new VoiceDialogueLine("I'm not lying to you, I *promise.* There isn't a mirror. Really."));
+                    break;
+
+                case "cApproach":
+                case "approach":
+                    this.ch2ApproachMirror(true);
+                    return true;
+
+                default:
+                    super.giveDefaultFailResponse();
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * The player approaches the mirror in the cabin during Chapter II
+     * @param asked whether the player asked about the mirror, or just walked up to it
+     */
+    private void ch2ApproachMirror(boolean asked) {
+        this.touchedMirror = true;
+        this.mirrorPresent = false;
+
+        if (this.activeChapter == Chapter.NIGHTMARE) {
+            parser.printDialogueLine(new VoiceDialogueLine("You walk up to the wall next to the empty basement doorframe. It's a wall. There isn't much to see here."));
+        } else {
+            parser.printDialogueLine(new VoiceDialogueLine("You walk up to the wall next to the basement door. It's a wall. There isn't much to see here."));
+        }
+
+        if (asked) {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "This *really* isn't funny."));
+        } else {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "What are you talking about? This isn't a wall. It's a mirror. Or at least it'll *be* a mirror once we wipe off that layer of grime."));
+        }
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "wipe", "[Wipe the mirror clean.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu)) {
+                case "wipe":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default: super.giveDefaultFailResponse();
+            }
+        }
+        
+        parser.printDialogueLine(new VoiceDialogueLine("You reach forward and rub your hand against the cabin wall. I hope you know how ridiculous you look right now."));
+
+        
+
+        switch (this.activeChapter) {
+            case ADVERSARY:
+                if (asked) {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But it was there a second ago!"));
+                } else {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But there was a mirror a second ago."));
+                }
+
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "And now it's gone, so all of us can stop arguing about it and get to fightin'."));
+                break;
+
+            case BEAST:
+                if (asked) {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But it was there a second ago!"));
+                } else {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But there was a mirror a second ago."));
+                }
+                
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "And now it's gone."));
+                break;
+
+            case DAMSEL:
+                if (asked) {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But it was there a second ago!"));
+                } else {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But there was a mirror a second ago."));
+                }
+                
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "And now it's gone. Pity. We could have a feather out of place and now we'll never know. We can't gallantly sweep her off her feet if we have a feather out of place."));
+                break;
+
+            case NIGHTMARE:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "Did *He* make it go away? Clearly there was something in there worth investigating if He wants it hidden so bad..."));
+                break;
+
+            case PRISONER:
+                if (asked) {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But it was there a second ago!"));
+                } else {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But there was a mirror a second ago."));
+                }
+                
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "And now it's gone. If He doesn't want us to know about it, it must be important. We should keep our eyes peeled. Maybe it'll be back."));
+                break;
+
+            case RAZOR:
+                if (asked) {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But it was there a second ago!"));
+                } else {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But there was a mirror a second ago."));
+                }
+                
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "And now it's gone. Yet another thing in here playing tricks on us. I hate this place."));
+                break;
+
+            case SPECTRE:
+                if (asked) {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But it was there a second ago!"));
+                } else {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But there was a mirror a second ago."));
+                }
+                
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "And now it's gone. Let's not spend much longer worrying over it. Clearly it's not even important enough to be acknowledged."));
+                break;
+
+            case STRANGER:
+                if (asked) {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But it was there a second ago!"));
+                } else {
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But there was a mirror a second ago."));
+                }
+                
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "And now it's gone. You know that taking the mirror away from us isn't going to change things, right? We'll find it again, and then we'll see whatever it is that you don't want us to see."));
+                break;
+
+            case TOWER:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "We should count ourselves lucky. Some things are better left unseen."));
+                break;
+
+            case WITCH:
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "Well, at least we can all agree now that there's nothing to see here. Case closed. Good work everyone."));
+                break;
+        }
+    }
+
 
     // - Chapter II: The Adversary -
 
@@ -6079,6 +6450,69 @@ public class StandardCycle extends Cycle {
         if (!this.chapter2Intro(true, true, false)) {
             return ChapterEnding.ABORTED;   
         }
+
+        manager.setNowPlaying("The Adversary");
+        
+        parser.printDialogueLine(new VoiceDialogueLine("The cabin is tighter than its exterior would suggest. Its cold stone walls press in on you, as if trying to forcefully direct you towards your destination. The only furniture of note is a black-iron altar with a pristine blade perched on its edge."));
+        parser.printDialogueLine(new VoiceDialogueLine("The blade is your implement. You'll need it if you want to do this right."));
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "mirror", "(Explore) You didn't say anything about the mirror on the wall."));
+        activeMenu.add(new Option(this.manager, "different", "(Explore) This whole cabin is different than last time.", this.sharedLoopInsist));
+        activeMenu.add(new Option(this.manager, "approach", "(Explore) [Approach the mirror.]"));
+        activeMenu.add(new Option(this.manager, "take", "(Explore) [Take the blade.]"));
+        activeMenu.add(new Option(this.manager, "enter", "[Enter the basement.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "mirror":
+                    parser.printDialogueLine(new VoiceDialogueLine("That's because there isn't a mirror. There's the altar, the blade sitting on the altar, and the door to the basement. There's nothing else in here."));
+                    if (this.ch2AskMirror()) {
+                        activeMenu.setCondition("approach", false);
+                    }
+                    break;
+
+                case "different":
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "*Very* different."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Maybe that's because you haven't actually been here. I hope this means you'll finally drop that ridiculous past-life nonsense. You haven't died, and you certainly haven't been killed by the Princess."));
+                    parser.printDialogueLine(new VoiceDialogueLine("So focus up. The world is depending on you."));
+                    break;
+
+                case "cApproach":
+                    activeMenu.setCondition("approach", false);
+                case "approach":
+                    activeMenu.setCondition("mirror", false);
+                    this.ch2ApproachMirror(false);
+                    break;
+
+                case "cTake":
+                    activeMenu.setCondition("take", false);
+                case "take":
+                    this.hasBlade = true;
+                    this.withBlade = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("You take the blade from the altar. It would be difficult to slay the Princess and save the world without a weapon."));
+                    break;
+
+                case "cGoStairs":
+                case "enter":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default:
+                    this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        if (!this.hasBlade) {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "No blade this time? Right then, fisticuffs it is. Probably more fair to her anyway. Wouldn't want to feel like we cheated our way to a win."));
+            parser.printDialogueLine(new VoiceDialogueLine("As long as you can still get the job done... and don't forget that the blade is waiting for you upstairs if you happen to change your mind."));
+        }
+
+        this.currentLocation = GameLocation.STAIRS;
+        this.withBlade = false;
+        this.mirrorPresent = false;
 
 
 
@@ -6162,7 +6596,76 @@ public class StandardCycle extends Cycle {
         }
 
         if (!this.chapter2Intro(true, false, false)) return ChapterEnding.ABORTED;
+
+        manager.setNowPlaying("The Tower");
         
+        parser.printDialogueLine(new VoiceDialogueLine("The interior of the cabin is larger and more grandiose than its humble exterior would suggest. The only furniture of note is a massive marble altar with a pristine blade perched on its edge."));
+        parser.printDialogueLine(new VoiceDialogueLine("The blade is your implement. You'll need it if you want to do this right."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Why do we feel so... *small?*"));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "We don't feel small. We *are* small."));
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "mirror", "(Explore) You didn't say anything about the mirror on the wall."));
+        activeMenu.add(new Option(this.manager, "different", "(Explore) This whole cabin is different than last time.", this.sharedLoopInsist));
+        activeMenu.add(new Option(this.manager, "approach", "(Explore) [Approach the mirror.]"));
+        activeMenu.add(new Option(this.manager, "take", "(Explore) [Take the blade.]"));
+        activeMenu.add(new Option(this.manager, "enter", "[Enter the basement.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "mirror":
+                    parser.printDialogueLine(new VoiceDialogueLine("That's because there isn't a mirror. There's the altar, the blade sitting on the altar, and the door to the basement. There's nothing else in here."));
+                    if (this.ch2AskMirror()) {
+                        activeMenu.setCondition("approach", false);
+                    }
+                    break;
+
+                case "different":
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "*Very* different."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Maybe that's because you haven't actually been here. I hope this means you'll finally drop that ridiculous past-life nonsense. You haven't died, and you certainly haven't been killed by the Princess."));
+                    break;
+
+                case "cApproach":
+                    activeMenu.setCondition("approach", false);
+                case "approach":
+                    activeMenu.setCondition("mirror", false);
+                    this.ch2ApproachMirror(false);
+                    break;
+
+                case "cTake":
+                    activeMenu.setCondition("take", false);
+                case "take":
+                    this.hasBlade = true;
+                    this.withBlade = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("You take the blade from the altar. It would be difficult to slay the Princess and save the world without a weapon."));
+                    break;
+
+                case "cGoStairs":
+                case "enter":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default:
+                    this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        this.currentLocation = GameLocation.STAIRS;
+        this.withBlade = false;
+        this.mirrorPresent = false;
+        
+
+
+        
+        // temporary templates for copy-and-pasting
+        parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+
         // PLACEHOLDER
         return null;
     }
@@ -6200,6 +6703,75 @@ public class StandardCycle extends Cycle {
         if (!this.chapter2Intro(false, true, true)) {
             return ChapterEnding.ABORTED;
         }
+
+        manager.setNowPlaying("The Spectre");
+        
+        parser.printDialogueLine(new VoiceDialogueLine("The interior of the cabin is cold, a soft odor of dirt permeating the air. Cobwebs flutter in the corners. You can hear wind whistling outside, banging the shutters against the windows. The only furniture of note is an elegant antique table with a pristine blade perched on the edge."));
+        parser.printDialogueLine(new VoiceDialogueLine("The blade is your implement. You'll need it if you want to do this right."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "It feels like no one's been here for a long, long time."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "Like I've been saying. She's dead. We killed her already."));
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "mirror", "(Explore) You didn't say anything about the mirror on the wall."));
+        activeMenu.add(new Option(this.manager, "different", "(Explore) This whole cabin is different than last time.", this.sharedLoopInsist));
+        activeMenu.add(new Option(this.manager, "approach", "(Explore) [Approach the mirror.]"));
+        activeMenu.add(new Option(this.manager, "take", "(Explore) [Take the blade.]"));
+        activeMenu.add(new Option(this.manager, "enter", "[Enter the basement.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "mirror":
+                    parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
+                    if (this.ch2AskMirror()) {
+                        activeMenu.setCondition("approach", false);
+                    }
+                    break;
+
+                case "different":
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "*Very* different."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Maybe that's because you haven't actually been here. I hope this means you'll finally drop that ridiculous past-life nonsense. You haven't died, and you certainly haven't already slain the Princess."));
+                    parser.printDialogueLine(new VoiceDialogueLine("So focus up. The world is depending on you."));
+                    break;
+
+                case "cApproach":
+                    activeMenu.setCondition("approach", false);
+                case "approach":
+                    activeMenu.setCondition("mirror", false);
+                    this.ch2ApproachMirror(false);
+                    break;
+
+                case "cTake":
+                    activeMenu.setCondition("take", false);
+                case "take":
+                    this.hasBlade = true;
+                    this.withBlade = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("You take the blade from the table. It would be difficult to slay the Princess and save the world without a weapon."));
+                    break;
+
+                case "cGoStairs":
+                case "enter":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default:
+                    this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        this.currentLocation = GameLocation.STAIRS;
+        this.withBlade = false;
+        this.mirrorPresent = false;
+
+
+        
+        // temporary templates for copy-and-pasting
+        parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
 
         // PLACEHOLDER
         return null;
@@ -6256,6 +6828,93 @@ public class StandardCycle extends Cycle {
 
         this.source = (this.prevEnding == ChapterEnding.TONIGHTMAREFLED) ? "fled" : "normal";
         if (!this.chapter2Intro(true, false, false)) return ChapterEnding.ABORTED;
+
+        manager.setNowPlaying("The Nightmare");
+        
+        parser.printDialogueLine(new VoiceDialogueLine("The interior of the cabin is plain, the smooth wood of the walls almost featureless. The only furniture of note is a lone table, knocked on its side in the corner of the room. A pristine blade stands between you and the open, inviting basement doorway."));
+        parser.printDialogueLine(new VoiceDialogueLine("The blade is your implement. You'll need it if you want to do this right."));
+        if (this.sharedLoop) {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "Hold on. What happened to the door? There was a door here last time."));
+        } else {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "Hold on. What happened to the door?"));
+        }
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "It's just an empty frame..."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "She's already gotten out, hasn't she? And she's ready for us. She's been *waiting.* Can't you feel her eyes on us?"));
+        parser.printDialogueLine(new VoiceDialogueLine("I'm going to need all of you to pull yourselves together. The Princess has *not* already gotten out, but if you keep getting stuck in your head like this, you're going to struggle to get the job done."));
+        parser.printDialogueLine(new VoiceDialogueLine("Yes. So deep breath in, deep breath out. Your task awaits, and only you can do it."));
+
+        
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "mirror", "(Explore) You didn't say anything about the mirror on the wall."));
+        activeMenu.add(new Option(this.manager, "different", "(Explore) This whole cabin is different than last time.", this.sharedLoopInsist));
+        activeMenu.add(new Option(this.manager, "approach", "(Explore) [Approach the mirror.]"));
+        activeMenu.add(new Option(this.manager, "take", "(Explore) [Take the blade.]"));
+        activeMenu.add(new Option(this.manager, "enter", "[Enter the basement.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "mirror":
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "You're right. I was so stuck on the the *eyes* watching us that I didn't even notice it there."));
+                    parser.printDialogueLine(new VoiceDialogueLine("What are you two talking about? There isn't a mirror. There's the table, the blade sitting on the floor, and the open doorway leading to the basement. There's nothing else in here."));
+                    if (this.ch2AskMirror()) {
+                        activeMenu.setCondition("approach", false);
+                    }
+                    break;
+
+                case "different":
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "*Very* different."));
+                    if (this.mirrorComment) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "I'm not the only one who sees her in the window, right? She knows that we're here."));
+                    } else {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "*He* changed it, didn't He? It's like He's trying to make us doubt our reality."));
+                    }
+                    parser.printDialogueLine(new VoiceDialogueLine("Calm down. Maybe the three of you just *think* everything is different because you haven't been here before. Enough of this past-life nonsense. You haven't died, and you certainly haven't been killed by the Princess."));
+                    parser.printDialogueLine(new VoiceDialogueLine("So focus up. A lot's riding on this."));
+                    break;
+
+                case "cApproach":
+                    activeMenu.setCondition("approach", false);
+                case "approach":
+                    activeMenu.setCondition("mirror", false);
+                    this.ch2ApproachMirror(false);
+                    break;
+
+                case "cTake":
+                    activeMenu.setCondition("take", false);
+                case "take":
+                    this.hasBlade = true;
+                    this.withBlade = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("You reach down and pick the blade up off the floor. It would be difficult to slay the Princess and save the world without a weapon."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Is it gonna be enough, though? Couldn't you have -- given us something else? Something... I don't know... better than a knife? Can we have a bomb?"));
+                    parser.printDialogueLine(new VoiceDialogueLine("The blade is the only thing you need to finish your task. You're more than capable of pulling this off so long as you don't lose faith in yourself."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "Those are the words of someone who knows He's sending us to our death..."));
+                    break;
+
+                case "cGoStairs":
+                case "enter":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default:
+                    this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        this.currentLocation = GameLocation.STAIRS;
+        this.withBlade = false;
+        this.mirrorPresent = false;
+        
+
+
+        
+        // temporary templates for copy-and-pasting
+        parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
         
         // PLACEHOLDER
         return null;
@@ -6302,6 +6961,75 @@ public class StandardCycle extends Cycle {
                 this.source = "pathetic";
                 if (!this.chapter2Intro(true, false, false)) return ChapterEnding.ABORTED;
         }
+
+        manager.setNowPlaying("The Razor");
+        
+        parser.printDialogueLine(new VoiceDialogueLine("The interior of the cabin is a jagged mess of warped wood and broken boards, their splintered edges as uninviting as shattered glass. The only furniture of note is a pointed table with a pristine blade perched on its edge."));
+        parser.printDialogueLine(new VoiceDialogueLine("The blade is your implement. You'll need it if you want to do this right."));
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "mirror", "(Explore) You didn't say anything about the mirror on the wall."));
+        activeMenu.add(new Option(this.manager, "different", "(Explore) This whole cabin is different than last time.", this.sharedLoopInsist));
+        activeMenu.add(new Option(this.manager, "approach", "(Explore) [Approach the mirror.]"));
+        activeMenu.add(new Option(this.manager, "take", "(Explore) [Take the blade.]"));
+        activeMenu.add(new Option(this.manager, "enter", "[Enter the basement.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "mirror":
+                    parser.printDialogueLine(new VoiceDialogueLine("That's because there isn't a mirror. There's a table, the blade sitting on the table, and the door to the basement. There's nothing else in here."));
+                    if (this.ch2AskMirror()) {
+                        activeMenu.setCondition("approach", false);
+                    }
+                    break;
+
+                case "different":
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "*Very* different."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Maybe that's because you haven't actually been here. I hope this means you'll finally drop that ridiculous past-life nonsense. You haven't died, and you certainly haven't been killed by the Princess."));
+                    parser.printDialogueLine(new VoiceDialogueLine("So focus up. The world is depending on you."));
+                    break;
+
+                case "cApproach":
+                    activeMenu.setCondition("approach", false);
+                case "approach":
+                    activeMenu.setCondition("mirror", false);
+                    this.ch2ApproachMirror(false);
+                    break;
+
+                case "cTake":
+                    activeMenu.setCondition("take", false);
+                case "take":
+                    this.hasBlade = true;
+                    this.withBlade = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("You take the blade from the table. It would be difficult to slay the Princess and save the world without a weapon."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "It feels a bit better to have a weapon in our hands. Let's make her hurt for what she's done to us."));
+                    break;
+
+                case "cGoStairs":
+                case "enter":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default:
+                    this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        this.currentLocation = GameLocation.STAIRS;
+        this.withBlade = false;
+        this.mirrorPresent = false;
+
+
+
+        
+        // temporary templates for copy-and-pasting
+        parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
         
         // PLACEHOLDER
         return null;
@@ -6385,6 +7113,75 @@ public class StandardCycle extends Cycle {
         if (!this.chapter2Intro(true, false, false)) {
             return ChapterEnding.ABORTED;
         }
+
+        manager.setNowPlaying("The Beast");
+        
+        parser.printDialogueLine(new VoiceDialogueLine("The interior of the cabin is ruinous and dilapidated. It feels like no one has lived here for a long time, wind rushing in through cracks and holes in the wooden walls. The only furniture of note is a termite-eaten table with a pristine blade perched on its edge."));
+        parser.printDialogueLine(new VoiceDialogueLine("The blade is your implement. You'll need it if you want to do this right."));
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "mirror", "(Explore) You didn't say anything about the mirror on the wall."));
+        activeMenu.add(new Option(this.manager, "different", "(Explore) This whole cabin is different than last time.", this.sharedLoopInsist));
+        activeMenu.add(new Option(this.manager, "approach", "(Explore) [Approach the mirror.]"));
+        activeMenu.add(new Option(this.manager, "take", "(Explore) [Take the blade.]"));
+        activeMenu.add(new Option(this.manager, "enter", "[Enter the basement.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "mirror":
+                    parser.printDialogueLine(new VoiceDialogueLine("That's because there isn't a mirror. There's a table, the blade sitting on the table, and the door to the basement. There's nothing else in here."));
+                    if (this.ch2AskMirror()) {
+                        activeMenu.setCondition("approach", false);
+                    }
+                    break;
+
+                case "different":
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "*Very* different."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "I wonder why."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Maybe that's because you haven't actually been here. I hope this means you'll finally drop that ridiculous past-life nonsense. You haven't died, and you certainly haven't been killed by the Princess."));
+                    parser.printDialogueLine(new VoiceDialogueLine("So focus up. The world is depending on you."));
+                    break;
+
+                case "cApproach":
+                    activeMenu.setCondition("approach", false);
+                case "approach":
+                    activeMenu.setCondition("mirror", false);
+                    this.ch2ApproachMirror(false);
+                    break;
+
+                case "cTake":
+                    activeMenu.setCondition("take", false);
+                case "take":
+                    this.hasBlade = true;
+                    this.withBlade = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("You take the blade from the table. It would be difficult to slay the Princess and save the world without a weapon."));
+                    break;
+
+                case "cGoStairs":
+                case "enter":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default:
+                    this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        this.currentLocation = GameLocation.STAIRS;
+        this.withBlade = false;
+        this.mirrorPresent = false;
+
+
+
+        
+        // temporary templates for copy-and-pasting
+        parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
         
         // PLACEHOLDER
         return null;
@@ -6461,6 +7258,76 @@ public class StandardCycle extends Cycle {
                 this.source = "normal";
                 if (!this.chapter2Intro(true, false, false)) return ChapterEnding.ABORTED;
         }
+
+        manager.setNowPlaying("The Witch");
+        
+        parser.printDialogueLine(new VoiceDialogueLine("The interior of the cabin is a mess of twisted roots, the walls a chaotic weave of knotted wood that, almost as if by accident just happened to resemble a room. The floor is damp and earthy, and the only furniture of note is a slab of mud in the shape of a shelf, with a pristine blade perched on its edge."));
+        parser.printDialogueLine(new VoiceDialogueLine("The blade is your implement. You'll need it if you want to do this right."));
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "mirror", "(Explore) You didn't say anything about the mirror on the wall."));
+        activeMenu.add(new Option(this.manager, "different", "(Explore) This whole cabin is different than last time.", this.sharedLoopInsist));
+        activeMenu.add(new Option(this.manager, "approach", "(Explore) [Approach the mirror.]"));
+        activeMenu.add(new Option(this.manager, "take", "(Explore) [Take the blade.]"));
+        activeMenu.add(new Option(this.manager, "enter", "[Enter the basement.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "mirror":
+                    parser.printDialogueLine(new VoiceDialogueLine("That's because there isn't a mirror. There's the muddy shelf, the blade sitting on the table, and the door to the basement. There's nothing else in here."));
+                    if (this.ch2AskMirror()) {
+                        activeMenu.setCondition("approach", false);
+                    }
+                    break;
+
+                case "different":
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "*Very* different."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Maybe that's because you haven't actually been here. I hope this means you'll finally drop that ridiculous past-life nonsense. You haven't died, and you certainly haven't been killed by the Princess."));
+                    parser.printDialogueLine(new VoiceDialogueLine("So focus up. The world is depending on you."));
+                    break;
+
+                case "cApproach":
+                    activeMenu.setCondition("approach", false);
+                case "approach":
+                    activeMenu.setCondition("mirror", false);
+                    this.ch2ApproachMirror(false);
+                    break;
+
+                case "cTake":
+                    activeMenu.setCondition("take", false);
+                case "take":
+                    this.hasBlade = true;
+                    this.withBlade = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("You take the blade from the shelf. It would be difficult to slay the Princess and save the world without a weapon."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "Well, if we're grabbing a weapon, we should probably keep it hidden behind our backs. She doesn't have to know we have it."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "That's not actually not a bad idea."));
+                    break;
+
+                case "cGoStairs":
+                case "enter":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default:
+                    this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        this.currentLocation = GameLocation.STAIRS;
+        this.withBlade = false;
+        this.mirrorPresent = false;
+
+
+        
+        
+        // temporary templates for copy-and-pasting
+        parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
         
         // PLACEHOLDER
         return null;
@@ -6494,15 +7361,15 @@ public class StandardCycle extends Cycle {
     private ChapterEnding stranger() {
         // You gain the Voice of the Contrarian
 
-        // DOESN'T USE CHAPTER2INTRO() -- PROGRAM MANUALLY HERE
-        // do make use of ch2IntroShareLoop() though!!!
-
         manager.setNowPlaying("Fragmentation");
 
         if (this.isFirstVessel) manager.setFirstPrincess(Chapter.STRANGER);
 
         parser.printDialogueLine(new VoiceDialogueLine("You're on a path in the woods. And at the end of that path is a cabin. And in the basement of that cabin is a princess."));
         parser.printDialogueLine(new VoiceDialogueLine("You're here to slay her. If you don't, it will be the end of the world."));
+
+        System.out.println();
+        parser.printDialogueLine(new DialogueLine("This time, the path is walled in on either side. The path behind you is blocked off."));
 
         this.activeMenu = new OptionsMenu();
         activeMenu.add(new Option(this.manager, "dejaVu", "(Explore) I'm getting a terrible sense of deja vu."));
@@ -6649,7 +7516,7 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "cGoLeave":
-                    parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "We already *tried* that. We'll just wind up right back here again."));
+                    parser.printDialogueLine(new VoiceDialogueLine("The wall blocks your path. It seems you have no choice but to go to the cabin."));
                     break;
 
                 case "abort":
@@ -6681,7 +7548,7 @@ public class StandardCycle extends Cycle {
         
         this.currentLocation = GameLocation.HILL;
         System.out.println();
-        parser.printDialogueLine(new DialogueLine("You emerge into the clearing. The cabin waits at the top of the hill."));
+        parser.printDialogueLine(new DialogueLine("You emerge into the clearing, now enclosed by the same walls as before. The cabin waits at the top of the hill."));
         
         parser.printDialogueLine(new VoiceDialogueLine("A warning, before you go any further..."));
         parser.printDialogueLine(new VoiceDialogueLine("She will lie, she will cheat, and she will do everything in her power to stop you from slaying her. Don't believe a word she says."));
@@ -6703,12 +7570,131 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "cGoLeave":
-                    parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "We already *tried* that. We'll just wind up right back here again."));
+                    parser.printDialogueLine(new VoiceDialogueLine("The wall blocks your path. It seems you have no choice but to enter the cabin."));
                     
                 default:
                     this.giveDefaultFailResponse(this.activeOutcome);
             }
         }
+
+        this.currentLocation = GameLocation.CABIN;
+        this.mirrorPresent = true;
+        this.knowsBlade = true;
+        this.withBlade = true;
+
+        manager.setNowPlaying("The Stranger");
+        
+        parser.printDialogueLine(new VoiceDialogueLine("The cabin interior is wrong, a confusing patchwork of many cabin interiors all projected across what's *almost* the same space. But it's all shifted -- an inch here, a foot there -- such that the seams are never quite visible enough for the place to make any sense."));
+        parser.printDialogueLine(new VoiceDialogueLine("The only furniture of note is a plain table, its legs all the wrong lengths, its material devoid of feature. Perched on that table is a pristine blade."));
+        parser.printDialogueLine(new VoiceDialogueLine("The blade is your implement. You'll need it if you want to do this right."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "If He wants us to take it, maybe we should just leave it to collect dust. Or better yet, grab it and throw it out the window! What good is a knife against a world-ending monstrosity anyways?"));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "No, we're taking the knife. H-have you seen this place? We have literally no idea what to expect, and no idea what we're dealing with."));
+        parser.printDialogueLine(new VoiceDialogueLine("I've already told you what you're dealing with. You're dealing with a *Princess.* How many times do I have to explain this incredibly simple and straightforward premise?"));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "You can't just say that! Not when everything here is so wrong."));
+        parser.printDialogueLine(new VoiceDialogueLine("Listen to me. My job is to describe facts as facts, and to guide you through your job, which is to slay the Princess, and through that action, save the entire world."));
+        parser.printDialogueLine(new VoiceDialogueLine("And if you're going to slay her, you cannot let fear creep into your heart. You cannot lose yourself before you even get to her."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "Ohoho! You've piqued my interest. What's going to happen if we \"lose ourself?\""));
+        parser.printDialogueLine(new VoiceDialogueLine("Nothing. Because you're going to pull yourself together."));
+        parser.printDialogueLine(new VoiceDialogueLine("Just ignore the stressful geometry and stay calm."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "How?! Even if we closed our eyes you're constantly describing it to us."));
+        parser.printDialogueLine(new VoiceDialogueLine("I'm not going to stop doing my job, so you're just going to have to get better at yours. And quickly, if you don't mind."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "Yes, take a deep breath. I'm all for getting under His skin, but we'll miss out on loads of fun if we shrivel up into a ball and go insane the first time we see something weird."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "What you're seeing here is obviously real. Just accept it and go with the flow. It really isn't hard."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Okay. Okay. I'm fine."));
+        parser.printDialogueLine(new VoiceDialogueLine("Good. Now whenever you're ready, we're all waiting for you to complete a very important task."));
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "mirror", "(Explore) You didn't say anything about the mirror on the wall."));
+        activeMenu.add(new Option(this.manager, "approach", "(Explore) [Approach the mirror.]"));
+        activeMenu.add(new Option(this.manager, "take", "(Explore) [Take the blade.]"));
+        activeMenu.add(new Option(this.manager, "throw", "(Explore) [Throw the blade out the window.]"));
+        activeMenu.add(new Option(this.manager, "enter", "[Enter the basement.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "mirror":
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "Ooh! We should look at ourselves. Wouldn't that be fun?"));
+                    parser.printDialogueLine(new VoiceDialogueLine("You won't be looking at yourself because there isn't a mirror. There's the table, the blade sitting on the table, and the door to the basement. There's nothing else in here."));
+                    if (this.ch2AskMirror()) {
+                        activeMenu.setCondition("approach", false);
+                    }
+                    break;
+
+                case "cApproach":
+                    activeMenu.setCondition("approach", false);
+                case "approach":
+                    activeMenu.setCondition("mirror", false);
+                    this.ch2ApproachMirror(false);
+                    break;
+
+                case "cTake":
+                    activeMenu.setCondition("take", false);
+                case "take":
+                    this.hasBlade = true;
+                    this.withBlade = false;
+                    this.canThrowBlade = true;
+                    activeMenu.setCondition("throw", true);
+                    parser.printDialogueLine(new VoiceDialogueLine("You take the blade from the table. It would be difficult to slay the Princess and save the world without a weapon."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "Okay, fine. You took the knife. But you really shouldn't hold it like *that.*"));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Then how are we supposed to hold it?"));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "The *other* way. Thumb at the bottom. We'll look much cooler and more serious if we hold it with our thumb at the bottom."));
+                    parser.printDialogueLine(new VoiceDialogueLine("It really doesn't matter how you hold the blade, as long as you have it. Just make a choice."));
+
+                    OptionsMenu subMenu = new OptionsMenu(true);
+                    subMenu.add(new Option(this.manager, "keep", "[Keep your grip as it is.]"));
+                    subMenu.add(new Option(this.manager, "reverse", "[Hold the blade the other way.]"));
+
+                    switch (parser.promptOptionsMenu(subMenu)) {
+                        case "keep":
+                            parser.printDialogueLine(new VoiceDialogueLine("Great. You keep your grip the way it is. Your task awaits."));
+                            break;
+
+                        case "reverse":
+                            this.bladeReverse = true;
+                            parser.printDialogueLine(new VoiceDialogueLine("You switch your grip on the blade. Congratulations."));
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "Yes! Isn't this so much better?"));
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Okay, fine. You're right. This does look a lot better."));
+                            parser.printDialogueLine(new VoiceDialogueLine("It really doesn't matter. Just get on with it and deal with the Princess already."));
+                            break;
+                    }
+
+                    break;
+
+                case "cThrow":
+                    activeMenu.setCondition("throw", false);
+                case "throw":
+                    this.hasBlade = false;
+                    this.canThrowBlade = false;
+                    this.threwBlade = true;
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "Hahaha, *yes!* Do it!"));
+                    parser.printDialogueLine(new VoiceDialogueLine("Seriously? *Sigh.* You throw the blade at the window, glass showering the cabin as your weapon flies out into the night. I suppose you'll just have to deal with the Princess without it."));
+
+                    if (this.sharedLoop) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "We'll be fine. Don't worry about it. What's the worst that could happen, the world ends? Been there, done that."));
+                    } else {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "We'll be fine. Don't worry about it. What's the worst that could happen, the world ends? Oh well. If the Princess wasn't going to do it, the heat death of the universe was going to come for it eventually."));
+                    }
+
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I'm not so sure. This place is already messing with my head. It would be much better if we had a weapon."));
+                    parser.printDialogueLine(new VoiceDialogueLine("What's done is done. Good luck, *hero.*"));
+                    break;
+
+                case "cGoStairs":
+                case "enter":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default:
+                    this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        this.currentLocation = GameLocation.STAIRS;
+        this.withBlade = false;
+        this.canThrowBlade = false;
+        this.mirrorPresent = false;
         
 
 
@@ -6737,6 +7723,121 @@ public class StandardCycle extends Cycle {
         if (!this.chapter2Intro(true, false, true)) {
             return ChapterEnding.ABORTED;
         }
+
+        manager.setNowPlaying("The Prisoner");
+        
+        parser.printDialogueLine(new VoiceDialogueLine("The interior of the cabin is less a cozy woodland retreat and more like a dungeon. A few pathetic wisps of starlight attempt to illuminate the cold, uninviting stone walls, and thick wrought-iron bars barricade the windows, reminding anyone who enters that this is a prison."));
+        parser.printDialogueLine(new VoiceDialogueLine("The only furniture of note is an iron table, bolted to the floor, a pristine blade perched on its edge."));
+        parser.printDialogueLine(new VoiceDialogueLine("The blade is your implement. You'll need it if you want to do this right."));
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "mirror", "(Explore) You didn't say anything about the mirror on the wall."));
+        activeMenu.add(new Option(this.manager, "different", "(Explore) This whole cabin is different than last time.", this.sharedLoopInsist));
+        activeMenu.add(new Option(this.manager, "approach", "(Explore) [Approach the mirror.]"));
+        activeMenu.add(new Option(this.manager, "take", "(Explore) [Take the blade.]"));
+        activeMenu.add(new Option(this.manager, "enter", "[Enter the basement.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "mirror":
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "He definitely did not. Does a mirror not count as \"furniture of note\" to you? Because it should."));
+                    parser.printDialogueLine(new VoiceDialogueLine("There isn't a mirror. There's a table, the blade sitting on the table, and the door to the basement. There's nothing else in here."));
+                    if (this.ch2AskMirror()) {
+                        activeMenu.setCondition("approach", false);
+                    }
+                    break;
+
+                case "different":
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "*Very* different."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Yes, but *why?* Did He change it, or did it change all on its own? Maybe it's a different cabin entirely."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Now isn't that a novel thought! Maybe you *haven't* actually been here before. I hope this means you'll finally drop that ridiculous past-life nonsense. You haven't died, and you certainly haven't been killed by the Princess."));
+                    parser.printDialogueLine(new VoiceDialogueLine("So focus up. Don't get distracted by minor details."));
+                    break;
+
+                case "cApproach":
+                    activeMenu.setCondition("approach", false);
+                case "approach":
+                    activeMenu.setCondition("mirror", false);
+                    this.ch2ApproachMirror(false);
+                    break;
+
+                case "cTake":
+                    activeMenu.setCondition("take", false);
+                case "take":
+                    this.hasBlade = true;
+                    this.withBlade = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("You take the blade from the table. It would be difficult to slay the Princess and save the world without a weapon."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Good idea. Much better to be armed than to go in with blind hope alone."));
+                    break;
+
+                case "cGoStairs":
+                case "enter":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default:
+                    this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        if (!this.hasBlade) {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "I'm afraid I'm going to insist we take the blade. We're in a dangerous situation, and I'm not letting us go down there without a weapon."));
+            
+            if (this.sharedLoopInsist) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Are you sure? She killed us with it last time. What if she turns it against us *again?*"));
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Yes. I'm sure. And I've already got a plan for that."));
+                parser.printDialogueLine(new VoiceDialogueLine("Still with those past-life delusions, are we? I hope part of that plan is \"don't give the world-ending monstrosity your only weapon.\" Because unless you've decided to arm the Princess, I don't think you need to worry about her having a weapon."));
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Peachy. We'll be fine."));
+            } else {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Are you sure? What if she, I don't know... turns it against us? ... Which I'm bringing up in a purely hypothetical manner."));
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Yes. I'm sure."));
+                parser.printDialogueLine(new VoiceDialogueLine("Turns it against you? She's a prisoner here. And she'll only be able to turn it against you if you give it to her. Which you won't be doing, because she's an existential threat to the entire world."));
+            }
+            
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Okay. I'm trusting you."));
+
+            this.activeMenu = new OptionsMenu();
+            activeMenu.add(new Option(this.manager, "hey", "Hey! Don't I get a say here? What's the big idea?"));
+            activeMenu.add(new Option(this.manager, "take", "[Take the blade.]"));
+
+            this.repeatActiveMenu = true;
+            while (repeatActiveMenu) {
+                switch (parser.promptOptionsMenu(activeMenu)) {
+                    case "hey":
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Normally, yeah. But not about this. Call it a reflex. We take the knife as we go."));
+                        parser.printDialogueLine(new VoiceDialogueLine("Wonderful. You do exactly that, sweeping the blade from the table before proceeding to the basement."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Don't worry about it. We have a knife, so what? It's not like we have to use it."));
+                        parser.printDialogueLine(new VoiceDialogueLine("No, you don't have to do anything. But you'd do well to use it regardless. *Sigh.* Moving on."));
+                        break;
+
+                    case "cTake":
+                    case "take":
+                        parser.printDialogueLine(new VoiceDialogueLine("You take the blade from the table. It would be difficult to slay the Princess and save the world without a weapon."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Thanks. I mean it."));
+                        break;
+
+                    default: this.giveDefaultFailResponse();
+                }
+            }
+
+            this.hasBlade = true;
+        }
+
+        this.currentLocation = GameLocation.STAIRS;
+        this.withBlade = false;
+        this.mirrorPresent = false;
+
+
+        
+        
+        // temporary templates for copy-and-pasting
+        parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
         
         // PLACEHOLDER
         return null;
@@ -6775,8 +7876,9 @@ public class StandardCycle extends Cycle {
             - Smitten + Cold
          */
 
-        // PLACEHOLDER
-        return null;
+        
+            
+        return ChapterEnding.ANDALLTHISLONGING;
     }
 
     /**
@@ -6790,8 +7892,9 @@ public class StandardCycle extends Cycle {
             - Skeptic + Cold
          */
 
-        // PLACEHOLDER
-        return null;
+
+
+        return ChapterEnding.BURNINGDOWNTHEHOUSE;
     }
 
 
@@ -6807,6 +7910,84 @@ public class StandardCycle extends Cycle {
         if (!this.chapter2Intro(true, false, true)) {
             return ChapterEnding.ABORTED;
         }
+
+        manager.setNowPlaying("The Damsel");
+        
+        parser.printDialogueLine(new VoiceDialogueLine("The interior of the cabin is clean and elegant, its stone walls draped in fine-threaded tapestries, a prison befitting a royal prisoner. The only furniture of note is an ornate wooden table with a pristine blade perched on its edge."));
+        parser.printDialogueLine(new VoiceDialogueLine("The blade is your implement. You'll need it if you want to do this right."));
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "mirror", "(Explore) You didn't say anything about the mirror on the wall."));
+        activeMenu.add(new Option(this.manager, "different", "(Explore) This whole cabin is different than last time.", this.sharedLoopInsist));
+        activeMenu.add(new Option(this.manager, "approach", "(Explore) [Approach the mirror.]"));
+        activeMenu.add(new Option(this.manager, "take", "(Explore) [Take the blade.]"));
+        activeMenu.add(new Option(this.manager, "enter", "[Enter the basement.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "mirror":
+                    parser.printDialogueLine(new VoiceDialogueLine("That's because there isn't a mirror. There's a table, the blade sitting on the table, and the door to the basement. There's nothing else in here."));
+                    if (this.ch2AskMirror()) {
+                        activeMenu.setCondition("approach", false);
+                    }
+                    break;
+
+                case "different":
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "*Very* different."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "Is it? I can't say I was paying much attention to the scenery last time around."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Maybe that's because you haven't actually been here. I hope this means you'll finally drop that ridiculous past-life nonsense. You haven't died, and you certainly haven't been killed by the Princess."));
+                    parser.printDialogueLine(new VoiceDialogueLine("So focus up. Stop letting yourself get distracted."));
+                    break;
+
+                case "cApproach":
+                    activeMenu.setCondition("approach", false);
+                case "approach":
+                    activeMenu.setCondition("mirror", false);
+                    this.ch2ApproachMirror(false);
+                    break;
+
+                case "cTake":
+                    activeMenu.setCondition("take", false);
+                case "take":
+                    this.hasBlade = true;
+                    this.withBlade = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("You take the blade from the table. It would be difficult to slay the Princess and save the world without a weapon."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "I suppose if we're to play the role of dashing knight we need an equally dashing sword. That way she'll know we can defend her from her enemies."));
+
+                    if (this.sharedLoop) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Hopefully it doesn't put her on edge. And hopefully it doesn't get turned on us... again."));
+                    } else {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Hopefully it doesn't put her on edge."));
+                    }
+
+                    parser.printDialogueLine(new VoiceDialogueLine("There's no use arguing over *motivations* right now. It's good that you took the blade. You'll need it to do your job."));
+                    break;
+
+                case "cGoStairs":
+                case "enter":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default:
+                    this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        this.currentLocation = GameLocation.STAIRS;
+        this.withBlade = false;
+        this.mirrorPresent = false;
+
+
+        
+        
+        // temporary templates for copy-and-pasting
+        parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
         
         // PLACEHOLDER
         return null;
