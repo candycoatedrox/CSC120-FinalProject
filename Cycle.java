@@ -489,6 +489,10 @@ public abstract class Cycle {
             case "cTakeFail":
                 parser.printDialogueLine(new DialogueLine("The pristine blade is not here."));
                 break;
+            
+            case "cTake":
+                parser.printDialogueLine(new DialogueLine("You cannot take the blade now."));
+                break;
 
             case "cDropNoBladeFail":
                 parser.printDialogueLine(new DialogueLine("You do not have the blade."));

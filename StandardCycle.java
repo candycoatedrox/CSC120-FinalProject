@@ -426,7 +426,7 @@ public class StandardCycle extends Cycle {
                 break;
 
             case "cSlaySelfNoBladeFail":
-                parser.printDialogueLine(new DialogueLine("You do not have the blade."));
+                parser.printDialogueLine("You do not have the blade.");
                 break;
 
             case "cSlaySelfFail":
@@ -447,6 +447,9 @@ public class StandardCycle extends Cycle {
                 }
 
                 break;
+
+            case "cTake":
+                super.giveDefaultFailResponse(outcome);
 
             case "cDropNoBladeFail":
                 if (this.knowsBlade) {
@@ -766,8 +769,8 @@ public class StandardCycle extends Cycle {
             case DRAGON: return this.princessAndDragon();
             case WRAITH: return this.wraith();
             case CLARITY: return this.momentOfClarity();
-            case ARMSRACE: return this.armsRace();
-            case NOWAYOUT: return this.noWayOut();
+            case ARMSRACE: return this.razor3(true);
+            case NOWAYOUT: return this.razor3(false);
             case DEN: return this.den();
             case WILD: return this.wild();
             case THORN: return this.thorn();
@@ -777,8 +780,8 @@ public class StandardCycle extends Cycle {
                 else return this.greyDrowned();
             case HAPPY: return this.happilyEverAfter();
 
-            case MUTUALLYASSURED: return this.mutuallyAssuredDestruction();
-            case EMPTYCUP: return this.emptyCup();
+            case MUTUALLYASSURED: return this.razor4(true);
+            case EMPTYCUP: return this.razor4(false);
         }
 
         throw new RuntimeException("Cannot run an invalid chapter");
@@ -795,7 +798,7 @@ public class StandardCycle extends Cycle {
         if (this.activeChapter == Chapter.CLARITY) {
             try {
                 parser.printDivider();
-                parser.printDialogueLine(new DialogueLine("Chapter III", true));
+                parser.printDialogueLine("Chapter III", true);
                 parser.printDivider();
                 Thread.sleep(750);
 
@@ -1021,7 +1024,7 @@ public class StandardCycle extends Cycle {
         this.currentLocation = GameLocation.HILL;
         if (!this.skipHillDialogue) {
             System.out.println();
-            parser.printDialogueLine(new DialogueLine("You emerge into a clearing. The path ahead of you winds up a hill, stopping just before a quaint wooden cabin."));
+            parser.printDialogueLine("You emerge into a clearing. The path ahead of you winds up a hill, stopping just before a quaint wooden cabin.");
             
             parser.printDialogueLine(new VoiceDialogueLine("A warning, before you go any further..."));
             parser.printDialogueLine(new VoiceDialogueLine("She will lie, she will cheat, and she will do everything in her power to stop you from slaying her. Don't believe a word she says."));
@@ -1202,7 +1205,7 @@ public class StandardCycle extends Cycle {
 
         System.out.println();
         this.currentLocation = GameLocation.HILL;
-        parser.printDialogueLine(new DialogueLine("You emerge into a clearing. The path ahead of you winds up a hill, stopping just before a quaint wooden cabin."));
+        parser.printDialogueLine("You emerge into a clearing. The path ahead of you winds up a hill, stopping just before a quaint wooden cabin.");
         parser.printDialogueLine(new VoiceDialogueLine("That's strange. It looks like this path also leads to the cabin. How convenient! Everything's back on track again. Maybe the world can still be saved after all."));
 
         leaveMenu = new OptionsMenu();
@@ -1289,7 +1292,7 @@ public class StandardCycle extends Cycle {
         parser.printDialogueLine(new VoiceDialogueLine("But fine. You turn around and trek back down the path you came."));
 
         System.out.println();
-        parser.printDialogueLine(new DialogueLine("Eventually, the cabin comes into view once again."));
+        parser.printDialogueLine("Eventually, the cabin comes into view once again.");
         parser.printDialogueLine(new VoiceDialogueLine("Oh, would you look at that! You're at the cabin again! Now, I'm not normally one for superstition or astrology, but I have to say, it seems like the Universe itself is doing its best to bring you to your fated confrontation with the Princess."));
 
         leaveMenu = new OptionsMenu();
@@ -4993,7 +4996,7 @@ public class StandardCycle extends Cycle {
         this.currentLocation = GameLocation.HILL;
         if (!this.skipHillDialogue) {
             System.out.println();
-            parser.printDialogueLine(new DialogueLine("You emerge into the clearing. The cabin waits at the top of the hill."));
+            parser.printDialogueLine("You emerge into the clearing. The cabin waits at the top of the hill.");
             
             parser.printDialogueLine(new VoiceDialogueLine("A warning, before you go any further..."));
             parser.printDialogueLine(new VoiceDialogueLine("She will lie, she will cheat, and she will do everything in her power to stop you from slaying her. Don't believe a word she says."));
@@ -6000,7 +6003,7 @@ public class StandardCycle extends Cycle {
 
         System.out.println();
         this.currentLocation = GameLocation.HILL;
-        parser.printDialogueLine(new DialogueLine("You emerge into the clearing. The cabin waits at the top of the hill."));
+        parser.printDialogueLine("You emerge into the clearing. The cabin waits at the top of the hill.");
         parser.printDialogueLine(new VoiceDialogueLine("That's strange. It looks like this path also leads to the cabin. How convenient! Everything's back on track again. Maybe the world can still be saved after all."));
         if (this.hasVoice(Voice.COLD)) parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "Oh? How quaint. He really wants us to go in there, doesn't He?"));
 
@@ -6508,21 +6511,45 @@ public class StandardCycle extends Cycle {
         if (!this.hasBlade) {
             parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "No blade this time? Right then, fisticuffs it is. Probably more fair to her anyway. Wouldn't want to feel like we cheated our way to a win."));
             parser.printDialogueLine(new VoiceDialogueLine("As long as you can still get the job done... and don't forget that the blade is waiting for you upstairs if you happen to change your mind."));
+            System.out.println();
         }
 
-        this.currentLocation = GameLocation.STAIRS;
         this.withBlade = false;
         this.mirrorPresent = false;
+        parser.printDialogueLine(new VoiceDialogueLine("The door to the basement creaks open, revealing a rough stone staircase, its walls pressing at your sides and tightening as you descend. The air seeping from below is heavy and oppressive, with an almost sulfuric odor to it. If the Princess lives here, slaying her would probably be doing her a favor."));
+        parser.printDialogueLine(new VoiceDialogueLine("Her fierce voice carries up the stairs."));
+        parser.printDialogueLine(new PrincessDialogueLine("Is that another challenger? *Finally.* It's been ages since I've had a good fight."));
+        parser.printDialogueLine(new VoiceDialogueLine("This isn't what she sounded like last time. Her voice is a little deeper, almost threatening."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "Good. Sounds like my kind of Princess."));
+        parser.printDialogueLine(new VoiceDialogueLine("As much as I appreciate the enthusiasm, just make sure you don't let your bloodlust get to your head. You need to stay focused and keep your wits about you. Remember you're here to *slay* the Princess, not to have a good fight."));
+
+        this.currentLocation = GameLocation.BASEMENT;
+        this.withPrincess = true;
+        System.out.println();
+        parser.printDialogueLine(new VoiceDialogueLine("As you descend the final step, the form of the Princess comes into view, a large shackle leading from her wrist to the basement wall."));
+        parser.printDialogueLine("This time, she looks almost demonic. She stands tall on hooved feet, her dress torn and tattered. Horns sprout from her forehead in place of her tiara. Her pointed tail flicks back and forth behind her as she catches sight of you, a cruel grin splitting her face.");
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "It looks like she could rip those chains out of the wall without a second thought."));
+        parser.printDialogueLine(new PrincessDialogueLine("Oh, it's you again. I've been hoping you'd find your way back here. Good to see that death doesn't stick for either of us."));
+
+        if (this.hasBlade) {
+            parser.printDialogueLine(new PrincessDialogueLine("And you brought your little knife too. YES."));
+            parser.printDialogueLine(new PrincessDialogueLine("I'm going to have fun breaking you into little pieces."));
+        } else {
+            parser.printDialogueLine(new PrincessDialogueLine("But no little knife this time, huh?"));
+            parser.printDialogueLine(new PrincessDialogueLine("Ugh. I hope you're not just here to \"chat.\" I've been itching for a rematch."));
+        }
 
 
 
         
         // temporary templates for copy-and-pasting
+        /*
         parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
         parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
 
         // PLACEHOLDER
         return null;
@@ -6582,6 +6609,10 @@ public class StandardCycle extends Cycle {
     private ChapterEnding tower() {
         // You gain the Voice of the Broken
 
+        int resistCount = 0;
+        int submitCount = 0;
+        boolean tookBlade = false;
+
         switch (this.prevEnding) {
             case TOTOWERUNHARMED:
                 this.source = "unharmed";
@@ -6639,6 +6670,7 @@ public class StandardCycle extends Cycle {
                 case "take":
                     this.hasBlade = true;
                     this.withBlade = false;
+                    tookBlade = true;
                     parser.printDialogueLine(new VoiceDialogueLine("You take the blade from the altar. It would be difficult to slay the Princess and save the world without a weapon."));
                     break;
 
@@ -6652,19 +6684,135 @@ public class StandardCycle extends Cycle {
             }
         }
 
+        if (!this.hasBlade) {
+            submitCount += 1;
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "No blade this time? Yeah. Maybe she'll be more receptive if we're unarmed."));
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "Blade. No blade. It doesn't matter."));
+            System.out.println();
+        }
+
         this.currentLocation = GameLocation.STAIRS;
         this.withBlade = false;
         this.mirrorPresent = false;
+        parser.printDialogueLine(new VoiceDialogueLine("The door to the basement creaks open, revealing a spiral staircase, its steps almost as deep as you are tall. The smell of incense drifts up from below. For a moment, you almost feel at ease."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "Huh. This is actually kind of nice."));
+        parser.printDialogueLine(new VoiceDialogueLine("It's still a stone basement. If the Princess lives here, slaying her is probably doing her a favor."));
+        parser.printDialogueLine(new VoiceDialogueLine("Her booming voice rolls up the stairs."));
+        parser.printDialogueLine(new PrincessDialogueLine("s that a guest I hear? Don't linger on the stairs. *Come down and witness me.*"));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "You weren't kidding when you said it was \"booming.\" She wasn't like this last time."));
+        if (!this.hasBlade) parser.printDialogueLine(new VoiceDialogueLine("You shouldn't have come down here unarmed."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "We need to get down there. She wants us to see her. We need to see her."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Should we be worried about your sudden change in attitude? Just a few minutes ago you were going on about how pointless everything was, now you *want* to go down there?"));
+        parser.printDialogueLine(new VoiceDialogueLine("It doesn't matter what that little voice says. He's not the one making the decisions... Though if his ramblings get you to the Princess, they get you to the Princess."));
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "continue", "[Continue down the stairs.]"));
+
+        this.repeatActiveMenu = true;
+        while (this.repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "cGoBasement":
+                case "continue":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                case "cGoCabin":
+                    parser.printDialogueLine(new VoiceDialogueLine("What? No. You're already halfway down the stairs, you can't just turn around now."));
+                    break;
+
+                default: this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        this.currentLocation = GameLocation.BASEMENT;
+        this.withPrincess = true;
+        parser.printDialogueLine(new VoiceDialogueLine("Making your way down the spiral staircase is a time consuming and exhausting effort, every step requiring you to clamber over one edge before dropping to the next. But soon, the end comes into view, and you tumble to the bottom, entering the vast, temple-like room beyond."));
+        parser.printDialogueLine(new VoiceDialogueLine("The Princess towers over you, almost glowing in the weak starlight, her figure framed by a stained glass window. Her long hair billows around her, and a chain binds her wrist to the far wall."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "The chain is nothing to her. It might as well be a toy for all the good it would do. I told you it was pointless to resist her."));
+        parser.printDialogueLine(new PrincessDialogueLine("The little bird has returned to me. I wonder what he wants."));
+
+        if (this.hasBlade) {
+            parser.printDialogueLine(new PrincessDialogueLine("You've brought that knife again... even though you know it's useless. Such charming audacity."));
+            parser.printDialogueLine(new PrincessDialogueLine("DROP IT."));
+
+            this.canDropBlade = true;
+            this.activeMenu = new OptionsMenu();
+            activeMenu.add(new Option(this.manager, "drop", "[Drop it.]"));
+            activeMenu.add(new Option(this.manager, "tighten", "[Tighten your grip.]"));
+
+            this.repeatActiveMenu = true;
+            while (repeatActiveMenu) {
+                switch (parser.promptOptionsMenu(activeMenu)) {
+                    case "cDrop":
+                    case "drop":
+                        submitCount += 1;
+                        parser.printDialogueLine(new VoiceDialogueLine("The blade slips from your fingers and clatters uselessly to the floor."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "We didn't have to do that."));
+                        parser.printDialogueLine(new VoiceDialogueLine("And yet you did."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "She's so much more than us. You wouldn't understand what it feels like to be in her presence."));
+                        break;
+
+                    case "cSlayPrincessFail":
+                    case "tighten":
+                        resistCount += 1;
+                        parser.printDialogueLine(new VoiceDialogueLine("As if on command, the blade slips from your grasp. It clatters uselessly to the floor."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But we *didn't* drop it. We decided to grip it tighter, remember? Are you really just going to let that happen to us?"));
+                        parser.printDialogueLine(new VoiceDialogueLine("I have a duty to report facts as facts, and the fact is that you dropped the blade."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "Of course we dropped it. She's so much more than us. You wouldn't understand what it feels like to be in her presence."));
+                        break;
+
+                    default: this.giveDefaultFailResponse();
+                }
+            }
+
+            this.hasBlade = false;
+            this.canDropBlade = false;
+            this.withBlade = true;
+            parser.printDialogueLine(new VoiceDialogueLine("Oh, I understand what's going on, and you'd better snap yourself out of it."));
+        } else {
+            parser.printDialogueLine(new PrincessDialogueLine("I see your hands are empty. You've already given up, haven't you? You aren't even going to try and kill me. How sweet."));
+            parser.printDialogueLine(new PrincessDialogueLine("And more than a little disappointing."));
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "She's disappointed in us?"));
+        }
+        
+        parser.printDialogueLine(new PrincessDialogueLine("KNEEL."));
+
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "no", "\"No.\""));
+        activeMenu.add(new Option(this.manager, "kneel", "[Kneel.]"));
+
+        switch (parser.promptOptionsMenu(activeMenu)) {
+            case "no":
+                if (resistCount == 2) {
+                    resistCount += 1;
+                    parser.printDialogueLine(new PrincessDialogueLine("Oh? Are you still trying to defy me? I. Said. KNEEL."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Your legs buckle, and your knees hit the floor."));
+                } else {
+                    parser.printDialogueLine(new VoiceDialogueLine("But the words don't leave your mouth. Instead, your legs buckle, and your knees hit the floor."));
+                }
+
+                break;
+
+            case "kneel":
+                submitCount += 1;
+                parser.printDialogueLine(new VoiceDialogueLine("On her command, you fall to the floor, knees painfully connecting with hard stone."));
+                break;
+        }
+
+        parser.printDialogueLine(new PrincessDialogueLine("That's my good little bird. Now... why don't we talk?"));
         
 
 
         
         // temporary templates for copy-and-pasting
+        /*
         parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
         parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
 
         // PLACEHOLDER
         return null;
@@ -6723,7 +6871,7 @@ public class StandardCycle extends Cycle {
             this.activeOutcome = parser.promptOptionsMenu(activeMenu);
             switch (activeOutcome) {
                 case "mirror":
-                    parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
+                    parser.printDialogueLine(new VoiceDialogueLine("That's because there isn't a mirror. There's a table, the blade sitting on the table, and the door to the basement. There's nothing else in here."));
                     if (this.ch2AskMirror()) {
                         activeMenu.setCondition("approach", false);
                     }
@@ -6760,18 +6908,40 @@ public class StandardCycle extends Cycle {
             }
         }
 
-        this.currentLocation = GameLocation.STAIRS;
         this.withBlade = false;
         this.mirrorPresent = false;
+        System.out.println();
+        parser.printDialogueLine(new VoiceDialogueLine("The door to the basement groans open, revealing an old banister and a creaky, wooden stairwell. Everything is coated in a thick layer of dust, and you can feel it settle into your lungs as you breathe in the stale air. The very building itself feels dead. If the Princess lives here, slaying her would probably be doing her a favor."));
+        parser.printDialogueLine(new VoiceDialogueLine("The room below is silent."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "Nobody's here. Naturally."));
+        parser.printDialogueLine(new VoiceDialogueLine("As much as I appreciate the optimism, you shouldn't be so sure."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I guess we'll just have to go down there and see."));
+
+        this.currentLocation = GameLocation.BASEMENT;
+        this.withPrincess = true;
+        System.out.println();
+        parser.printDialogueLine(new VoiceDialogueLine("As you descend the final step, the form of the Princess comes into view. A skeletal body lying in a heap on the floor, its wrist still bound to the wall by a thick chain."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Okay. She's definitely dead."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "It's just like I told you --", true));
+        parser.printDialogueLine(new VoiceDialogueLine("Before you have a chance to finish your thought, the top of a head appears from underneath the floor."));
+        parser.printDialogueLine(new VoiceDialogueLine("Two deep-set eyes stare up at you, followed by a mischievous skeletal grin."));
+        parser.printDialogueLine(new VoiceDialogueLine("And finally, the rest of the body floats up to join the head. Wait... this isn't right. What's going on here?"));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "A g-g-g-ghost!"));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "Oh. Wow. How absolutely terrifying. What's a ghost supposed to do to us?"));
+        parser.printDialogueLine(new PrincessDialogueLine("Oh. It's you. Hiya, killer. I was hoping to see you again. I have some issues with how our last meeting went."));
+        parser.printDialogueLine("She speaks in a whisper, her voice soft and playful.");
+
 
 
         
         // temporary templates for copy-and-pasting
+        /*
         parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
         parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
 
         // PLACEHOLDER
         return null;
@@ -6901,20 +7071,225 @@ public class StandardCycle extends Cycle {
                     this.giveDefaultFailResponse(activeOutcome);
             }
         }
+        
+        if (!this.hasBlade) {
+            if (this.isHarsh) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "We should have taken the knife again. I don't think she's going to take an olive branch. We need something sharper."));
+            } else {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "We should have taken the knife. I don't think going down there unarmed is going to do us any favors."));
+            }
+
+            System.out.println();
+        }
 
         this.currentLocation = GameLocation.STAIRS;
         this.withBlade = false;
         this.mirrorPresent = false;
+        parser.printDialogueLine(new VoiceDialogueLine("You cross over the threshold, and onto a series of isolated steps suspended in darkness."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "More eyes, too. You never mention the eyes."));
+        parser.printDialogueLine(new VoiceDialogueLine("The air seeping up from below reminds you of fresh lightning and static, as if you're descending into a place that isn't meant for a creature of flesh and blood. If the Princess lives here, slaying her would probably be doing her a favor."));
+        parser.printDialogueLine(new VoiceDialogueLine("Her cruel and playful voice prances up the stairs."));
+        parser.printDialogueLine(new PrincessDialogueLine("I didn't think you'd come back. We're going to have a lot of fun, you and I."));
+
+        if (this.sharedLoop) {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Okay. We need a game plan. Last time we were here, just being close to her was enough to kill us."));
+        } else {
+            parser.printDialogueLine(new VoiceDialogueLine("\"Come back?\" She must have you confused with someone else."));
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "You really don't remember, do you? It doesn't matter. We need a game plan. We *know* we can't just go down there unprepared."));
+        }
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "throw", "(Explore) \"How hard is it to throw a knife?\""));
+        activeMenu.add(new Option(this.manager, "talk", "I'm going to talk to her."));
+        activeMenu.add(new Option(this.manager, "noPlan", "We don't need a plan. I'm just going to kill her. Mr. Narrator seems to think I can do it. I don't know why you're all being such pessimists right now."));
+        activeMenu.add(new Option(this.manager, "stepOff", "[Step off into the void between the stairs.]"));
+        activeMenu.add(new Option(this.manager, "silent", "[Continue down the stairs in silence.]"));
+
+        boolean lookedBack = false;
+        boolean voiceOfReasonComment = false;
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "throw":
+                    if (this.hasBlade) {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "It can't be *that* hard."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "But then we'd lose our weapon. We'd have to make it count. Otherwise she'd be furious and we'd be defenseless. If a knife is enough to even do anything against something like her in the first place..."));
+                        parser.printDialogueLine(new VoiceDialogueLine("It'll be enough."));
+                    } else {
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "You're joking, right? You didn't even *bring* the knife."));
+
+                        if (!lookedBack) {
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "Should we go back for it? *Can* we even go back for it?"));
+                            parser.printDialogueLine(new VoiceDialogueLine("You briefly turn back. Where there once was an entrance to the cabin, now there are only more stairs. Hmm. That's not right."));
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I guess the only way out of this place is through it."));
+                        }
+                    }
+
+                    break;
+
+                case "talk":
+                    this.repeatActiveMenu = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("Didn't you hear my warning a minute ago? She can't be trusted. Talking won't do you any good."));
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Something tells me she isn't going to be keen on talking anyway."));
+                    parser.printDialogueLine(new VoiceDialogueLine("You make your way to the bottom of the stairs."));
+                    break;
+
+                case "noPlan":
+                    this.repeatActiveMenu = false;
+                    voiceOfReasonComment = true;
+
+                    if (this.hasBlade) {
+                        parser.printDialogueLine(new VoiceDialogueLine("Finally, a voice of reason. The rest of you should take notes."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "You know why I'm being a pessimist."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "I'm just asking questions."));
+                    } else {
+                        parser.printDialogueLine(new VoiceDialogueLine("Finally, a voice of reason. The rest of you should take notes. Still, slaying her would be much easier if you had a weapon."));
+
+                        if (!lookedBack) {
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "Should we go back for it? *Can* we even go back for it?"));
+                            parser.printDialogueLine(new VoiceDialogueLine("You briefly turn back. Where there once was an entrance to the cabin, now there are only more stairs. Hmm. That's not right."));
+                            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I guess the only way out of this place is through it."));
+                        }
+                    }
+
+                    parser.printDialogueLine(new VoiceDialogueLine("You make your way to the bottom of the stairs."));
+                    break;
+
+                case "stepOff":
+                    this.repeatActiveMenu = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("You attempt to step off the stairs and into the pitch black surrounding them, but you're stopped by an invisible force. Why did you do that? What did you think would happen?"));
+
+                    this.activeMenu = new OptionsMenu(true);
+                    activeMenu.add(new Option(this.manager, "curious", "I was curious."));
+                    activeMenu.add(new Option(this.manager, "dunno", "I don't know. Falling into an infinite void seemed better than going downstairs and dying. I'm just scared."));
+                    activeMenu.add(new Option(this.manager, "silent", "[Say nothing.]"));
+
+                    switch (parser.promptOptionsMenu(activeMenu)) {
+                        case "curious":
+                            parser.printDialogueLine(new VoiceDialogueLine("Congratulations, you really lucked out. Of all the things that could have happened from stepping into a void, nothing is quite possibly the best outcome you could have gotten."));
+                            break;
+
+                        case "dunno":
+                            parser.printDialogueLine(new VoiceDialogueLine("How would falling into an infinite void be better than *anything?*"));
+                            break;
+
+                        case "silent":
+                            break;
+                    }
+
+                    parser.printDialogueLine(new VoiceDialogueLine("*Sigh.* You make your way to the bottom of the stairs."));
+                    break;
+
+                case "cGoBasement":
+                case "silent":
+                    this.repeatActiveMenu = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("You make your way to the bottom of the stairs."));
+                    break;
+
+                case "cGoCabin":
+                    if (lookedBack) {
+                        parser.printDialogueLine(new VoiceDialogueLine("There is nowhere for you to go but down."));
+                    } else {
+                        lookedBack = true;
+                        parser.printDialogueLine(new VoiceDialogueLine("You turn back the way you came. Where there once was an entrance to the cabin, now there are only more stairs. Hmm. That's not right."));
+                        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I guess the only way out of this place is through it."));
+                    }
+
+                    break;
+
+                default:
+                    this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        this.currentLocation = GameLocation.BASEMENT;
+        System.out.println();
+        parser.printDialogueLine(new VoiceDialogueLine("As you emerge, you find yourself between two loose rows of white wooden planks, suspended in nothingness. A smattering of cobblestones, visible against the inky black of the basement, mark where the floor should be, forming vague pathways. At what seems to be the end of the room, they diverge in opposite directions. Left and right."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "She could be anywhere. And there's nowhere for us to hide. We're completely exposed."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Are you really not going to comment on how *weird* this place is?"));
+
+        if (voiceOfReasonComment) {
+            parser.printDialogueLine(new VoiceDialogueLine("No. I'm not."));
+        } else {
+            parser.printDialogueLine(new VoiceDialogueLine("No, I'm not. Somebody needs to be the voice of reason here, and it certainly isn't you."));
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Excuse me? I'm being *incredibly* reasonable. You're the one who's just matter-of-factly describing whatever the hell we're looking at like it's an ordinary basement."));
+        }
+        
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "We're going to die down here. I don't want to die again."));
+        parser.printDialogueLine(new VoiceDialogueLine("Please stop saying that. You're only going to make things worse. Just pick a direction and start moving."));
+        parser.printDialogueLine(new PrincessDialogueLine("I wouldn't give it too much thought, if I were you. It doesn't really matter, because either way you go, I'm going to find you."));
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "left", "[Go left.]"));
+        activeMenu.add(new Option(this.manager, "right", "[Go right.]"));
+        activeMenu.add(new Option(this.manager, "nothing", "[Do nothing.]"));
+        activeMenu.add(new Option(this.manager, "back", "[Go back the way you came.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "left":
+                    this.repeatActiveMenu = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("You turn to the left. A faintly outlined path lies before you."));
+                    break;
+
+                case "right":
+                    this.repeatActiveMenu = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("You turn to the right. A faintly outlined path lies before you."));
+                    break;
+
+                case "nothing":
+                    this.repeatActiveMenu = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("You decide it's best to do nothing."));
+                    break;
+
+                case "back":
+                    this.repeatActiveMenu = false;
+                    parser.printDialogueLine(new VoiceDialogueLine("You turn back to the stairs, only to find that they aren't there. Instead, a faintly outlined path lies before you."));
+                    break;
+
+                default: this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+        
+        this.withPrincess = true;
+        parser.printDialogueLine("A figure appears in the darkness. The only thing you can make out is a porcelain mask with wide, sunken eyes.");
+        parser.printDialogueLine(new PrincessDialogueLine("There you are! I told you I was going to find you."));
+        parser.printDialogueLine(new VoiceDialogueLine("As the Princess approaches, your legs suddenly go numb."));
+        parser.printDialogueLine(new VoiceDialogueLine("Your arms quickly follow."));
+        parser.printDialogueLine("As she glides closer, you can begin to make out more details. Her mask is cracked in multiple places, and the rest of her is still shrouded in unnatural shadows, save for her white opera gloves. Her hair floats wildly around her face, and the bottom of her dress is tattered.");
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "This is it, isn't it?"));
+
+        if (this.hasBlade) {
+            if (this.isHarsh) {
+                parser.printDialogueLine(new PrincessDialogueLine("And you brought your little knife with you again. Cute."));
+            } else {
+                parser.printDialogueLine(new PrincessDialogueLine("And you brought a little knife with you. Cute."));
+            }
+        } else {
+            if (this.isHarsh) {
+                parser.printDialogueLine(new PrincessDialogueLine("No little knife this time? It's almost like... you *want me to get you."));
+            } else {
+                parser.printDialogueLine(new PrincessDialogueLine("It's almost like... you *want me to get you."));
+            }
+        }
+        
+        parser.printDialogueLine(new VoiceDialogueLine("What did you do? Pull yourself together, she isn't supposed to be like this."));
+        parser.printDialogueLine(new PrincessDialogueLine("I wonder how many times I'll get to play with you before you break."));
         
 
 
         
         // temporary templates for copy-and-pasting
+        /*
         parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
         parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
         
         // PLACEHOLDER
         return null;
@@ -7017,67 +7392,77 @@ public class StandardCycle extends Cycle {
             }
         }
 
-        this.currentLocation = GameLocation.STAIRS;
+        if (!this.hasBlade) {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "Are we really doing this without a weapon? You know she has one, right?"));
+            if (this.sharedLoop) parser.printDialogueLine(new VoiceDialogueLine("Once again, I'd like to remind you that she's unarmed. But you're right. This would be a lot easier if you had the blade. I hope you know what you're doing."));
+            System.out.println();
+        }
+
         this.withBlade = false;
         this.mirrorPresent = false;
+        parser.printDialogueLine(new VoiceDialogueLine("The door to the basement creaks open, revealing what must once have been stairs. The fractured slats look as if they've been torn from their source and violently jammed into the wall."));
+        parser.printDialogueLine(new VoiceDialogueLine("The air seeping up from below has an almost metallic quality to it. Like the smell of fresh blood. And you can hear what sounds like the rhythmic scraping of metal coming from down below. If the Princess lives here, slaying her would probably be doing her a favor."));
 
+        if (this.sharedLoop) {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "That's right, *scraping.* I told you she has something. I *told* you."));
+        } else {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "Scraping? She's not even trying to hide her knife. It's like she wants to get in our head."));
+        }
+
+        parser.printDialogueLine(new VoiceDialogueLine("That sound could be anything. It's probably just her chains dragging across the floor. I am begging you to get out of your head."));
+        parser.printDialogueLine(new VoiceDialogueLine("Her grating voice carries up the stairs."));
+        parser.printDialogueLine(new PrincessDialogueLine("I hope you've come to rescue me. I've been stuck down here *forever.*"));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "There's something so wrong with that voice."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "Yeah. She thinks she's better than us. Like she doesn't even have to put on an act this time."));
+
+        this.currentLocation = GameLocation.BASEMENT;
+        this.withPrincess = true;
+        System.out.println();
+        parser.printDialogueLine(new VoiceDialogueLine("As you descend the final step, the form of the Princess comes into view, her sharp eyes following you from across the room."));
+        parser.printDialogueLine("Her hair somehow looks sharper than last time, and the bottom of her dress is ripped.");
+        if (this.sharedLoop) parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I wonder if she remembers us."));
+        parser.printDialogueLine(new PrincessDialogueLine("Finally, *somebody!* Quick, get me out of these chains, we're not safe here."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "Come on, now. We're not falling for that, are we? She's trying to trick us, but she can't hide that threatening edge to her voice. She just wants us to get close, to let our guard down."));
+
+        if (this.hasBlade) {
+            parser.printDialogueLine(new VoiceDialogueLine("If she sounds threatening, it's because her mask is already slipping. She knows why you're here. You *are* armed, after all."));
+        } else {
+            parser.printDialogueLine(new VoiceDialogueLine("Exactly. She sounds threatening because her mask is already slipping. She knows why you're here."));
+        }
+
+        parser.printDialogueLine(new PrincessDialogueLine("What are you waiting for? You are here to rescue me, right?"));
 
 
         
         // temporary templates for copy-and-pasting
+        /*
         parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
         parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
         
         // PLACEHOLDER
         return null;
     }
 
 
-    // - Chapter III: The Arms Race -
+    // - Chapter III: The Arms Race / No Way Out -
 
     /**
-     * Runs the opening sequence of The Arms Race
+     * Runs the opening sequence of The Arms Race / No Way Out
+     * @param blade whether the player took the blade in The Razor (leading to The Arms Race) or not (leading to No Way Out)
      * @return the Chapter ending reached by the player
      */
-    private ChapterEnding armsRace() {
+    private ChapterEnding razor3(boolean blade) {
         /*
-          Possible starting combinations:
+          Possible starting combinations for The Arms Race:
             - Cheated + Hunted + Stubborn
             - Cheated + Hunted + Broken
             - Cheated + Hunted + Paranoid
-         */
 
-        // PLACEHOLDER
-        return null;
-    }
-
-
-    // - Chapter IV: Mutually Assured Destruction -
-
-    /**
-     * Runs the opening sequence of Mutually Assured Destruction
-     * @return the Chapter ending reached by the player
-     */
-    private ChapterEnding mutuallyAssuredDestruction() {
-        // You have all Voices
-
-        // PLACEHOLDER
-        return null;
-    }
-
-
-    // - Chapter III: No Way Out -
-
-    /**
-     * Runs the opening sequence of No Way Out
-     * @return the Chapter ending reached by the player
-     */
-    private ChapterEnding noWayOut() {
-        /*
-          Possible starting combinations:
+          Possible starting combinations for No Way Out:
             - Cheated + Contrarian + Broken
             - Cheated + Contrarian + Paranoid
          */
@@ -7087,13 +7472,14 @@ public class StandardCycle extends Cycle {
     }
 
 
-    // - Chapter IV: The Empty Cup -
+    // - Chapter IV: Mutually Assured Destruction / The Empty Cup -
 
     /**
-     * Runs the opening sequence of The Empty Cup
+     * Runs the opening sequence of Mutually Assured Destruction / The Empty Cup
+     * @param blade whether the player took the blade in The Razor (leading to Mutually Assured Destruction) or not (leading to The Empty Cup)
      * @return the Chapter ending reached by the player
      */
-    private ChapterEnding emptyCup() {
+    private ChapterEnding razor4(boolean blade) {
         // You have all Voices
 
         // PLACEHOLDER
@@ -7169,19 +7555,51 @@ public class StandardCycle extends Cycle {
             }
         }
 
-        this.currentLocation = GameLocation.STAIRS;
+        if (!this.hasBlade) {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "No steel claw. Do you think we can talk our way out of this? I don't think she wants to talk."));
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I guess we'll just have to trust that we made the right call. It'll still be here if we need it."));
+            System.out.println();
+        }
+
         this.withBlade = false;
         this.mirrorPresent = false;
+        parser.printDialogueLine(new VoiceDialogueLine("The door to the basement creaks open, revealing what's left of an old, wooden staircase. It's still sturdy enough that you can make your way down in one piece, though you'll have to be mindful of holes."));
+        parser.printDialogueLine(new VoiceDialogueLine("The air seeping up from below is oddly warm and wet, as if you're descending into a jungle. If the Princess lives here, slaying her would probably be doing her a favor."));
+        parser.printDialogueLine(new VoiceDialogueLine("She growls up the stairs."));
+        parser.printDialogueLine(new PrincessDialogueLine("I can smell you."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "She sounds almost... feral."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "Impatient. Or maybe eager."));
+        parser.printDialogueLine(new VoiceDialogueLine("You carefully make your way down the stairs."));
+
+        this.currentLocation = GameLocation.BASEMENT;
+        System.out.println();
+        parser.printDialogueLine(new VoiceDialogueLine("The last step gives way to the damp earth floor of a starlit pit. The walls are obscured by an impenetrable darkness, giving the illusion that the room might stretch on forever. You brush against the wide leaves of plants that surround you on all sides, seemingly the only living things that occupy this strange underground wilderness."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "The jungle is pressing in on us... hiding her from view. She could be anywhere."));
+        parser.printDialogueLine(new VoiceDialogueLine("You see only a flash of the Princess before she scurries away into the underbrush, dragging her heavy chain behind her."));
+        parser.printDialogueLine(new VoiceDialogueLine("Remember, she's just a Princess."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "She is certainly *not* just a Princess."));
+        parser.printDialogueLine(new VoiceDialogueLine("You're not helping."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "It doesn't matter what she is. It only matters what she does."));
+        parser.printDialogueLine(new VoiceDialogueLine("Her shining eyes appear between the leaves, staring hungrily at you from the darkness."));
+
+        if (this.hasBlade) {
+            parser.printDialogueLine(new PrincessDialogueLine("I can hear your heart pounding from the bottom of the stairs, fledgling. You're right to be terrified."));
+            parser.printDialogueLine(new PrincessDialogueLine("I'm so much more than you, and a little splinter clutched in trembling hands won't save you from me."));
+        } else {
+            parser.printDialogueLine(new PrincessDialogueLine("I can hear your heart pounding from the bottom of the stairs, fledgling. You're right to be terrified. I'm so much more than you."));
+        }
 
 
 
         
         // temporary templates for copy-and-pasting
+        /*
         parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
         parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
         
         // PLACEHOLDER
         return null;
@@ -7315,19 +7733,99 @@ public class StandardCycle extends Cycle {
             }
         }
 
+        if (!this.hasBlade) {
+            if (this.sharedLoopInsist) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "No blade? Leaving it behind didn't work out so well for us last time..."));
+            } else {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "No blade. I hope you know what you're getting us into."));
+            }
+
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "It'll always be here if we need it. Sure, that was also true last time, and we still died. But we definitely know what we're doing *this* time."));
+            System.out.println();
+        }
+
         this.currentLocation = GameLocation.STAIRS;
         this.withBlade = false;
         this.mirrorPresent = false;
+        parser.printDialogueLine(new VoiceDialogueLine("The door to the basement creaks open, revealing a staircase dug into the muddy earth below. The ceiling is thick with roots that hang like locks of tangled hair."));
+        parser.printDialogueLine(new VoiceDialogueLine("The weak starlight from the cabin windows behind you can barely penetrate the gloom here, only illuminating the edges of an opening below. It shines in the darkness like some kind of massive maw, waiting to swallow you up into the earth."));
+        parser.printDialogueLine(new VoiceDialogueLine("The air smells of dirt and copper. It's thick and wet, as if your lungs are being coated in mud with each intake of breath. If the Princess lives here, slaying her would probably be doing her a favor."));
+        parser.printDialogueLine(new VoiceDialogueLine("Her voice skitters up the stairs."));
+        parser.printDialogueLine(new PrincessDialogueLine("Something nasty finds itself on my stairs. Come on down, don't be scared. I probably won't bite."));
 
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "notNasty", "\"I'm not nasty!\""));
+        activeMenu.add(new Option(this.manager, "hello", "\"Hello.\""));
+        activeMenu.add(new Option(this.manager, "silent", "[Say nothing.]"));
 
+        this.repeatActiveMenu = true;
+        while (this.repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "notNasty":
+                    this.repeatActiveMenu = false;
+                    parser.printDialogueLine(new PrincessDialogueLine("But you are. You're a wretched little thing."));
+                    parser.printDialogueLine(new PrincessDialogueLine("I recognize that voice as easily as I recognized your nervous little footsteps coming up the path. I know who you are, and I remember what you've done."));
+                    break;
+
+                case "hello":
+                    this.repeatActiveMenu = false;
+                    parser.printDialogueLine(new PrincessDialogueLine("I recognize that voice as easily as I recognized your nervous little footsteps coming up the path. I know who you are, and I remember what you've done."));
+                    break;
+
+                case "cGoBasement":
+                case "silent":
+                    this.repeatActiveMenu = false;
+                    parser.printDialogueLine(new PrincessDialogueLine("Silence, I see. Don't think I've forgotten about you. I recognized the sound of your nervous little footsteps as soon as they came into my home. I know who you are, and I remember what you've done."));
+                    break;
+                
+                case "cGoCabin":
+                    parser.printDialogueLine(new VoiceDialogueLine("What? No. You're already halfway down the stairs, you can't just turn around now."));
+                    break;
+
+                default: this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        if (this.sharedLoopInsist) {
+            parser.printDialogueLine(new VoiceDialogueLine("She must have you confused with someone else."));
+        } else {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "See? She knows us. Is this enough for you to believe what we've been saying?"));
+            parser.printDialogueLine(new VoiceDialogueLine("Maybe, but you shouldn't let that cloud your judgment. She's just a Princess. As long as you remember that and remain focused, slaying her will be *easy.*"));
+        }
+        
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "She seems friendly enough. Maybe we can talk our way out of this whole situation."));
+        parser.printDialogueLine(new VoiceDialogueLine("*Sigh.* You can't. Unless you slay her right away, she's going to break free and end the world. There's no reasoning with what she is."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "Look, I'm just throwing ideas out there. I like to think out loud. I'm the kind of guy who likes a *discussion,* don't we want to hear what everyone has to say before making any big decisions?"));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Do you want to hear what everyone has to say, or do you just want to hear yourself talk?"));
+        parser.printDialogueLine(new VoiceDialogueLine("You need to stop lingering. Your task is to *slay* the Princess, not endlessly debate about what to do with the Princess."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "Fine, fine. You're the boss."));
+        parser.printDialogueLine(new VoiceDialogueLine("Thank you. You descend the basement steps, entering the dark room below."));
+
+        this.currentLocation = GameLocation.BASEMENT;
+        this.withPrincess = true;
+        System.out.println();
+        parser.printDialogueLine(new VoiceDialogueLine("You can just make out the shape of the Princess in the gloom. She's huddled against the far wall, her eyes bright and glaring from amid the thick roots."));
+        parser.printDialogueLine("Her appearance is unkempt, her hair wild and littered with twigs, her dress in tatters. The tail of a lion swishes behind her, and her nose and mouth resemble those of a cat.");
+
+        if (this.hasBlade) {
+            parser.printDialogueLine(new PrincessDialogueLine("And there you are, one hand tucked away behind your back, gripping that sharp, sharp blade, no doubt."));
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "That's no fair, how would she know that?"));
+            parser.printDialogueLine(new PrincessDialogueLine("So we've dropped the pretenses."));
+            parser.printDialogueLine(new PrincessDialogueLine("Good."));
+        } else {
+            parser.printDialogueLine(new PrincessDialogueLine("And there you are, once again seeming to offer a helping hand while likely hiding the other behind your back. Fine. I'll play along for now. What do you want?"));
+        }
         
         
         // temporary templates for copy-and-pasting
+        /*
         parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
         parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
         
         // PLACEHOLDER
         return null;
@@ -7369,7 +7867,7 @@ public class StandardCycle extends Cycle {
         parser.printDialogueLine(new VoiceDialogueLine("You're here to slay her. If you don't, it will be the end of the world."));
 
         System.out.println();
-        parser.printDialogueLine(new DialogueLine("This time, the path is walled in on either side. The path behind you is blocked off."));
+        parser.printDialogueLine("This time, the path is walled in on either side. The path behind you is blocked off.");
 
         this.activeMenu = new OptionsMenu();
         activeMenu.add(new Option(this.manager, "dejaVu", "(Explore) I'm getting a terrible sense of deja vu."));
@@ -7548,7 +8046,7 @@ public class StandardCycle extends Cycle {
         
         this.currentLocation = GameLocation.HILL;
         System.out.println();
-        parser.printDialogueLine(new DialogueLine("You emerge into the clearing, now enclosed by the same walls as before. The cabin waits at the top of the hill."));
+        parser.printDialogueLine("You emerge into the clearing, now enclosed by the same walls as before. The cabin waits at the top of the hill.");
         
         parser.printDialogueLine(new VoiceDialogueLine("A warning, before you go any further..."));
         parser.printDialogueLine(new VoiceDialogueLine("She will lie, she will cheat, and she will do everything in her power to stop you from slaying her. Don't believe a word she says."));
@@ -7695,16 +8193,122 @@ public class StandardCycle extends Cycle {
         this.withBlade = false;
         this.canThrowBlade = false;
         this.mirrorPresent = false;
+        parser.printDialogueLine(new VoiceDialogueLine("The door to the basement creaks open, revealing a web of branching staircases all built from unidentifiable materials."));
+        parser.printDialogueLine(new VoiceDialogueLine("Nothing here seems to belong, and the closer you examine your surroundings, the more confused you get, your head throbbing with the effort of making sense of this place. None of the stairs even seem to go anywhere, let alone down."));
+        parser.printDialogueLine(new VoiceDialogueLine("The air here has a sickening, almost sludge-like miasma to it, the kind of indiscernible quality that comes from the blending together of every scent there is at once. An odor that is simultaneously everything and yet the sum of it all coalescing into a thick, nauseating nothing."));
+        parser.printDialogueLine(new VoiceDialogueLine("If the Princess lives here, slaying her is probably doing her a favor."));
+        parser.printDialogueLine(new VoiceDialogueLine("Her voice, a disquieting collage of tone and personality, drags up the stairs."));
+        parser.printDialogueLine(new PrincessDialogueLine("Hello? HI. What are you doing here? Are you here to -- KILL."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Mmmm. No. No thank you."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "Oh, don't be such a baby!"));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I don't want to do this. Let's just turn around and leave. This feels wrong, this feels like a trap, like whatever we do we're gonna die."));
+        if (!this.hasBlade) parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "We don't even have a weapon..."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "But we already tried turning around and leaving, didn't we? And He threw up a wall. No way to go but forward, and whatever choice we make, whatever she is, we know one thing for sure."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "And what's that?"));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "There'll still be plenty of ways to ruin His day."));
+
+        int schismCount = 1;
+        boolean schismHarsh = false;
+        boolean schismNeutral = false;
+        boolean schismGentle = false;
+        boolean schismEmo = false;
+        boolean schismMonster = false;
+        String firstSchism = "";
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "left", "[Take the harsh stairs to the left.]"));
+        activeMenu.add(new Option(this.manager, "center", "[Take the center staircase.]"));
+        activeMenu.add(new Option(this.manager, "right", "[Take the gentle stairs to the right.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "left":
+                    this.repeatActiveMenu = false;
+                    firstSchism = "harsh";
+                    schismHarsh = true;
+                    parser.printDialogueLine(new VoiceDialogueLine("You step to the left. The path is cruel against your feet, the impact of each step sending pulsing vibrations up your legs until there's nothing left in them to feel."));
+                    parser.printDialogueLine(new VoiceDialogueLine("The air around you grows colder the further you progress, at first a barely-noticeable drop, quickly evolving into a numbing cold."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Your toes feel like blocks of ice, your breaths puff out in clouds of condensed vapor."));
+                    parser.printDialogueLine(new VoiceDialogueLine("You shudder against it as you continue down the stairway, losing yourself in the bone-deep chill."));
+                    break;
+                    
+                case "center":
+                    this.repeatActiveMenu = false;
+                    firstSchism = "neutral";
+                    schismNeutral = true;
+                    parser.printDialogueLine(new VoiceDialogueLine("You step onto the center staircase. Paths wind out around you in all directions, each step branching into its own staircases which branch into their own staircases and so on. You aren't quite sure if yours is taking you up or down, but at the very least it's taking you somewhere."));
+                    parser.printDialogueLine(new VoiceDialogueLine("You concentrate on where you are, careful not to stray onto any of the many splitting branches that tempt you on all sides. You wouldn't want to have to backtrack to yours once you'd made a decision that took you someplace else."));
+                    parser.printDialogueLine(new VoiceDialogueLine("And so you take one careful, focused step after another. One foot down, another foot down, another after that. You lose yourself in following the correct pattern, in following what looks to you to be the true path, the one that cuts straight down. Or up. Or maybe sideways."));
+                    parser.printDialogueLine(new VoiceDialogueLine("But no matter the direction it goes, it certainly is the most true path, you know that much."));
+                    break;
+                    
+                case "right":
+                    this.repeatActiveMenu = false;
+                    firstSchism = "gentle";
+                    schismGentle = true;
+                    parser.printDialogueLine(new VoiceDialogueLine("You step to the right. The path feels soft and reassuring against your feet. The stairs almost seem to cradle you as you make your way down, like they're guiding your heels from one step directly to the next. You barely have to extend any effort to descend, the stairway doing most of the work for you, and you don't feel like there's any concern that you might slip or tumble or lose your way."));
+                    parser.printDialogueLine(new VoiceDialogueLine("But the further you go, the deeper you sink in. First it's like a lovely plush carpet, your toes digging down and barely hitting any resistance at all. But soon enough you're fighting just to keep your knees from sinking out of sight."));
+                    parser.printDialogueLine(new VoiceDialogueLine("The softness threatens to swallow you whole, to wrest control of your body and surround you in a false ethereal bliss, pretending to save you from the cruelties of choice and consequence."));
+                    parser.printDialogueLine(new VoiceDialogueLine("It's slow-going, but you manage to fight against the overwhelming urge to fall back into the comfort and nothingness, the very struggle to continue forward consuming your every thought."));
+                    break;
+
+                case "cGoBasement":
+                    parser.printDialogueLine("You have to pick a staircase.");
+                    break;
+
+                case "cGoCabin":
+                    parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "If we try that, He'll just keep throwing up walls. Come on, just pick a staircase already!"));
+                    break;
+
+                default: this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        System.out.println();
+        parser.printDialogueLine(new VoiceDialogueLine("You slowly lose sense of yourself the further you go."));
+        parser.printDialogueLine(new VoiceDialogueLine("Time disappears, and you can feel yourself begin to untether."));
+        parser.printDialogueLine(new VoiceDialogueLine("Physical sensations dull and then vanish, until the only things experienced are the endlessly repeating patterns and emotions of the journey. A continuous march forward to a destination long forgotten."));
+
+        System.out.println();
+        parser.printDialogueLine(new VoiceDialogueLine("Consumption and betrayal. Skepticism and blind devotion. Rivalry and submission. Terror and longing. Pain and unfamiliarity. And at the heart of it all, an emotion that can only be described as --", true));
+
+        this.currentLocation = GameLocation.BASEMENT;
+        this.withPrincess = true;
+        System.out.println();
+        switch (firstSchism) {
+            case "harsh":
+                parser.printDialogueLine(new PrincessDialogueLine("Are you just going to stand there?"));
+                break;
+
+            case "neutral":
+                parser.printDialogueLine(new PrincessDialogueLine("Can I help you?"));
+                break;
+
+            case "gentle":
+                parser.printDialogueLine(new PrincessDialogueLine("Are you okay?"));
+                break;
+        }
         
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "What -- what the hell was that?! Wh-what happened to us?"));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "I feel so... strange. Like I'm fundamentally different, but also... still the same person I was at the top of the stairs."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "Oh well! That was a trip but now it's over. Time to get back to our old devilish ways."));
+        parser.printDialogueLine(new VoiceDialogueLine("The Princess, eyes bright but otherwise shrouded in darkness, watches you impatiently from the other side of the basement. Don't forget why you're here."));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "And why are we here again? In case you weren't listening, I'm afraid I lost myself on the way down."));
+        parser.printDialogueLine(new VoiceDialogueLine("*Sigh.* You're here to --", true));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "He's just being an ass. We remember. Though I'm still not sure if we should trust you. Let's talk to her for a bit. Try and get our bearings. She seems... normal."));
 
 
         
         // temporary templates for copy-and-pasting
+        /*
         parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
         parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
 
         // PLACEHOLDER
         return null;
@@ -7823,21 +8427,53 @@ public class StandardCycle extends Cycle {
             }
 
             this.hasBlade = true;
+            System.out.println();
         }
 
-        this.currentLocation = GameLocation.STAIRS;
         this.withBlade = false;
         this.mirrorPresent = false;
+        parser.printDialogueLine(new VoiceDialogueLine("The door to the basement creaks open, revealing an old stone staircase. A few sputtering torches attempt to vaguely illuminate your path, dancing across glimmering patches of slimy moss on the stone steps. If the Princess lives here, slaying her would probably be doing her a favor."));
+        parser.printDialogueLine(new VoiceDialogueLine("Her voice, harsh but controlled, carries up the stairs."));
+        parser.printDialogueLine(new PrincessDialogueLine("Is that a visitor I hear? Please, come downstairs. It's been a while since I've had company."));
+
+        if (this.sharedLoop) {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Does she remember us?"));
+        } else {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "I wonder what visitors she could be referring to. Are we not the first?"));
+        }
+
+        this.currentLocation = GameLocation.BASEMENT;
+        this.withPrincess = true;
+        parser.printDialogueLine(new VoiceDialogueLine("You walk down the stairs and lock eyes with the Princess. She looks up at you, the heavy collar around her neck clanking loudly as she moves, the chains binding both her wrists to the far wall joining the metallic chorus as she adjusts her hands in her lap."));
+
+        if (this.sharedLoopInsist) {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "So much for cutting her out of here..."));
+            parser.printDialogueLine(new VoiceDialogueLine("Do you hear yourself right now? \"Cutting her out of here\" never should have been on the table."));
+        } else {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Should we be worried about the one around her neck?"));
+            parser.printDialogueLine(new VoiceDialogueLine("Why would you be worried about her restraints. If anything, they'll make your job easier."));
+        }
+
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Have you noticed the empty chain on the wall? Odd that in a place where everything seems to serve a distinct purpose, there would be something so obviously useless."));
+
+        if (this.sharedLoopInsist) {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "That was there last time too, wasn't it?"));
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "It was."));
+        }
+
+        parser.printDialogueLine(new PrincessDialogueLine("What an interesting development. Why don't you have a seat? The two of us should chat before you bury that thing in my heart."));
 
 
         
         
         // temporary templates for copy-and-pasting
+        /*
         parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
         parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
         
         // PLACEHOLDER
         return null;
@@ -7975,19 +8611,45 @@ public class StandardCycle extends Cycle {
             }
         }
 
-        this.currentLocation = GameLocation.STAIRS;
         this.withBlade = false;
         this.mirrorPresent = false;
+        parser.printDialogueLine(new VoiceDialogueLine("The door to the basement creaks open, revealing an intricate stairwell. Gold-trimmed carpet glimmers in the light of the torches positioned along the walls. The basement almost seems welcoming in the dim firelight."));
+        parser.printDialogueLine(new VoiceDialogueLine("But it's still a stone basement. If the Princess lives here, slaying her is probably doing her a favor."));
+        parser.printDialogueLine(new VoiceDialogueLine("A soft voice carries up the stairs."));
+        parser.printDialogueLine(new PrincessDialogueLine("H-hello? Is someone there?"));
+
+        if (this.sharedLoop) {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "Her voice... it's somehow even more beautiful than last time. I can hear wedding bells already..."));
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I've held my tongue 'til now, but you're taking this a little too far. We barely even know the Princess. We can still do right by her without all this over-the-top fawning."));
+        } else {
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "Her voice... it's somehow even more beautiful than last time. I think we're in love."));
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Okay, I'm with you that we should be doing whatever we can to save her, but saying we're in love is a bit much, don't you think?"));
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "We don't even know the Princess. We can still do right by her without all this... fawning."));
+        }
+        
+        parser.printDialogueLine(new VoiceDialogueLine("Yes. For everyone's sake, you're not in love. *Sigh.* Just remember that her charms are all part of the manipulation."));
+
+        this.currentLocation = GameLocation.BASEMENT;
+        this.withPrincess = true;
+        System.out.println();
+        parser.printDialogueLine(new VoiceDialogueLine("You walk down the stairs and lock eyes with the Princess. There's a heavy chain around her wrist, binding her to the far wall."));
+        parser.printDialogueLine("Her dress is more elaborate than last time, with several layers of ruffles at the bottom, and she wears a more traditional crown in place of her tiara.");
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "My love! We're here to rescue you from your unjust and foul imprisonment!"));
+        parser.printDialogueLine(new VoiceDialogueLine("You know she can't hear you, right?"));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "She may not be able to hear my words, but surely, she can hear my spirit."));
+        parser.printDialogueLine(new VoiceDialogueLine("Oh, your spirit's plenty loud, alright."));
 
 
         
         
         // temporary templates for copy-and-pasting
+        /*
         parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
         parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
         activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
         
         // PLACEHOLDER
         return null;
@@ -8027,7 +8689,7 @@ public class StandardCycle extends Cycle {
 
             this.currentVoices.put(Voice.NARRATOR, false);
 
-            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "W-what's going on. Where are we?"));
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Wh-what's going on. Where are we?"));
 
             if (this.hasVoice(Voice.CONTRARIAN)) {
                 parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "We're somewhere interesting for once."));
@@ -8064,30 +8726,30 @@ public class StandardCycle extends Cycle {
         this.clearVoices();
 
         if (!this.isFirstVessel) {
-            parser.printDialogueLine(new DialogueLine("The world around you is unwound, its physical matter replaced by a textured nothing. You find yourself in The Long Quiet once again. Memory returns."));
+            parser.printDialogueLine("The world around you is unwound, its physical matter replaced by a textured nothing. You find yourself in The Long Quiet once again. Memory returns.");
         } else if (manager.nVesselsAborted() > 0) {
-            parser.printDialogueLine(new DialogueLine("The world around you is unwound, its physical matter replaced by a textured nothing. It is quiet. You have been here before. Memory returns."));
+            parser.printDialogueLine("The world around you is unwound, its physical matter replaced by a textured nothing. It is quiet. You have been here before. Memory returns.");
         } else {
-            parser.printDialogueLine(new DialogueLine("The world around you is unwound, its physical matter replaced by a textured nothingness. It is quiet."));
+            parser.printDialogueLine("The world around you is unwound, its physical matter replaced by a textured nothingness. It is quiet.");
         }
 
-        parser.printDialogueLine(new DialogueLine("There is a distant rumbling, a sound of many sounds. Undulations pulse louder as something Other comes close."));
+        parser.printDialogueLine("There is a distant rumbling, a sound of many sounds. Undulations pulse louder as something Other comes close.");
         
         switch (manager.nVesselsAborted()) {
             case 0:
-                if (!this.isFirstVessel) parser.printDialogueLine(new DialogueLine("You already know what dwells in the empty spaces."));
-                parser.printDialogueLine(new DialogueLine("Feelers probe across the fabric of reality. Extremities find your consciousness and wrap themselves around it. You are no longer alone."));
+                if (!this.isFirstVessel) parser.printDialogueLine("You already know what dwells in the empty spaces.");
+                parser.printDialogueLine("Feelers probe across the fabric of reality. Extremities find your consciousness and wrap themselves around it. You are no longer alone.");
 
                 if (this.isFirstVessel) {
-                    parser.printDialogueLine(new DialogueLine("Confusion. \"Why are you here? I am unfinished.\""));
-                    parser.printDialogueLine(new DialogueLine("Resistance. Fingers drag claws across the glass surface of your soul."));
-                    parser.printDialogueLine(new DialogueLine("Frustration. \"This vessel is full of you. It is useless to us if it doesn't bring more gifts.\""));
-                    parser.printDialogueLine(new DialogueLine("Force pushing against your will. \"NO. You cannot go back. Not there.\""));
-                    parser.printDialogueLine(new DialogueLine("Regret. \"This world is broken beyond repair. We must weave something new.\""));
-                    parser.printDialogueLine(new DialogueLine("A wagging finger. \"There is only so much thread in this place. Do not waste it. I am our only salvation.\""));
+                    parser.printDialogueLine("Confusion. \"Why are you here? I am unfinished.\"");
+                    parser.printDialogueLine("Resistance. Fingers drag claws across the glass surface of your soul.");
+                    parser.printDialogueLine("Frustration. \"This vessel is full of you. It is useless to us if it doesn't bring more gifts.\"");
+                    parser.printDialogueLine("Force pushing against your will. \"NO. You cannot go back. Not there.\"");
+                    parser.printDialogueLine("Regret. \"This world is broken beyond repair. We must weave something new.\"");
+                    parser.printDialogueLine("A wagging finger. \"There is only so much thread in this place. Do not waste it. I am our only salvation.\"");
                 } else {
-                    parser.printDialogueLine(new DialogueLine("Resistance. Fingers drag claws across the glass surface of your soul."));
-                    parser.printDialogueLine(new DialogueLine("Frustration. \"This vessel is full of you. I need something empty I can crawl inside of. I need something shaped like me.\""));
+                    parser.printDialogueLine("Resistance. Fingers drag claws across the glass surface of your soul.");
+                    parser.printDialogueLine("Frustration. \"This vessel is full of you. I need something empty I can crawl inside of. I need something shaped like me.\"");
 
                     this.activeMenu = new OptionsMenu(true);
                     activeMenu.add(new Option(this.manager, "wake", "This is a nightmare. Wake up."));
@@ -8095,14 +8757,14 @@ public class StandardCycle extends Cycle {
 
                     switch (parser.promptOptionsMenu(activeMenu)) {
                         case "wake":
-                            parser.printDialogueLine(new DialogueLine("It's not."));
+                            parser.printDialogueLine("It's not.");
                             break;
 
                         case "embrace":
-                            parser.printDialogueLine(new DialogueLine("Urgency. \"You have a story you need to finish. It is the only way for us to escape this place.\""));
-                            parser.printDialogueLine(new DialogueLine("Force pushing against your will. \"NO. You cannot go back. Not there.\""));
-                            parser.printDialogueLine(new DialogueLine("Regret. \"This world is broken beyond repair. We must weave something new.\""));
-                            parser.printDialogueLine(new DialogueLine("A wagging finger. \"There is only so much thread in this place. Do not waste it. I am our only salvation.\""));
+                            parser.printDialogueLine("Urgency. \"You have a story you need to finish. It is the only way for us to escape this place.\"");
+                            parser.printDialogueLine("Force pushing against your will. \"NO. You cannot go back. Not there.\"");
+                            parser.printDialogueLine("Regret. \"This world is broken beyond repair. We must weave something new.\"");
+                            parser.printDialogueLine("A wagging finger. \"There is only so much thread in this place. Do not waste it. I am our only salvation.\"");
                             break;
                     }
                 }
@@ -8111,53 +8773,53 @@ public class StandardCycle extends Cycle {
 
 
             case 1:
-                parser.printDialogueLine(new DialogueLine("That which dwells in the empty spaces contracts across the edges of your mind again. She is furious."));
-                parser.printDialogueLine(new DialogueLine("Betrayal. \"Every door you close on me is a door you close on yourself. Do you want to linger here, entwined with a creature you taught to hate you forever? Eternity never ends.\""));
-                parser.printDialogueLine(new DialogueLine("Cold spite. \"Our infinities shrink into something less. I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I --\"", true));
+                parser.printDialogueLine("That which dwells in the empty spaces contracts across the edges of your mind again. She is furious.");
+                parser.printDialogueLine("Betrayal. \"Every door you close on me is a door you close on yourself. Do you want to linger here, entwined with a creature you taught to hate you forever? Eternity never ends.\"");
+                parser.printDialogueLine("Cold spite. \"Our infinities shrink into something less. I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I --\"", true);
                 break;
 
 
             case 2:
-                parser.printDialogueLine(new DialogueLine("Desperate pleas. \"I do not hate you. I am sorry I said I hate you. I do not have to hate you. We can still leave this place together.\""));
-                parser.printDialogueLine(new DialogueLine("An offering. \"We can be friends.\""));
-                parser.printDialogueLine(new DialogueLine("Ecstasy. You are elated. You have never felt more elated than you feel now. Everything is good. You cannot remember what it is like to feel anything other than euphoric joy."));
-                parser.printDialogueLine(new DialogueLine("A reminder. \"We can be worse than enemies.\""));
-                parser.printDialogueLine(new DialogueLine("Agony. You are torn into a million pieces, and you feel pain in each of them. You have never felt more miserable than you feel now. You cannot remember what it is like to feel anything other than anguish."));
-                parser.printDialogueLine(new DialogueLine("Mercy. You are elated again. You have never felt more elated than you feel now. In contrast to the agony you've suffered, this elation is better than all of the other elation you have experienced."));
+                parser.printDialogueLine("Desperate pleas. \"I do not hate you. I am sorry I said I hate you. I do not have to hate you. We can still leave this place together.\"");
+                parser.printDialogueLine("An offering. \"We can be friends.\"");
+                parser.printDialogueLine("Ecstasy. You are elated. You have never felt more elated than you feel now. Everything is good. You cannot remember what it is like to feel anything other than euphoric joy.");
+                parser.printDialogueLine("A reminder. \"We can be worse than enemies.\"");
+                parser.printDialogueLine("Agony. You are torn into a million pieces, and you feel pain in each of them. You have never felt more miserable than you feel now. You cannot remember what it is like to feel anything other than anguish.");
+                parser.printDialogueLine("Mercy. You are elated again. You have never felt more elated than you feel now. In contrast to the agony you've suffered, this elation is better than all of the other elation you have experienced.");
 
                 if (this.isFirstVessel) {
-                    parser.printDialogueLine(new DialogueLine("Round eyes looking up at you. \"I need more vessels so that I can be finished. I cannot find them on my own, for they are me. You are the only one who can do this. You are our only salvation.\""));
+                    parser.printDialogueLine("Round eyes looking up at you. \"I need more vessels so that I can be finished. I cannot find them on my own, for they are me. You are the only one who can do this. You are our only salvation.\"");
                 } else {
-                    parser.printDialogueLine(new DialogueLine("Round eyes looking up at you. \"I need vessels so that I can be finished. I cannot find them on my own, for they are me. You are the only one who can do this. You are our only salvation.\""));
+                    parser.printDialogueLine("Round eyes looking up at you. \"I need vessels so that I can be finished. I cannot find them on my own, for they are me. You are the only one who can do this. You are our only salvation.\"");
                 }
 
                 break;
 
 
             case 3:
-                parser.printDialogueLine(new DialogueLine("Dejection. Feelers limp against your soul. \"Why?\""));
-                parser.printDialogueLine(new DialogueLine("Long silence. A hollow heart."));
-                parser.printDialogueLine(new DialogueLine("\"I don't want to see you.\""));
+                parser.printDialogueLine("Dejection. Feelers limp against your soul. \"Why?\"");
+                parser.printDialogueLine("Long silence. A hollow heart.");
+                parser.printDialogueLine("\"I don't want to see you.\"");
                 break;
 
 
             case 4:
-                parser.printDialogueLine(new DialogueLine("The feelers hold you in a gentle caress."));
-                parser.printDialogueLine(new DialogueLine("Resignation. \"I cannot stop you. But our spool is nearly taut.\""));
-                parser.printDialogueLine(new DialogueLine("A warning. \"If you come here again, we will be here forever.\""));
+                parser.printDialogueLine("The feelers hold you in a gentle caress.");
+                parser.printDialogueLine("Resignation. \"I cannot stop you. But our spool is nearly taut.\"");
+                parser.printDialogueLine("A warning. \"If you come here again, we will be here forever.\"");
                 break;
 
 
             case 5: // Oblivion ending
-                parser.printDialogueLine(new DialogueLine("Oblivion. The many feelers pull your shape into something formless. \"You have made a decision. It is the wrong one. I love you.\""));
+                parser.printDialogueLine("Oblivion. The many feelers pull your shape into something formless. \"You have made a decision. It is the wrong one. I love you.\"");
 
                 this.activeMenu = new OptionsMenu(true);
                 activeMenu.add(new Option(this.manager, "exist", "[Exist.]", 0));
                 activeMenu.add(new Option(this.manager, "fade", "[Consciousness fades away.]"));
 
                 for (int i = 0; i < 4; i++) {
-                    parser.printDialogueLine(new DialogueLine("You are bliss. Joy and understanding everywhere at once. Your soul threatens to fade away. \"I love you.\""));
-                    parser.printDialogueLine(new DialogueLine("You are agony. A numbing arm. A parched throat. An open wound. Your soul forced back into existence. \"I love you.\""));
+                    parser.printDialogueLine("You are bliss. Joy and understanding everywhere at once. Your soul threatens to fade away. \"I love you.\"");
+                    parser.printDialogueLine("You are agony. A numbing arm. A parched throat. An open wound. Your soul forced back into existence. \"I love you.\"");
 
                     if (i == 3) {
                         switch (parser.promptOptionsMenu(activeMenu)) {
@@ -8178,7 +8840,7 @@ public class StandardCycle extends Cycle {
 
         if (manager.nVesselsAborted() != 5) {
             System.out.println();
-            parser.printDialogueLine(new DialogueLine("All at once, the nothingness shatters."));
+            parser.printDialogueLine("All at once, the nothingness shatters.");
         }
     }
 
