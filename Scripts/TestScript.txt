@@ -1,0 +1,13 @@
+linebreak
+n You're on a path in the woods...
+jumpto skip
+
+n Hey, you can't just ignore me!
+jumpanchor skip
+contra Yes we absolutely can!
+linebreak 2
+n Nuh uh -- /// interrupt
+// Comment should be ignored //
+contra Yuh huh!
+
+n Don't you dare!

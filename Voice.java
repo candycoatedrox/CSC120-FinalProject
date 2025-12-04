@@ -38,19 +38,47 @@ public enum Voice {
 
     public static Voice getVoice(String characterID) {
         switch (characterID) {
-            case "n": return NARRATOR;
-            case "pint": return PRINCESS;
+            case "n":
+            case "narrator": return NARRATOR;
 
+            case "pint":
+            case "princessint": return PRINCESS;
+
+            // Voice of the Hero gets the special privelege of getting a single-letter shortcut even though there's another voice that starts with the same letter, since he's more or less the secondary protagonist of the entire game
+            case "h":
             case "hero": return HERO;
+
+            case "b":
             case "broken": return BROKEN;
+
+            case "ch":
             case "cheated": return CHEATED;
+
+            case "cl":
             case "cold": return COLD;
-            case "contra": return CONTRARIAN;
+
+            case "cn":
+            case "contra":
+            case "contrarian": return CONTRARIAN;
+
+            case "ht":
             case "hunted": return HUNTED;
-            case "oppo": return OPPORTUNIST;
-            case "para": return PARANOID;
+
+            case "o":
+            case "oppo":
+            case "opportunist": return OPPORTUNIST;
+
+            case "pr":
+            case "para":
+            case "paranoid": return PARANOID;
+
+            case "sk":
             case "skeptic": return SKEPTIC;
+
+            case "sm":
             case "smitten": return SMITTEN;
+
+            case "st":
             case "stubborn": return STUBBORN;
 
             default: return null;

@@ -12,10 +12,15 @@ public class Script {
     private final ArrayList<String> lines;
     private final HashMap<String, Integer> jumpAnchors;
     
-    private int currentLineIndex = 1;
+    private int cursor = 0; // The current line index
 
     // --- CONSTRUCTORS ---
 
+    /**
+     * Constructor
+     * @param parser the IOHandler to link this Script to
+     * @param scriptFile the file containing the text of this Script
+     */
     public Script(IOHandler parser, File scriptFile) {
         this.parser = parser;
         this.scriptFile = scriptFile;
@@ -25,50 +30,92 @@ public class Script {
         try {
             Scanner fileReader = new Scanner(scriptFile);
             String lineContent;
+            String[] args;
             String anchor;
 
             while (fileReader.hasNextLine()) {
                 lineContent = fileReader.nextLine().trim();
                 this.lines.add(lineContent);
 
-                if (lineContent.startsWith("jumpAnchor ")) {
-                    anchor = lineContent.split(" ", 2)[1];
-                    this.jumpAnchors.put(anchor, this.lines.size());
+                if (lineContent.startsWith("jumpanchor ")) {
+                    args = lineContent.split(" ", 2);
+                    anchor = args[1];
+
+                    if (this.jumpAnchors.containsKey(anchor)) {
+                        System.out.println("[DEBUG: Duplicate jump anchor " + anchor + " in " + scriptFile.getName() + " at line " + (this.cursor + 1) + "]");
+                    } else {
+                        this.jumpAnchors.put(anchor, this.lines.size() - 1);
+                    }
                 }
             }
 
             fileReader.close();
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("Script not found");
+            throw new RuntimeException("Script not found (FileNotFound)");
+        } catch (NullPointerException e) {
+            throw new RuntimeException("Script not found (NullPointer)");
         }
     }
 
+    /**
+     * Constructor
+     * @param parser the IOHandler to link this Script to
+     * @param fileDirectory the file path of the file containing the text of this Script
+     */
     public Script(IOHandler parser, String fileDirectory) {
         this(parser, getFromDirectory(fileDirectory));
     }
 
     // --- ACCESSORS & CHECKS ---
 
+    /**
+     * Returns the line at a given index of this script
+     * @param lineIndex the index of the line being retrieved
+     * @return the line at index lineIndex of this script
+     */
     private String getLine(int lineIndex) {
         return this.lines.get(lineIndex);
     }
 
+    /**
+     * Checks whether a given String is a valid character identifier
+     * @param characterID the String to check
+     * @return true if characterID corresponds to a valid character; false otherwise
+     */
     private static boolean isValidCharacter(String characterID) {
         switch (characterID) {
+            case "t":
             case "truth":
             case "p":
+            case "princess":
             case "n":
+            case "narrator":
             case "pint":
+            case "princessint":
+            case "h":
             case "hero":
+            case "b":
             case "broken":
+            case "ch":
             case "cheated":
+            case "cl":
             case "cold":
+            case "cn":
             case "contra":
+            case "contrarian":
+            case "hu":
             case "hunted":
+            case "o":
             case "oppo":
+            case "opportunist":
+            case "pr":
             case "para":
+            case "paranoid":
+            case "sk":
             case "skeptic":
+            case "sm":
             case "smitten":
+            case "st":
             case "stubborn":
                 return true;
 
@@ -76,10 +123,20 @@ public class Script {
         }
     }
 
+    /**
+     * Checks if this script has a jump anchor with the given name
+     * @param jumpAnchor the name to check
+     * @return true if this script has a jump anchor with jumpAnchor as its name; false otherwise
+     */
     private boolean hasJumpAnchor(String jumpAnchor) {
         return this.jumpAnchors.containsKey(jumpAnchor);
     }
 
+    /**
+     * Retrieves the line index of a given jump anchor in this script
+     * @param jumpAnchor the name of the jump anchor
+     * @return the line index of the jump anchor with jumpAnchor as its name or null if it does not exist in this script
+     */
     private Integer getJumpAnchorIndex(String jumpAnchor) {
         if (this.hasJumpAnchor(jumpAnchor)) {
             return this.jumpAnchors.get(jumpAnchor);
@@ -90,113 +147,214 @@ public class Script {
 
     // --- RUN SCRIPT ---
 
+    /**
+     * Executes this script from the cursor until the next break
+     */
     public void runSection() {
         boolean cont = true;
-        while (cont) {
-            cont = this.parseLine(this.currentLineIndex);
-            this.currentLineIndex += 1; // Proceed to next line
+        while (cont && this.cursor < this.lines.size()) {
+            cont = this.executeLine(this.cursor);
+            this.cursor += 1; // Proceed to next line
         }
     }
 
+    /**
+     * Executes this script starting from a given line index and ending at the next break
+     * @param startIndex the index of the first line to execute
+     * @param returnToCurrentIndex whether to reset the cursor after finishing this section
+     */
     public void runSection(int startIndex, boolean returnToCurrentIndex) {
-        int returnIndex = this.currentLineIndex;
-        this.currentLineIndex = startIndex;
+        int returnIndex = this.cursor;
+        this.cursor = startIndex;
         this.runSection();
-        if (returnToCurrentIndex) this.currentLineIndex = returnIndex;
+        if (returnToCurrentIndex) this.cursor = returnIndex;
     }
 
+    /**
+     * Executes this script starting from a given jump anchor and ending at the next break
+     * @param anchorName the name of the jump anchor to start executing at
+     * @param returnToCurrentIndex whether to reset the cursor after finishing this section
+     */
     public void runSection(String anchorName, boolean returnToCurrentIndex) {
         this.runSection(this.getJumpAnchorIndex(anchorName), returnToCurrentIndex);
     }
 
+    /**
+     * Executes this script starting from a given line index and ending at the next break
+     * @param startIndex the index of the first line to execute
+     */
     public void runSection(int startIndex) {
-        this.currentLineIndex = startIndex;
+        this.cursor = startIndex;
         this.runSection();
     }
 
+    /**
+     * Executes this script starting from a given jump anchor and ending at the next break
+     * @param anchorName the name of the jump anchor to start executing at
+     */
     public void runSection(String anchorName) {
-        this.currentLineIndex = this.getJumpAnchorIndex(anchorName);
+        this.cursor = this.getJumpAnchorIndex(anchorName);
         this.runSection();
     }
 
+    /**
+     * Executes this script from the cursor until the given line index
+     * @param endIndex the index to stop executing at
+     */
     public void runThrough(int endIndex) {
-        this.runNextLines(endIndex - this.currentLineIndex + 1);
+        this.runNextLines(endIndex - this.cursor + 1);
     }
 
+    /**
+     * Executes this script from the cursor until the given jump anchor
+     * @param anchorName the jump anchor to stop executing at
+     */
     public void runThrough(String anchorName) {
-        this.runNextLines(this.getJumpAnchorIndex(anchorName) - this.currentLineIndex + 1);
+        this.runNextLines(this.getJumpAnchorIndex(anchorName) - this.cursor + 1);
     }
 
+    /**
+     * Executes this script from a given line index until another given line index
+     * @param startIndex the index of the first line to execute
+     * @param endIndex the index to stop executing at
+     * @param returnToCurrentIndex whether to reset the cursor after finishing this section
+     */
     public void runThrough(int startIndex, int endIndex, boolean returnToCurrentIndex) {
-        int returnIndex = this.currentLineIndex;
-        this.currentLineIndex = startIndex;
-        this.runNextLines(endIndex - this.currentLineIndex + 1);
-        if (returnToCurrentIndex) this.currentLineIndex = returnIndex;
+        int returnIndex = this.cursor;
+        this.cursor = startIndex;
+        this.runNextLines(endIndex - this.cursor + 1);
+        if (returnToCurrentIndex) this.cursor = returnIndex;
     }
 
+    /**
+     * Executes this script from a given line index until a given jump anchor
+     * @param startIndex the index of the first line to execute
+     * @param anchorName the name of the jump anchor to stop executing at
+     * @param returnToCurrentIndex whether to reset the cursor after finishing this section
+     */
     public void runThrough(int startIndex, String anchorName, boolean returnToCurrentIndex) {
-        int returnIndex = this.currentLineIndex;
-        this.currentLineIndex = startIndex;
-        this.runNextLines(this.getJumpAnchorIndex(anchorName) - this.currentLineIndex + 1);
-        if (returnToCurrentIndex) this.currentLineIndex = returnIndex;
+        int returnIndex = this.cursor;
+        this.cursor = startIndex;
+        this.runNextLines(this.getJumpAnchorIndex(anchorName) - this.cursor + 1);
+        if (returnToCurrentIndex) this.cursor = returnIndex;
     }
 
+    /**
+     * Executes this script from a given jump anchor until a given line index
+     * @param anchorName the name of the jump anchor to start executing at
+     * @param endIndex the index to stop executing at
+     * @param returnToCurrentIndex whether to reset the cursor after finishing this section
+     */
     public void runThrough(String anchorName, int endIndex, boolean returnToCurrentIndex) {
         this.runThrough(this.getJumpAnchorIndex(anchorName), endIndex, returnToCurrentIndex);
     }
 
+    /**
+     * Executes this script from a given line index until another given line index
+     * @param startIndex the index of the first line to execute
+     * @param endIndex the index to stop executing at
+     */
     public void runThrough(int startIndex, int endIndex) {
-        this.currentLineIndex = startIndex;
-        this.runNextLines(endIndex - this.currentLineIndex + 1);
+        this.cursor = startIndex;
+        this.runNextLines(endIndex - this.cursor + 1);
     }
 
+    /**
+     * Executes this script from a given line index until a given jump anchor
+     * @param startIndex the index of the first line to execute
+     * @param anchorName the name of the jump anchor to stop executing at
+     */
     public void runThrough(int startIndex, String anchorName) {
-        this.currentLineIndex = startIndex;
-        this.runNextLines(this.getJumpAnchorIndex(anchorName) - this.currentLineIndex + 1);
+        this.cursor = startIndex;
+        this.runNextLines(this.getJumpAnchorIndex(anchorName) - this.cursor + 1);
     }
 
+    /**
+     * Executes this script from a given jump anchor until a given line index
+     * @param anchorName the name of the jump anchor to start executing at
+     * @param endIndex the index to stop executing at
+     */
     public void runThrough(String anchorName, int endIndex) {
-        this.currentLineIndex = this.getJumpAnchorIndex(anchorName);
-        this.runNextLines(endIndex - this.currentLineIndex + 1);
+        this.cursor = this.getJumpAnchorIndex(anchorName);
+        this.runNextLines(endIndex - this.cursor + 1);
     }
 
+    /**
+     * Executes this script from a given jump anchor until another given jump anchor
+     * @param anchorName the name of the jump anchor to start executing at
+     * @param anchorName the name of the jump anchor to stop executing at
+     */
     public void runThrough(String startAnchorName, String endAnchorName) {
-        this.currentLineIndex = this.getJumpAnchorIndex(startAnchorName);
-        this.runNextLines(this.getJumpAnchorIndex(endAnchorName) - this.currentLineIndex + 1);
+        this.cursor = this.getJumpAnchorIndex(startAnchorName);
+        this.runNextLines(this.getJumpAnchorIndex(endAnchorName) - this.cursor + 1);
     }
 
+    /**
+     * Executes the next n lines in this script, starting from the cursor
+     * @param nLines the number of lines to run
+     */
     public void runNextLines(int nLines) {
         for (int i = 0; i < nLines; i++) {
-            this.parseLine(this.currentLineIndex);
-            this.currentLineIndex += 1; // Proceed to next line
+            if (this.cursor >= this.lines.size()) {
+                break;
+            }
+
+            this.executeLine(this.cursor);
+            this.cursor += 1; // Proceed to next line
         }
     }
 
+    /**
+     * Executes the next n lines in this script, starting from a given line index
+     * @param startIndex the index of the first line to execute
+     * @param nLines the number of lines to run
+     * @param returnToCurrentIndex whether to reset the cursor after finishing this section
+     */
     public void runNextLines(int startIndex, int nLines, boolean returnToCurrentIndex) {
-        int returnIndex = this.currentLineIndex;
-        this.currentLineIndex = startIndex;
+        int returnIndex = this.cursor;
+        this.cursor = startIndex;
         this.runNextLines(nLines);
-        if (returnToCurrentIndex) this.currentLineIndex = returnIndex;
+        if (returnToCurrentIndex) this.cursor = returnIndex;
     }
 
+    /**
+     * Executes the next n lines in this script, starting from a given jump anchor
+     * @param anchorName the name of the jump anchor to start executing at
+     * @param nLines the number of lines to run
+     * @param returnToCurrentIndex whether to reset the cursor after finishing this section
+     */
     public void runNextLines(String anchorName, int nLines, boolean returnToCurrentIndex) {
         this.runNextLines(this.getJumpAnchorIndex(anchorName), nLines, returnToCurrentIndex);
     }
 
+    /**
+     * Executes the next n lines in this script, starting from a given line index
+     * @param startIndex the index of the first line to execute
+     * @param nLines the number of lines to run
+     */
     public void runNextLines(int startIndex, int nLines) {
-        this.currentLineIndex = startIndex;
+        this.cursor = startIndex;
         this.runNextLines(nLines);
     }
 
+    /**
+     * Executes the next n lines in this script, starting from a given jump anchor
+     * @param anchorName the name of the jump anchor to start executing at
+     * @param nLines the number of lines to run
+     */
     public void runNextLines(String anchorName, int nLines) {
-        this.currentLineIndex = this.getJumpAnchorIndex(anchorName);
+        this.cursor = this.getJumpAnchorIndex(anchorName);
         this.runNextLines(nLines);
     }
 
-    // --- PARSE LINES ---
+    // --- PARSE & EXECUTE LINES ---
 
-    private boolean parseLine(int lineIndex) {
-        // false if end of section (ie line break), true otherwise
+    /**
+     * Parse and execute a single line of this script
+     * @param lineIndex the index of the executed line
+     * @return false if this line is a blank line representing the end of a section; true otherwise
+     */
+    private boolean executeLine(int lineIndex) {
         String lineContent = this.getLine(lineIndex).trim();
         String[] split = lineContent.split(" ", 2);
 
@@ -210,6 +368,7 @@ public class Script {
                 break;
 
             case "jumpto":
+                // add "jumpto [anchor] return"?
                 try {
                     int jumpTarget = Integer.parseInt(argument);
                     this.jumpTo(jumpTarget);
@@ -232,17 +391,21 @@ public class Script {
                 break;
 
             default:
-                if (isValidCharacter(argument)) {
+                if (isValidCharacter(prefix)) {
                     this.printDialogueLine(lineIndex);
                 } else {
                     // Invalid line; print error message and skip to next line
-                    System.out.println("[DEBUG: Invalid line in file " + scriptFile.getName() + " at line " + this.currentLineIndex + "]");
+                    System.out.println("[DEBUG: Invalid line in file " + scriptFile.getName() + " at line " + (this.cursor + 1) + "]");
                 }
         }
 
         return cont;
     }
 
+    /**
+     * Prints out a given number of line breaks
+     * @param argument the number of line breaks to print (or an empty string, resulting in 1 line break)
+     */
     private void lineBreak(String argument) {
         try {
             int nBreaks = Integer.parseInt(argument);
@@ -254,19 +417,31 @@ public class Script {
                 System.out.println();
             } else {
                 // Invalid line; print error message and skip to next line
-                System.out.println("[DEBUG: Invalid linebreak in file " + scriptFile.getName() + " at line " + this.currentLineIndex + "]");
+                System.out.println("[DEBUG: Invalid linebreak in file " + scriptFile.getName() + " at line " + (this.cursor + 1) + "]");
             }
         }
     }
 
+    /**
+     * Moves the cursor of this script to a given index
+     * @param lineIndex the index to move to
+     */
     public void jumpTo(int lineIndex) {
-        this.currentLineIndex = lineIndex;
+        this.cursor = lineIndex;
     }
 
-    public void jumpTo(String lineAnchor) {
-        this.jumpTo(this.getJumpAnchorIndex(lineAnchor));
+    /**
+     * Moves the cursor of this script to a given jump anchor
+     * @param jumpAnchor the jump anchor to move to
+     */
+    public void jumpTo(String jumpAnchor) {
+        this.jumpTo(this.getJumpAnchorIndex(jumpAnchor));
     }
 
+    /**
+     * Prints out the dialogue line specified by a given line
+     * @param lineIndex the index of the dialogue line to print
+     */
     public void printDialogueLine(int lineIndex) {
         String lineContent = this.getLine(lineIndex).trim();
         String[] split = lineContent.split(" ", 2);
@@ -277,6 +452,11 @@ public class Script {
         this.printDialogueLine(prefix, argument);
     }
 
+    /**
+     * Prints out the dialogue line specified by a given character identifier and line
+     * @param characterID the ID of the character speaking the line
+     * @param arguments the dialogue line itself, as well as any optional modifiers
+     */
     private void printDialogueLine(String characterID, String arguments) {
         // check for modifiers, then print
         boolean isInterrupted = false;
@@ -296,13 +476,13 @@ public class Script {
 
         Voice v = Voice.getVoice(characterID);
         if (v == null) {
-            if (characterID.equals("truth")) {
+            if (characterID.equals("t") || characterID.equals("truth")) {
                 parser.printDialogueLine(line, isInterrupted);
-            } else if (characterID.equals("p")) {
+            } else if (characterID.equals("p") || characterID.equals("princess")) {
                 parser.printDialogueLine(new PrincessDialogueLine(line, isInterrupted));
             } else {
                 // Invalid character; print error message and skip to next line
-                System.out.println("[DEBUG: Invalid character ID in file " + scriptFile.getName() + " at line " + this.currentLineIndex + "]");
+                System.out.println("[DEBUG: Invalid character ID in file " + scriptFile.getName() + " at line " + (this.cursor + 1) + "]");
                 return;
             }
         } else {
@@ -318,6 +498,11 @@ public class Script {
 
     // --- MISC ---
 
+    /**
+     * Retrieve a File from a given file path
+     * @param directory the file path of the file containing the text of this Script
+     * @return the File found at the given directory
+     */
     public static File getFromDirectory(String directory) {
         String[] path = directory.split("/");
         File currentDirectory = new File("Scripts");
@@ -337,27 +522,53 @@ public class Script {
         return currentDirectory;
     }
 
+    /*
+    public static void main(String[] args) {
+        GameManager manager = new GameManager();
+        IOHandler parser = new IOHandler(manager);
+        
+        File testFile = new File("Scripts", "TestScript.txt");
+        System.out.println(testFile.getPath());
+        
+        Script script = new Script(parser, getFromDirectory("TestScript"));
+        for (String a : script.jumpAnchors.keySet()) {
+            System.out.println(a + ", " + script.jumpAnchors.get(a));
+        }
+
+        script.runSection();
+        script.runSection();
+    }
+    */
+
 }
 
 /*
 --- SCRIPT SYNTAX GUIDE ---
 
-// Comment //
+// This is a comment, and will be ignored during execution //
+Trailing spaces and indentation will also be ignored during execution.
 
-linebreak
-linebreak num
+Different functions a script can perform:
+  - linebreak
+  - linebreak [n]
+        Prints out a line break. Can print out multiple line breaks at once if you specify a number, such as "linebreak 2".
 
-jumpto num
-jumpto anchor
+  - jumpto [n]
+  - jumpto [anchor]
+        Moves the cursor to a given line index or jump anchor.
 
-jumpanchor id
+  - jumpanchor [id]
+        Essentially acts as a label the script can move its cursor to at any time.
 
-character Dialogue line goes here
-character Dialogue line goes here /// modifiers modifiers
+  - [character] Dialogue line goes here
+  - [character] Dialogue line goes here /// [modifiers]
+        Modifiers are optional.
+        The first word specifies the ID of the speaking character, then anything after that is considered the actual dialogue line.
+        Including " /// " at the end of the line allows you to toggle additional modifiers for this dialogue line.
 
-modifiers:
-  - character Dialogue line goes here /// checkvoice
-        check whether you have the given voice before printing
-  - character Dialogue line goes here /// interrupt
-        the line is interrupted
+        Modifiers:
+          - checkvoice
+                Checks whether the player has the given voice before printing.
+          - interrupt
+                The line is interrupted.
 */

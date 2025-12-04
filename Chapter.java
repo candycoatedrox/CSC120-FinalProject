@@ -88,6 +88,7 @@ public enum Chapter {
         this.specialTitle = false;
         this.number = number;
         this.title = title;
+        this.scriptFile = Script.getFromDirectory(scriptDirectory);
 
         this.prefix = "Chapter ";
         switch(number) {
@@ -117,6 +118,7 @@ public enum Chapter {
         this.prefix = specialPrefix;
         this.title = title;
         this.specialTitle = false;
+        this.scriptFile = Script.getFromDirectory(scriptDirectory);
     }
 
     /**
@@ -129,6 +131,7 @@ public enum Chapter {
         this.number = 0;
         this.prefix = "";
         this.title = title;
+        this.scriptFile = Script.getFromDirectory(scriptDirectory);
     }
 
     // --- ACCESSORS & CHECKS ---
