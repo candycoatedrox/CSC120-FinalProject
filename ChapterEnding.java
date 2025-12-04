@@ -178,6 +178,7 @@ public enum ChapterEnding {
     // Misc.
     NEWCYCLE(Chapter.CH1),
     ABORTED,
+    DEMOENDING,
 
     // The End of Everything (full game endings)
     OBLIVION,

@@ -236,6 +236,13 @@ public class GameManager {
     }
 
     /**
+     * Removes the most recent song from the playthrough's playlist, in case of an aborted Chapter
+     */
+    public void playlistAbort() {
+        this.playlist.remove(this.playlist.size() - 1);
+    }
+
+    /**
      * Accessor for nVesselsAborted
      * @return the number of vessels the player has aborted this playthrough
      */
@@ -404,6 +411,9 @@ public class GameManager {
             ending = this.currentCycle.runCycle();
 
             if (ending == null) {
+                ending = ChapterEnding.DEMOENDING;
+                break;
+            } else if (ending == ChapterEnding.ABORTED) {
                 this.nVesselsAborted += 1;
             } else if (ending == ChapterEnding.GOODENDING) {
                 break;
@@ -426,7 +436,7 @@ public class GameManager {
         } else {
             this.currentCycle = null;
 
-            if (ending != ChapterEnding.GOODENDING) {
+            if (ending == ChapterEnding.ABORTED) {
                 ending = ChapterEnding.OBLIVION;
             }
         }
@@ -444,13 +454,23 @@ public class GameManager {
             this.currentCycle = new StandardCycle(this, this.parser);
             ending = this.currentCycle.runCycle();
 
-            if (ending == ChapterEnding.ABORTED) {
+            if (ending == null) {
+                ending = ChapterEnding.DEMOENDING;
+                break;
+            } else if (ending == ChapterEnding.ABORTED) {
                 this.nVesselsAborted += 1;
             } else if (ending == ChapterEnding.GOODENDING) {
                 break;
             } else {
                 this.endingsFound.add(ending);
                 this.claimedVessels.add(ending.getVessel());
+
+                this.moundFreedom += ending.getFreedom();
+                this.moundSatisfaction += ending.getSatisfaction();
+                if (this.nClaimedVessels() == 1) {
+                    if (ending.getVessel() == Vessel.STRANGER) this.moundSatisfaction += 1;
+                    if (this.nVesselsAborted == 0) this.directToMound = true;
+                }
             }
         }
 
@@ -459,7 +479,10 @@ public class GameManager {
             ending = this.currentCycle.runCycle();
         } else {
             this.currentCycle = null;
-            if (ending != ChapterEnding.GOODENDING) ending = ChapterEnding.OBLIVION;
+
+            if (ending == ChapterEnding.ABORTED) {
+                ending = ChapterEnding.OBLIVION;
+            }
         }
 
         this.endGame(ending);
@@ -484,13 +507,23 @@ public class GameManager {
                 ending = this.currentCycle.runCycle();
             }
 
-            if (ending == ChapterEnding.ABORTED) {
+            if (ending == null) {
+                ending = ChapterEnding.DEMOENDING;
+                break;
+            } else if (ending == ChapterEnding.ABORTED) {
                 this.nVesselsAborted += 1;
             } else if (ending == ChapterEnding.GOODENDING) {
                 break;
             } else {
                 this.endingsFound.add(ending);
                 this.claimedVessels.add(ending.getVessel());
+
+                this.moundFreedom += ending.getFreedom();
+                this.moundSatisfaction += ending.getSatisfaction();
+                if (this.nClaimedVessels() == 1) {
+                    if (ending.getVessel() == Vessel.STRANGER) this.moundSatisfaction += 1;
+                    if (this.nVesselsAborted == 0) this.directToMound = true;
+                }
             }
         }
 
@@ -499,7 +532,10 @@ public class GameManager {
             ending = this.currentCycle.runCycle();
         } else {
             this.currentCycle = null;
-            if (ending != ChapterEnding.GOODENDING) ending = ChapterEnding.OBLIVION;
+
+            if (ending == ChapterEnding.ABORTED) {
+                ending = ChapterEnding.OBLIVION;
+            }
         }
 
         this.endGame(ending);
@@ -578,8 +614,14 @@ public class GameManager {
      */
     private void endGame(ChapterEnding ending) {
         // credits, show playlist, etc
+
+        if (ending == ChapterEnding.DEMOENDING) {
+            parser.printDialogueLine("You have reached the end of the demo.");
+            parser.printDialogueLine("Thank you for playing!");
+        }
+
         this.showCredits();
-        this.showPlaylist();
+        this.showPlaylist(ending);
 
         this.parser.closeInput();
     }
@@ -594,8 +636,30 @@ public class GameManager {
     /**
      * Shows the playlist generated from the current playthrough
      */
-    private void showPlaylist() {
+    private void showPlaylist(ChapterEnding ending) {
+        System.out.println();
+        parser.printDialogueLine("Thank you so much for playing. As an expression of our gratitude, here's the track order for a special playlist just for you.");
+        parser.printDialogueLine("As a reminder, the soundtrack for the game can be found on Spotify at https://spotify.link/PdG0uXZecEb.");
 
+        String playlistText;
+        switch (ending) {
+            case GOODENDING:
+                playlistText = "----- YOUR SONG -----";
+                playlistText += "\n  1.) The Princess";
+                playlistText += "\n  2.) The World Ender";
+                // This one isn't an actual song, it's literally a compilation of stock cheering and applause sound effects that plays on loop if you get the Good Ending. And yes, it is included on the playlist screen in the actual game
+                playlistText += "\n  3.) Eternal Bliss (Yay, you did it!)";
+                break;
+
+            default:
+                playlistText = "----- OUR SONG -----";
+                for (int i = 0; i < this.playlist.size(); i++) {
+                    playlistText += "\n  " + i + ".) " + this.playlist.get(i);
+                }
+        }
+
+        System.out.println();
+        parser.printDialogueLine(playlistText, true);
     }
 
     // --- UTILITY ---

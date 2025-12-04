@@ -952,6 +952,7 @@ public class StandardCycle extends Cycle {
                 case "enter":
                     this.repeatActiveMenu = false;
                     this.withBlade = false;
+                    manager.addToPlaylist("The World Ender");
                     return (this.isHarsh) ? this.ch1BasementHarsh(askPrize) : this.ch1BasementSoft();
 
                 case "cGoHill":
@@ -11156,6 +11157,7 @@ public class StandardCycle extends Cycle {
         }
 
         this.clearVoices();
+        manager.playlistAbort();
 
         if (!this.isFirstVessel) {
             parser.printDialogueLine("The world around you is unwound, its physical matter replaced by a textured nothing. You find yourself in The Long Quiet once again. Memory returns.");
@@ -11243,6 +11245,7 @@ public class StandardCycle extends Cycle {
 
 
             case 5: // Oblivion ending
+                manager.addToPlaylist("Oblivion");
                 parser.printDialogueLine("Oblivion. The many feelers pull your shape into something formless. \"You have made a decision. It is the wrong one. I love you.\"");
 
                 this.activeMenu = new OptionsMenu(true);
