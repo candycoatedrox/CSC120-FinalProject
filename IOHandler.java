@@ -7,6 +7,8 @@ public class IOHandler {
 
     public static final int WRAPCOLUMNS = 80; // default = 80
     private static final String DIVIDER = "-----------------------------------";
+    private static final VoiceDialogueLine NINVALIDOPTIONLINE = new VoiceDialogueLine(Voice.NARRATOR, "What are you even trying to do? You're not accomplishing anything.", true);
+    private static final VoiceDialogueLine NEXCLUSIVELINE = new VoiceDialogueLine(Voice.NARRATOR, "You have to make a decision.", true);
 
     // --- CONSTRUCTORS ---
 
@@ -168,7 +170,7 @@ public class IOHandler {
                 } else if (!cycle.hasVoice(Voice.NARRATOR)) {
                     this.printDialogueLine("[That is not a choice available to you.]", true);
                 } else {
-                    this.printDialogueLine(new VoiceDialogueLine(Voice.NARRATOR, "What are you even trying to do? You're not accomplishing anything.", true));
+                    this.printDialogueLine(NINVALIDOPTIONLINE);
                 }
 
                 return this.parseOptionChoice(cycle, options, exclusiveOverride);
@@ -209,7 +211,7 @@ public class IOHandler {
                                 this.printDialogueLine("[You have no other options.]", true);
                             }
                         } else {
-                            this.printDialogueLine(new VoiceDialogueLine(Voice.NARRATOR, "You have to make a decision.", true));
+                            this.printDialogueLine(NEXCLUSIVELINE);
                         }
                     } else {
                         this.printDialogueLine(exclusiveOverride);
