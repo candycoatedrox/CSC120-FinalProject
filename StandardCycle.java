@@ -1847,7 +1847,7 @@ public class StandardCycle extends Cycle {
         // Save continues here
         this.canSlayPrincess = false;
         parser.printDialogueLine(new VoiceDialogueLine("Ugh. Fine."));
-        parser.printDialogueLine(new VoiceDialogueLine("Against your better judgment, you place the blade against the ragged, self-inflicted wound on the Princess' arm, just above the unyielding chain binding her to this place."));
+        parser.printDialogueLine(new VoiceDialogueLine("Against your better judgment, you place the blade against the ragged, self-inflicted wound on the Princess's arm, just above the unyielding chain binding her to this place."));
         parser.printDialogueLine(new VoiceDialogueLine("You cut into her flesh."));
         parser.printDialogueLine(new VoiceDialogueLine("The blade is sharp, and it takes little effort to crack through the bone of her arm."));
         parser.printDialogueLine(new VoiceDialogueLine("Her limb falls to the ground, and the heavy chains follow suit."));
@@ -3521,7 +3521,7 @@ public class StandardCycle extends Cycle {
 
                     parser.printDialogueLine(new VoiceDialogueLine("You lean down and place your hand against her neck, holding your breath as you search for a pulse. Even though you know you're not going to find one."));
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "We definitely won't if *you* keep talking."));
-                    parser.printDialogueLine(new VoiceDialogueLine("I'm sorry, do you *want* her to be alive? You just saved the entire world from annihilation, why are you suddenly trying to call that into *question-*"));
+                    parser.printDialogueLine(new VoiceDialogueLine("I'm sorry, do you *want* her to be alive? You just saved the entire world from annihilation, why are you suddenly trying to call that into *question* --"));
 
                     System.out.println();
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Wait... what was that?"));
@@ -3783,7 +3783,7 @@ public class StandardCycle extends Cycle {
         parser.printDialogueLine(new VoiceDialogueLine("Fine. Whatever. For the first time since time stopped meaning anything, you throw open the door to the basement and walk down the stairs."));
 
         System.out.println();
-        parser.printDialogueLine(new VoiceDialogueLine("The Princess' body is dust and bones, though the blade you used to slay her is still as pristine as the day you first held it."));
+        parser.printDialogueLine(new VoiceDialogueLine("The Princess's body is dust and bones, though the blade you used to slay her is still as pristine as the day you first held it."));
         parser.printDialogueLine(new VoiceDialogueLine("You pick up the blade, you stab yourself, and you *die.*"));
 
         System.out.println();
@@ -3876,7 +3876,7 @@ public class StandardCycle extends Cycle {
                     parser.printDialogueLine(new VoiceDialogueLine("Can you not feel all those ruptured organs bouncing around in there? If the Princess doesn't do our friend in herself, internal bleeding is certain to finish the job."));
 
                     System.out.println();
-                    parser.printDialogueLine(new VoiceDialogueLine("The two of you clash for the final time. You feel your ribs break as she delivers a heavy blow, but you push through the pain, falling forward and sinking your blade deep into the Princess' heart."));
+                    parser.printDialogueLine(new VoiceDialogueLine("The two of you clash for the final time. You feel your ribs break as she delivers a heavy blow, but you push through the pain, falling forward and sinking your blade deep into the Princess's heart."));
                     parser.printDialogueLine(new PrincessDialogueLine("O... oh."));
 
                     System.out.println();
@@ -3901,7 +3901,7 @@ public class StandardCycle extends Cycle {
 
                     parser.printDialogueLine(new VoiceDialogueLine("Are you *serious?*"));
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "It's a good idea. We've taken some bad hits, but we've dealt some, too. She has to be feeling it more than we are. Let's regroup upstairs. If we're lucky, maybe she'll just bleed out."));
-                    parser.printDialogueLine(new VoiceDialogueLine("Fine. You make a mad dash to the basement stairs, the Princess' chains rattling as she tries to chase you, but pulling taut much too soon for her to catch up."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Fine. You make a mad dash to the basement stairs, the Princess's chains rattling as she tries to chase you, but pulling taut much too soon for her to catch up."));
                     parser.printDialogueLine(new PrincessDialogueLine("Do you really think you can just *walk out of here?*"));
 
                     System.out.println();
@@ -3971,7 +3971,7 @@ public class StandardCycle extends Cycle {
 
                 case "cSlayPrincess":
                 case "finish":
-                    parser.printDialogueLine(new VoiceDialogueLine("With the last bit of your will, you press forward, sinking the blade deep into the Princess' heart."));
+                    parser.printDialogueLine(new VoiceDialogueLine("With the last bit of your will, you press forward, sinking the blade deep into the Princess's heart."));
                     parser.printDialogueLine(new PrincessDialogueLine("O... oh."));
 
                     System.out.println();
@@ -5995,32 +5995,32 @@ public class StandardCycle extends Cycle {
                 break;
         }
 
-        this.activeMenu = new OptionsMenu();
-        activeMenu.add(new Option(this.manager, "careLie", "I care about whether I'm being lied to.", defaultCareLie));
-        activeMenu.add(new Option(this.manager, "careLieTower", "I care about whether I'm being lied to. There's a mirror.", this.activeChapter == Chapter.TOWER));
-        activeMenu.add(new Option(this.manager, "whyLie", "Why *would* you lie about that? What's the point?", defaultWhyLie));
-        activeMenu.add(new Option(this.manager, "whyLieNightmare", "Why *would* you lie about there not being a mirror when it's clearly right there? What's the point?", this.activeChapter == Chapter.NIGHTMARE));
-        activeMenu.add(new Option(this.manager, "whyLieWitch", "I trust my eyes. Why would He lie about there not being a mirror? What's the point?", this.activeChapter == Chapter.WITCH));
-        activeMenu.add(new Option(this.manager, "handsome", "I want to look at myself. I want to see how *handsome* I am.", !defaultHandsomeCare && this.activeChapter != Chapter.STRANGER));
-        activeMenu.add(new Option(this.manager, "handsomeCare", "I care. I want to look at myself. I want to see how *handsome* I am.", defaultHandsomeCare));
-        activeMenu.add(new Option(this.manager, "handsomeStranger", "I also want to look at myself. I want to see how *handsome* I am.", this.activeChapter == Chapter.STRANGER));
-        activeMenu.add(new Option(this.manager, "noMatter", "It doesn't matter.", defaultNoMatter));
-        activeMenu.add(new Option(this.manager, "noMatterRight", "You're right. It doesn't matter.", !defaultNoMatter && this.activeChapter != Chapter.TOWER));
-        activeMenu.add(new Option(this.manager, "noMatterTower", "It doesn't matter whether there's a mirror.", this.activeChapter == Chapter.TOWER));
-        activeMenu.add(new Option(this.manager, "silent", "[Remain silent.]"));
-        activeMenu.add(new Option(this.manager, "approach", "[Approach the mirror.]"));
+        OptionsMenu mirrorMenu = new OptionsMenu();
+        mirrorMenu.add(new Option(this.manager, "careLie", "I care about whether I'm being lied to.", defaultCareLie));
+        mirrorMenu.add(new Option(this.manager, "careLieTower", "I care about whether I'm being lied to. There's a mirror.", this.activeChapter == Chapter.TOWER));
+        mirrorMenu.add(new Option(this.manager, "whyLie", "Why *would* you lie about that? What's the point?", defaultWhyLie));
+        mirrorMenu.add(new Option(this.manager, "whyLieNightmare", "Why *would* you lie about there not being a mirror when it's clearly right there? What's the point?", this.activeChapter == Chapter.NIGHTMARE));
+        mirrorMenu.add(new Option(this.manager, "whyLieWitch", "I trust my eyes. Why would He lie about there not being a mirror? What's the point?", this.activeChapter == Chapter.WITCH));
+        mirrorMenu.add(new Option(this.manager, "handsome", "I want to look at myself. I want to see how *handsome* I am.", !defaultHandsomeCare && this.activeChapter != Chapter.STRANGER));
+        mirrorMenu.add(new Option(this.manager, "handsomeCare", "I care. I want to look at myself. I want to see how *handsome* I am.", defaultHandsomeCare));
+        mirrorMenu.add(new Option(this.manager, "handsomeStranger", "I also want to look at myself. I want to see how *handsome* I am.", this.activeChapter == Chapter.STRANGER));
+        mirrorMenu.add(new Option(this.manager, "noMatter", "It doesn't matter.", defaultNoMatter));
+        mirrorMenu.add(new Option(this.manager, "noMatterRight", "You're right. It doesn't matter.", !defaultNoMatter && this.activeChapter != Chapter.TOWER));
+        mirrorMenu.add(new Option(this.manager, "noMatterTower", "It doesn't matter whether there's a mirror.", this.activeChapter == Chapter.TOWER));
+        mirrorMenu.add(new Option(this.manager, "silent", "[Remain silent.]"));
+        mirrorMenu.add(new Option(this.manager, "approach", "[Approach the mirror.]"));
 
-        this.repeatActiveMenu = true;
-        while (repeatActiveMenu) {
-            switch (parser.promptOptionsMenu(activeMenu)) {
+        boolean repeatMenu = true;
+        while (repeatMenu) {
+            switch (parser.promptOptionsMenu(mirrorMenu)) {
                 case "careLie":
-                    this.repeatActiveMenu = false;
+                    repeatMenu = false;
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "As do I."));
                     parser.printDialogueLine(new VoiceDialogueLine("I'm not lying to you. Use your eyes, there is no mirror. Why would I lie about something so meaningless? What good would a mirror even do? Let you waste time preening yourself instead of doing what needs to be done?"));
                     break;
 
                 case "careLieTower":
-                    this.repeatActiveMenu = false;
+                    repeatMenu = false;
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "As do I, and yeah, there is."));
                     parser.printDialogueLine(new VoiceDialogueLine("I'm not lying to you. Use your eyes, there is no mirror. Why would I lie about something so meaningless? What good would a mirror even do? Let you waste time preening yourself instead of doing what needs to be done?"));
                     break;
@@ -6029,19 +6029,19 @@ public class StandardCycle extends Cycle {
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "Come on, now. He's pretty much in charge here. When have authority figures ever lied about anything? If there were a mirror in this cabin and we were supposed to look at it, He would have told us about it."));
                 case "whyLieNightmare":
                 case "whyLie":
-                    this.repeatActiveMenu = false;
+                    repeatMenu = false;
                     parser.printDialogueLine(new VoiceDialogueLine("Exactly. Why would I lie about something so meaningless? What good would a mirror even do? Let you waste time preening yourself instead of doing what needs to be done?"));
                     break;
 
                 case "handsomeCare":
-                    this.repeatActiveMenu = false;
+                    repeatMenu = false;
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I care less about that and more about whether we're being lied to. If He's willing to lie about something as innocuous as a mirror, what else is He hiding from us?"));
                     parser.printDialogueLine(new VoiceDialogueLine("I'm not lying to you. Use your eyes, there is no mirror. Why would I lie about something so meaningless? What good would it even do?"));
                     break;
 
                 case "handsome":
                 case "handsomeStranger":
-                    this.repeatActiveMenu = false;
+                    repeatMenu = false;
 
                     if (this.activeChapter == Chapter.PRISONER) {
                         parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Let's not get caught up in vanity, but we should definitely take a closer look. Whatever it is, He must not want us to know about it."));
@@ -6081,7 +6081,7 @@ public class StandardCycle extends Cycle {
                 case "noMatter":
                 case "noMatterRight":
                 case "noMatterTower":
-                    this.repeatActiveMenu = false;
+                    repeatMenu = false;
                     this.mirrorPresent = false;
 
                     if (this.activeChapter == Chapter.PRISONER) {
@@ -6139,14 +6139,14 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "silent":
-                    this.repeatActiveMenu = false;
+                    repeatMenu = false;
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I care if we're being lied to. If He's willing to lie about something as innocuous as a mirror, what else could He hiding from us?"));
                     parser.printDialogueLine(new VoiceDialogueLine("I'm not lying to you, I *promise.* There isn't a mirror. Really."));
                     break;
 
                 case "cApproachMirror":
                 case "approach":
-                    this.ch2ApproachMirror(true);
+                    this.ch2ApproachMirror();
                     return true;
 
                 default:
@@ -6159,9 +6159,8 @@ public class StandardCycle extends Cycle {
 
     /**
      * The player approaches the mirror in the cabin during Chapter II
-     * @param asked whether the player asked about the mirror, or just walked up to it
      */
-    private void ch2ApproachMirror(boolean asked) {
+    private void ch2ApproachMirror() {
         this.touchedMirror = true;
         this.mirrorPresent = false;
 
@@ -6171,20 +6170,20 @@ public class StandardCycle extends Cycle {
             parser.printDialogueLine(new VoiceDialogueLine("You walk up to the wall next to the basement door. It's a wall. There isn't much to see here."));
         }
 
-        if (asked) {
+        if (this.mirrorComment) {
             parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "This *really* isn't funny."));
         } else {
             parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "What are you talking about? This isn't a wall. It's a mirror. Or at least it'll *be* a mirror once we wipe off that layer of grime."));
         }
 
-        this.activeMenu = new OptionsMenu();
-        activeMenu.add(new Option(this.manager, "wipe", "[Wipe the mirror clean.]"));
+        OptionsMenu mirrorMenu = new OptionsMenu();
+        mirrorMenu.add(new Option(this.manager, "wipe", "[Wipe the mirror clean.]"));
 
-        this.repeatActiveMenu = true;
-        while (repeatActiveMenu) {
-            switch (parser.promptOptionsMenu(activeMenu)) {
+        boolean repeatMenu = true;
+        while (repeatMenu) {
+            switch (parser.promptOptionsMenu(mirrorMenu)) {
                 case "wipe":
-                    this.repeatActiveMenu = false;
+                    repeatMenu = false;
                     break;
 
                 default: super.giveDefaultFailResponse(activeOutcome);
@@ -6193,11 +6192,9 @@ public class StandardCycle extends Cycle {
         
         parser.printDialogueLine(new VoiceDialogueLine("You reach forward and rub your hand against the cabin wall. I hope you know how ridiculous you look right now."));
 
-        
-
         switch (this.activeChapter) {
             case ADVERSARY:
-                if (asked) {
+                if (this.mirrorComment) {
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But it was there a second ago!"));
                 } else {
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But there was a mirror a second ago."));
@@ -6207,7 +6204,7 @@ public class StandardCycle extends Cycle {
                 break;
 
             case BEAST:
-                if (asked) {
+                if (this.mirrorComment) {
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But it was there a second ago!"));
                 } else {
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But there was a mirror a second ago."));
@@ -6217,7 +6214,7 @@ public class StandardCycle extends Cycle {
                 break;
 
             case DAMSEL:
-                if (asked) {
+                if (this.mirrorComment) {
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But it was there a second ago!"));
                 } else {
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But there was a mirror a second ago."));
@@ -6231,7 +6228,7 @@ public class StandardCycle extends Cycle {
                 break;
 
             case PRISONER:
-                if (asked) {
+                if (this.mirrorComment) {
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But it was there a second ago!"));
                 } else {
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But there was a mirror a second ago."));
@@ -6241,7 +6238,7 @@ public class StandardCycle extends Cycle {
                 break;
 
             case RAZOR:
-                if (asked) {
+                if (this.mirrorComment) {
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But it was there a second ago!"));
                 } else {
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But there was a mirror a second ago."));
@@ -6251,7 +6248,7 @@ public class StandardCycle extends Cycle {
                 break;
 
             case SPECTRE:
-                if (asked) {
+                if (this.mirrorComment) {
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But it was there a second ago!"));
                 } else {
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But there was a mirror a second ago."));
@@ -6261,7 +6258,7 @@ public class StandardCycle extends Cycle {
                 break;
 
             case STRANGER:
-                if (asked) {
+                if (this.mirrorComment) {
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But it was there a second ago!"));
                 } else {
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "But there was a mirror a second ago."));
@@ -6327,7 +6324,7 @@ public class StandardCycle extends Cycle {
                     activeMenu.setCondition("approach", false);
                 case "approach":
                     activeMenu.setCondition("mirror", false);
-                    this.ch2ApproachMirror(false);
+                    this.ch2ApproachMirror();
                     break;
 
                 case "cTake":
@@ -6502,7 +6499,7 @@ public class StandardCycle extends Cycle {
                     activeMenu.setCondition("approach", false);
                 case "approach":
                     activeMenu.setCondition("mirror", false);
-                    this.ch2ApproachMirror(false);
+                    this.ch2ApproachMirror();
                     break;
 
                 case "cTake":
@@ -6727,7 +6724,7 @@ public class StandardCycle extends Cycle {
                     activeMenu.setCondition("approach", false);
                 case "approach":
                     activeMenu.setCondition("mirror", false);
-                    this.ch2ApproachMirror(false);
+                    this.ch2ApproachMirror();
                     break;
 
                 case "cTake":
@@ -6888,7 +6885,7 @@ public class StandardCycle extends Cycle {
                     activeMenu.setCondition("approach", false);
                 case "approach":
                     activeMenu.setCondition("mirror", false);
-                    this.ch2ApproachMirror(false);
+                    this.ch2ApproachMirror();
                     break;
 
                 case "cTake":
@@ -7210,7 +7207,7 @@ public class StandardCycle extends Cycle {
                     activeMenu.setCondition("approach", false);
                 case "approach":
                     activeMenu.setCondition("mirror", false);
-                    this.ch2ApproachMirror(false);
+                    this.ch2ApproachMirror();
                     break;
 
                 case "cTake":
@@ -7259,7 +7256,7 @@ public class StandardCycle extends Cycle {
         this.withPrincess = true;
         System.out.println();
         parser.printDialogueLine(new VoiceDialogueLine("As you descend the final step, the form of the Princess comes into view, her sharp eyes following you from across the room."));
-        parser.printDialogueLine("Her hair somehow looks sharper than last time, and the bottom of her dress is ripped.");
+        parser.printDialogueLine("Her hair somehow looks sharper than last time, and the bottom of her dress is ripped. She stands with her hands behind her back.");
         if (this.sharedLoop) parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I wonder if she remembers us."));
         parser.printDialogueLine(new PrincessDialogueLine("Finally, *somebody!* Quick, get me out of these chains, we're not safe here."));
         parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "Come on, now. We're not falling for that, are we? She's trying to trick us, but she can't hide that threatening edge to her voice. She just wants us to get close, to let our guard down."));
@@ -7280,12 +7277,12 @@ public class StandardCycle extends Cycle {
         }
 
         this.activeMenu = new OptionsMenu();
-        activeMenu.add(new Option(this.manager, "knife2", "(Explore) \"Prove it then. Prove that you don't have a knife.\"", activeMenu.get("knife1")));
+        activeMenu.add(new Option(this.manager, "knife2", "(Explore) \"Prove it then. Prove that you don't have a knife.\"", activeMenu.get("knife")));
         activeMenu.add(new Option(this.manager, "knife3", "(Explore) \"But what if you're just hiding it somewhere secret?\"", activeMenu.get("knife2")));
         activeMenu.add(new Option(this.manager, "stab", "(Explore) \"If I come close to you, you're just going to stab me, aren't you?\""));
         activeMenu.add(new Option(this.manager, "lastTime1", "(Explore) \"Do you remember what happened last time?\""));
         activeMenu.add(new Option(this.manager, "lastTime2", "(Explore) \"But that's exactly what happened! So you do remember it.\"", activeMenu.get("lastTime1")));
-        activeMenu.add(new Option(this.manager, "knife1", "(Explore) \"I know you have a knife. I'll let you out of here if you drop it.\""));
+        activeMenu.add(new Option(this.manager, "knife", "(Explore) \"I know you have a knife. I'll let you out of here if you drop it.\""));
         activeMenu.add(new Option(this.manager, "suspicious", "(Explore) \"I'd like to trust you, but you're being so suspicious right now!\""));
         activeMenu.add(new Option(this.manager, "talk", "(Explore) \"Can we just talk things through?\""));
         activeMenu.add(new Option(this.manager, "key", "(Explore) \"I don't have the key.\""));
@@ -7300,7 +7297,7 @@ public class StandardCycle extends Cycle {
         activeMenu.add(new Option(this.manager, "approach", "\"Okay, fine. I'm coming closer to free you. You'd better not try anything.\" [Approach the Princess.]"));
         activeMenu.add(new Option(this.manager, "bye", "\"Yeah, I'm not trusting this. Bye!\" [Turn and leave.]"));
         activeMenu.add(new Option(this.manager, "rightBack", "\"I'll be right back. I left something upstairs.\" [Go retrieve the blade upstairs.]", !this.hasBlade));
-        activeMenu.add(new Option(this.manager, "slay", "\"Screw it.\" [Slay the Princess.]"));
+        activeMenu.add(new Option(this.manager, "slay", "\"Screw it.\" [Slay the Princess.]", this.hasBlade));
 
 
         boolean lastTimeFlag = false;
@@ -7423,7 +7420,7 @@ public class StandardCycle extends Cycle {
                     
                     break;
 
-                case "knife1":
+                case "knife":
                     parser.printDialogueLine(new PrincessDialogueLine("A *knife?* What are you *talking about?* I don't have a knife, where would I keep a knife?"));
                     parser.printDialogueLine(new PrincessDialogueLine("And *why* would I stab you to death? I don't know you. You haven't given me a *reason* to stab you to death. It would be *so silly* of me to cut you open and look at your insides."));
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "Okay, I could have sworn we didn't mention stabbing anyone to death."));
@@ -7675,7 +7672,7 @@ public class StandardCycle extends Cycle {
 
         parser.printDialogueLine(new VoiceDialogueLine("The interior of the cabin is sharp, a constricting mess of curved and battered sheet metal pushing you towards -- wait, excuse me?! What just happened? What did you just do?"));
         parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "I feel dizzy."));
-        parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "Ohohoho. I guess I took us to the cabin, didn't I? Isn't {i}that{/i} interesting. Who holds the cards now?"));
+        parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "Ohohoho. I guess I took us to the cabin, didn't I? Isn't *that* interesting. Who holds the cards now?"));
 
         if (bladePath) {
             parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "The circle's getting smaller and smaller. Running isn't an option anymore. We have to fight."));
@@ -7912,7 +7909,7 @@ public class StandardCycle extends Cycle {
         parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Nothing bad has come of it *yet.*"));
         parser.printDialogueLine(new VoiceDialogueLine("Plenty bad has come of it! You've left at least one entire world to ruin. The people there mattered."));
         parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "The past isn't real. There's only here and now."));
-        parser.printDialogueLine(new VoiceDialogueLine("Your internal bickering is cut short by the wet sound of slicing meat. From the Princess' arms erupt twin blades, glistening with her blood, the empty flesh of her arms flopping at her elbows like torn sleeves. The chain clatters to the floor."));
+        parser.printDialogueLine(new VoiceDialogueLine("Your internal bickering is cut short by the wet sound of slicing meat. From the Princess's arms erupt twin blades, glistening with her blood, the empty flesh of her arms flopping at her elbows like torn sleeves. The chain clatters to the floor."));
         parser.printDialogueLine(new VoiceDialogueLine("She's loose, and she is coming for you."));
         parser.printDialogueLine(new PrincessDialogueLine("You're going to make me walk over to you, aren't you?"));
         parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "Shit, she's coming for us, and I'm out of ideas."));
@@ -8269,21 +8266,21 @@ public class StandardCycle extends Cycle {
 
                     switch (parser.promptOptionsMenu(subMenu)) {
                         case "gorgeous":
-                            parser.printDialogueLine(new VoiceDialogueLine("A rosy blush flushes in the Princess' cheeks, and a wide grin cuts across her face."));
+                            parser.printDialogueLine(new VoiceDialogueLine("A rosy blush flushes in the Princess's cheeks, and a wide grin cuts across her face."));
                             parser.printDialogueLine(new PrincessDialogueLine("You're the only person I know, so that's a first! You're sweet! I like you! You're also gorgeous!"));
                             parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "I'll be damned. This is actually going to work, isn't it?"));
                             parser.printDialogueLine(new PrincessDialogueLine("Still gonna kill you though."));
                             break;
 
                         case "getYou":
-                            parser.printDialogueLine(new VoiceDialogueLine("A rosy blush flushes in the Princess' cheeks, and a wide grin cuts across her face."));
+                            parser.printDialogueLine(new VoiceDialogueLine("A rosy blush flushes in the Princess's cheeks, and a wide grin cuts across her face."));
                             parser.printDialogueLine(new PrincessDialogueLine("You're sweet! I like you too! You're probably my favorite person other than me."));
                             parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "I'll be damned. This is actually going to work, isn't it?"));
                             parser.printDialogueLine(new PrincessDialogueLine("Still gonna kill you though."));
                             break;
 
                         case "dinner":
-                            parser.printDialogueLine(new VoiceDialogueLine("A rosy blush flushes in the Princess' cheeks, and a wide grin cuts across her face."));
+                            parser.printDialogueLine(new VoiceDialogueLine("A rosy blush flushes in the Princess's cheeks, and a wide grin cuts across her face."));
                             parser.printDialogueLine(new PrincessDialogueLine("Oh? Is that how it is? Yeah okay I feel that. I like you too."));
                             parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "I'll be damned. This is actually going to work, isn't it?"));
                             parser.printDialogueLine(new PrincessDialogueLine("But why mess around with appetizers when the main course is right there?"));
@@ -8307,7 +8304,7 @@ public class StandardCycle extends Cycle {
                             }
 
                             parser.printDialogueLine(new VoiceDialogueLine("*Sigh.* You flash the princess *The Look.*"));
-                            parser.printDialogueLine(new VoiceDialogueLine("... and a rosy blush rushes to the Princess' cheeks as she breaks into a wide grin. Unbelievable."));
+                            parser.printDialogueLine(new VoiceDialogueLine("... and a rosy blush rushes to the Princess's cheeks as she breaks into a wide grin. Unbelievable."));
                             parser.printDialogueLine(new PrincessDialogueLine("Oh? Is that how it is? Yeah okay I feel that. I like you too. Neat!"));
                             parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "I'll be damned. This is actually going to work, isn't it?"));
                             parser.printDialogueLine(new PrincessDialogueLine("Still going to kill you, but now we can both enjoy a mutual romantic subtext to the murder!"));
@@ -8471,7 +8468,7 @@ public class StandardCycle extends Cycle {
                 break;
         }
 
-        parser.printDialogueLine(new VoiceDialogueLine("Your internal bickering is cut short by the wet sound of slicing meat. From the Princess' arms erupt twin blades, glistening with her blood, the empty flesh of her arms flopping at her elbows like torn sleeves. The chain clatters to the floor."));
+        parser.printDialogueLine(new VoiceDialogueLine("Your internal bickering is cut short by the wet sound of slicing meat. From the Princess's arms erupt twin blades, glistening with her blood, the empty flesh of her arms flopping at her elbows like torn sleeves. The chain clatters to the floor."));
         parser.printDialogueLine(new PrincessDialogueLine("You're going to make me walk over to you, aren't you?"));
         parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "All right, I'm out of ideas... What're we doing?"));
 
@@ -8525,7 +8522,7 @@ public class StandardCycle extends Cycle {
                             break;
                     }
                     
-                    parser.printDialogueLine(new VoiceDialogueLine("Your fist slams into the Princess' face, and she recoils in pain."));
+                    parser.printDialogueLine(new VoiceDialogueLine("Your fist slams into the Princess's face, and she recoils in pain."));
                     parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "Huh. We actually did something to her!"));
                     parser.printDialogueLine(new PrincessDialogueLine("Ow ow ow ow ow! That hurt! What are your bones made of, metal?"));
                     parser.printDialogueLine(new PrincessDialogueLine("Because mine are."));
@@ -8737,21 +8734,21 @@ public class StandardCycle extends Cycle {
 
                     switch (parser.promptOptionsMenu(subMenu)) {
                         case "gorgeous":
-                            parser.printDialogueLine(new VoiceDialogueLine("A rosy blush flushes in the Princess' cheeks, and a wide grin cuts across her face."));
+                            parser.printDialogueLine(new VoiceDialogueLine("A rosy blush flushes in the Princess's cheeks, and a wide grin cuts across her face."));
                             parser.printDialogueLine(new PrincessDialogueLine("You're the only person I know, so that's a first! You're sweet! I like you! You're also gorgeous!"));
                             parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "I'll be damned. This is actually going to work, isn't it?"));
                             parser.printDialogueLine(new PrincessDialogueLine("Still gonna kill you though."));
                             break;
 
                         case "getYou":
-                            parser.printDialogueLine(new VoiceDialogueLine("A rosy blush flushes in the Princess' cheeks, and a wide grin cuts across her face."));
+                            parser.printDialogueLine(new VoiceDialogueLine("A rosy blush flushes in the Princess's cheeks, and a wide grin cuts across her face."));
                             parser.printDialogueLine(new PrincessDialogueLine("You're sweet! I like you too! You're probably my favorite person other than me."));
                             parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "I'll be damned. This is actually going to work, isn't it?"));
                             parser.printDialogueLine(new PrincessDialogueLine("Still gonna kill you though."));
                             break;
 
                         case "dinner":
-                            parser.printDialogueLine(new VoiceDialogueLine("A rosy blush flushes in the Princess' cheeks, and a wide grin cuts across her face."));
+                            parser.printDialogueLine(new VoiceDialogueLine("A rosy blush flushes in the Princess's cheeks, and a wide grin cuts across her face."));
                             parser.printDialogueLine(new PrincessDialogueLine("Oh? Is that how it is? Yeah okay I feel that. I like you too."));
                             parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "I'll be damned. This is actually going to work, isn't it?"));
                             parser.printDialogueLine(new PrincessDialogueLine("But why mess around with appetizers when the main course is right there?"));
@@ -8761,7 +8758,7 @@ public class StandardCycle extends Cycle {
                             parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "*The Look?*"));
                             parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "Yeah. The best flirts know how to flirt without saying anything. We just have to let her know, right?"));
                             parser.printDialogueLine(new VoiceDialogueLine("*Sigh.* You flash the princess *The Look.*"));
-                            parser.printDialogueLine(new VoiceDialogueLine("... and a rosy blush rushes to the Princess' cheeks as she breaks into a wide grin. Unbelievable."));
+                            parser.printDialogueLine(new VoiceDialogueLine("... and a rosy blush rushes to the Princess's cheeks as she breaks into a wide grin. Unbelievable."));
                             parser.printDialogueLine(new PrincessDialogueLine("Oh? Is that how it is? Yeah okay I feel that. I like you too. Neat!"));
                             parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "I'll be damned. This is actually going to work, isn't it?"));
                             parser.printDialogueLine(new PrincessDialogueLine("Still going to kill you, but now we can both enjoy a mutual romantic subtext to the murder!"));
@@ -9183,10 +9180,6 @@ public class StandardCycle extends Cycle {
                 parser.printDialogueLine(new PrincessDialogueLine("You'll have to be trickier than that."));
                 break;
         }
-
-        parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "XXXXX"));
-        parser.printDialogueLine(new VoiceDialogueLine("She skewers you."));
-        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
     }
 
 
@@ -9266,7 +9259,7 @@ public class StandardCycle extends Cycle {
 
         System.out.println();
         parser.printDialogueLine(new PrincessDialogueLine("Here we go! Now!"));
-        parser.printDialogueLine(new VoiceDialogueLine("The Princess' skin twists, splitting into red blooms of raw meat as it stretches and tears. And then it... erupts."));
+        parser.printDialogueLine(new VoiceDialogueLine("The Princess's skin twists, splitting into red blooms of raw meat as it stretches and tears. And then it... erupts."));
         parser.printDialogueLine(new VoiceDialogueLine("She becomes a wave of blood and viscera, pieces of her splattering against the walls. All that remains in the center of the room is a skeleton of blades. A heart beats furiously in its cage of a chest."));
         parser.printDialogueLine(new PrincessDialogueLine("Are you ready for what comes next?"));
         parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Holy *shit!*"));
@@ -9407,7 +9400,7 @@ public class StandardCycle extends Cycle {
                     activeMenu.setCondition("approach", false);
                 case "approach":
                     activeMenu.setCondition("mirror", false);
-                    this.ch2ApproachMirror(false);
+                    this.ch2ApproachMirror();
                     break;
 
                 case "cTake":
@@ -9583,7 +9576,7 @@ public class StandardCycle extends Cycle {
                     activeMenu.setCondition("approach", false);
                 case "approach":
                     activeMenu.setCondition("mirror", false);
-                    this.ch2ApproachMirror(false);
+                    this.ch2ApproachMirror();
                     break;
 
                 case "cTake":
@@ -9997,7 +9990,7 @@ public class StandardCycle extends Cycle {
                     activeMenu.setCondition("approach", false);
                 case "approach":
                     activeMenu.setCondition("mirror", false);
-                    this.ch2ApproachMirror(false);
+                    this.ch2ApproachMirror();
                     break;
 
                 case "cTake":
@@ -10794,7 +10787,7 @@ public class StandardCycle extends Cycle {
                     activeMenu.setCondition("approach", false);
                 case "approach":
                     activeMenu.setCondition("mirror", false);
-                    this.ch2ApproachMirror(false);
+                    this.ch2ApproachMirror();
                     break;
 
                 case "cTake":
@@ -11011,7 +11004,7 @@ public class StandardCycle extends Cycle {
                     activeMenu.setCondition("approach", false);
                 case "approach":
                     activeMenu.setCondition("mirror", false);
-                    this.ch2ApproachMirror(false);
+                    this.ch2ApproachMirror();
                     break;
 
                 case "cTake":
@@ -11102,178 +11095,6 @@ public class StandardCycle extends Cycle {
 
         // PLACEHOLDER
         return null;
-    }
-
-
-    
-    /**
-     * The player aborts the current Chapter (and therefore the current Cycle as well), contributing to the Oblivion ending
-     */
-    private void abortVessel(boolean lateJoin) {
-        if (!lateJoin) {
-            if (this.activeChapter == Chapter.STRANGER || this.activeChapter.getNumber() > 2) {
-                parser.printDialogueLine(new VoiceDialogueLine("Wait... something isn't right. Can you still hear me? Everything is getting fuzzy..."));
-            } else {
-                parser.printDialogueLine(new VoiceDialogueLine("Wait... something isn't right. Can you still hear me? You're supposed to wind up back at the cabin again, but everything is getting fuzzy..."));
-            }
-
-            this.currentVoices.put(Voice.NARRATOR, false);
-
-            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Wh-what's going on. Where are we?"));
-
-            if (this.hasVoice(Voice.CONTRARIAN)) {
-                parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "We're somewhere interesting for once."));
-            }
-            if (this.hasVoice(Voice.COLD)) {
-                parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "I don't know. But it feels like home."));
-            }
-            if (this.hasVoice(Voice.BROKEN)) {
-                parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "We're dead. Obviously."));
-            }
-            if (this.hasVoice(Voice.HUNTED)) {
-                parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "A dark place. Thoughts like us shouldn't be here."));
-            }
-            if (this.hasVoice(Voice.SKEPTIC)) {
-                parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Did we do this? Is this the end of the world? Was there ever even a world to end?"));
-            }
-            if (this.hasVoice(Voice.STUBBORN)) {
-                parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "I told you we shouldn't have come here, I told you. But did you listen? No."));
-            }
-            if (this.hasVoice(Voice.SMITTEN)) {
-                parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "Oh I don't like this one bit. There's not a single damsel in sight. How dull."));
-            }
-            if (this.hasVoice(Voice.PARANOID)) {
-                parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "It's finally happened, hasn't it? We've finally cracked."));
-            }
-            if (this.hasVoice(Voice.OPPORTUNIST)) {
-                parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "I like it! Seems like it's got some great acoustics..."));
-            }
-            if (this.hasVoice(Voice.CHEATED)) {
-                parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "That son-of-a-bitch flipped over the table, didn't he?"));
-            }
-        }
-
-        this.clearVoices();
-        manager.playlistAbort();
-
-        if (!this.isFirstVessel) {
-            parser.printDialogueLine("The world around you is unwound, its physical matter replaced by a textured nothing. You find yourself in The Long Quiet once again. Memory returns.");
-        } else if (manager.nVesselsAborted() > 0) {
-            parser.printDialogueLine("The world around you is unwound, its physical matter replaced by a textured nothing. It is quiet. You have been here before. Memory returns.");
-        } else {
-            parser.printDialogueLine("The world around you is unwound, its physical matter replaced by a textured nothingness. It is quiet.");
-        }
-
-        parser.printDialogueLine("There is a distant rumbling, a sound of many sounds. Undulations pulse louder as something Other comes close.");
-        
-        switch (manager.nVesselsAborted()) {
-            case 0:
-                if (!this.isFirstVessel) parser.printDialogueLine("You already know what dwells in the empty spaces.");
-                parser.printDialogueLine("Feelers probe across the fabric of reality. Extremities find your consciousness and wrap themselves around it. You are no longer alone.");
-
-                if (this.isFirstVessel) {
-                    parser.printDialogueLine("Confusion. \"Why are you here? I am unfinished.\"");
-                    parser.printDialogueLine("Resistance. Fingers drag claws across the glass surface of your soul.");
-                    parser.printDialogueLine("Frustration. \"This vessel is full of you. It is useless to us if it doesn't bring more gifts.\"");
-                    parser.printDialogueLine("Force pushing against your will. \"NO. You cannot go back. Not there.\"");
-                    parser.printDialogueLine("Regret. \"This world is broken beyond repair. We must weave something new.\"");
-                    parser.printDialogueLine("A wagging finger. \"There is only so much thread in this place. Do not waste it. I am our only salvation.\"");
-                } else {
-                    parser.printDialogueLine("Resistance. Fingers drag claws across the glass surface of your soul.");
-                    parser.printDialogueLine("Frustration. \"This vessel is full of you. I need something empty I can crawl inside of. I need something shaped like me.\"");
-
-                    this.activeMenu = new OptionsMenu(true);
-                    activeMenu.add(new Option(this.manager, "wake", "This is a nightmare. Wake up."));
-                    activeMenu.add(new Option(this.manager, "embrace", "Embrace the thoughts constricting you."));
-
-                    switch (parser.promptOptionsMenu(activeMenu)) {
-                        case "wake":
-                            parser.printDialogueLine("It's not.");
-                            break;
-
-                        case "embrace":
-                            parser.printDialogueLine("Urgency. \"You have a story you need to finish. It is the only way for us to escape this place.\"");
-                            parser.printDialogueLine("Force pushing against your will. \"NO. You cannot go back. Not there.\"");
-                            parser.printDialogueLine("Regret. \"This world is broken beyond repair. We must weave something new.\"");
-                            parser.printDialogueLine("A wagging finger. \"There is only so much thread in this place. Do not waste it. I am our only salvation.\"");
-                            break;
-                    }
-                }
-
-                break;
-
-
-            case 1:
-                parser.printDialogueLine("That which dwells in the empty spaces contracts across the edges of your mind again. She is furious.");
-                parser.printDialogueLine("Betrayal. \"Every door you close on me is a door you close on yourself. Do you want to linger here, entwined with a creature you taught to hate you forever? Eternity never ends.\"");
-                parser.printDialogueLine("Cold spite. \"Our infinities shrink into something less. I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I --\"", true);
-                break;
-
-
-            case 2:
-                parser.printDialogueLine("Desperate pleas. \"I do not hate you. I am sorry I said I hate you. I do not have to hate you. We can still leave this place together.\"");
-                parser.printDialogueLine("An offering. \"We can be friends.\"");
-                parser.printDialogueLine("Ecstasy. You are elated. You have never felt more elated than you feel now. Everything is good. You cannot remember what it is like to feel anything other than euphoric joy.");
-                parser.printDialogueLine("A reminder. \"We can be worse than enemies.\"");
-                parser.printDialogueLine("Agony. You are torn into a million pieces, and you feel pain in each of them. You have never felt more miserable than you feel now. You cannot remember what it is like to feel anything other than anguish.");
-                parser.printDialogueLine("Mercy. You are elated again. You have never felt more elated than you feel now. In contrast to the agony you've suffered, this elation is better than all of the other elation you have experienced.");
-
-                if (this.isFirstVessel) {
-                    parser.printDialogueLine("Round eyes looking up at you. \"I need more vessels so that I can be finished. I cannot find them on my own, for they are me. You are the only one who can do this. You are our only salvation.\"");
-                } else {
-                    parser.printDialogueLine("Round eyes looking up at you. \"I need vessels so that I can be finished. I cannot find them on my own, for they are me. You are the only one who can do this. You are our only salvation.\"");
-                }
-
-                break;
-
-
-            case 3:
-                parser.printDialogueLine("Dejection. Feelers limp against your soul. \"Why?\"");
-                parser.printDialogueLine("Long silence. A hollow heart.");
-                parser.printDialogueLine("\"I don't want to see you.\"");
-                break;
-
-
-            case 4:
-                parser.printDialogueLine("The feelers hold you in a gentle caress.");
-                parser.printDialogueLine("Resignation. \"I cannot stop you. But our spool is nearly taut.\"");
-                parser.printDialogueLine("A warning. \"If you come here again, we will be here forever.\"");
-                break;
-
-
-            case 5: // Oblivion ending
-                manager.addToPlaylist("Oblivion");
-                parser.printDialogueLine("Oblivion. The many feelers pull your shape into something formless. \"You have made a decision. It is the wrong one. I love you.\"");
-
-                this.activeMenu = new OptionsMenu(true);
-                activeMenu.add(new Option(this.manager, "exist", "[Exist.]", 0));
-                activeMenu.add(new Option(this.manager, "fade", "[Consciousness fades away.]"));
-
-                for (int i = 0; i < 4; i++) {
-                    parser.printDialogueLine("You are bliss. Joy and understanding everywhere at once. Your soul threatens to fade away. \"I love you.\"");
-                    parser.printDialogueLine("You are agony. A numbing arm. A parched throat. An open wound. Your soul forced back into existence. \"I love you.\"");
-
-                    if (i == 3) {
-                        switch (parser.promptOptionsMenu(activeMenu)) {
-                            case "exist":
-                                // You can keep doing this forever, if you want
-                                i -= 1;
-                                break;
-
-                            case "fade":
-                                // End the game
-                                break;
-                        }
-                    }
-                }
-
-                break;
-        }
-
-        if (manager.nVesselsAborted() != 5) {
-            System.out.println();
-            parser.printDialogueLine("All at once, the nothingness shatters.");
-        }
     }
 
 
@@ -12399,6 +12220,177 @@ public class StandardCycle extends Cycle {
                 parser.printDialogueLine(new PrincessDialogueLine("This one is a songbird in a cage of gilded shadows. She will make for an honest heart."));
                 parser.printDialogueLine(new PrincessDialogueLine("Do not mourn her. She has finally learned to sing for herself."));
                 break;
+        }
+    }
+
+
+    
+    /**
+     * The player aborts the current Chapter (and therefore the current Cycle as well), contributing to the Oblivion ending
+     */
+    private void abortVessel(boolean lateJoin) {
+        if (!lateJoin) {
+            if (this.activeChapter == Chapter.STRANGER || this.activeChapter.getNumber() > 2) {
+                parser.printDialogueLine(new VoiceDialogueLine("Wait... something isn't right. Can you still hear me? Everything is getting fuzzy..."));
+            } else {
+                parser.printDialogueLine(new VoiceDialogueLine("Wait... something isn't right. Can you still hear me? You're supposed to wind up back at the cabin again, but everything is getting fuzzy..."));
+            }
+
+            this.currentVoices.put(Voice.NARRATOR, false);
+
+            parser.printDialogueLine(new VoiceDialogueLine(Voice.HERO, "Wh-what's going on. Where are we?"));
+
+            if (this.hasVoice(Voice.CONTRARIAN)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.CONTRARIAN, "We're somewhere interesting for once."));
+            }
+            if (this.hasVoice(Voice.COLD)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.COLD, "I don't know. But it feels like home."));
+            }
+            if (this.hasVoice(Voice.BROKEN)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.BROKEN, "We're dead. Obviously."));
+            }
+            if (this.hasVoice(Voice.HUNTED)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.HUNTED, "A dark place. Thoughts like us shouldn't be here."));
+            }
+            if (this.hasVoice(Voice.SKEPTIC)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SKEPTIC, "Did we do this? Is this the end of the world? Was there ever even a world to end?"));
+            }
+            if (this.hasVoice(Voice.STUBBORN)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.STUBBORN, "I told you we shouldn't have come here, I told you. But did you listen? No."));
+            }
+            if (this.hasVoice(Voice.SMITTEN)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.SMITTEN, "Oh I don't like this one bit. There's not a single damsel in sight. How dull."));
+            }
+            if (this.hasVoice(Voice.PARANOID)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.PARANOID, "It's finally happened, hasn't it? We've finally cracked."));
+            }
+            if (this.hasVoice(Voice.OPPORTUNIST)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.OPPORTUNIST, "I like it! Seems like it's got some great acoustics..."));
+            }
+            if (this.hasVoice(Voice.CHEATED)) {
+                parser.printDialogueLine(new VoiceDialogueLine(Voice.CHEATED, "That son-of-a-bitch flipped over the table, didn't he?"));
+            }
+        }
+
+        this.clearVoices();
+
+        if (!this.isFirstVessel) {
+            parser.printDialogueLine("The world around you is unwound, its physical matter replaced by a textured nothing. You find yourself in The Long Quiet once again. Memory returns.");
+        } else if (manager.nVesselsAborted() > 0) {
+            parser.printDialogueLine("The world around you is unwound, its physical matter replaced by a textured nothing. It is quiet. You have been here before. Memory returns.");
+        } else {
+            parser.printDialogueLine("The world around you is unwound, its physical matter replaced by a textured nothingness. It is quiet.");
+        }
+
+        parser.printDialogueLine("There is a distant rumbling, a sound of many sounds. Undulations pulse louder as something Other comes close.");
+        
+        switch (manager.nVesselsAborted()) {
+            case 0:
+                if (!this.isFirstVessel) parser.printDialogueLine("You already know what dwells in the empty spaces.");
+                parser.printDialogueLine("Feelers probe across the fabric of reality. Extremities find your consciousness and wrap themselves around it. You are no longer alone.");
+
+                if (this.isFirstVessel) {
+                    parser.printDialogueLine("Confusion. \"Why are you here? I am unfinished.\"");
+                    parser.printDialogueLine("Resistance. Fingers drag claws across the glass surface of your soul.");
+                    parser.printDialogueLine("Frustration. \"This vessel is full of you. It is useless to us if it doesn't bring more gifts.\"");
+                    parser.printDialogueLine("Force pushing against your will. \"NO. You cannot go back. Not there.\"");
+                    parser.printDialogueLine("Regret. \"This world is broken beyond repair. We must weave something new.\"");
+                    parser.printDialogueLine("A wagging finger. \"There is only so much thread in this place. Do not waste it. I am our only salvation.\"");
+                } else {
+                    parser.printDialogueLine("Resistance. Fingers drag claws across the glass surface of your soul.");
+                    parser.printDialogueLine("Frustration. \"This vessel is full of you. I need something empty I can crawl inside of. I need something shaped like me.\"");
+
+                    this.activeMenu = new OptionsMenu(true);
+                    activeMenu.add(new Option(this.manager, "wake", "This is a nightmare. Wake up."));
+                    activeMenu.add(new Option(this.manager, "embrace", "Embrace the thoughts constricting you."));
+
+                    switch (parser.promptOptionsMenu(activeMenu)) {
+                        case "wake":
+                            parser.printDialogueLine("It's not.");
+                            break;
+
+                        case "embrace":
+                            parser.printDialogueLine("Urgency. \"You have a story you need to finish. It is the only way for us to escape this place.\"");
+                            parser.printDialogueLine("Force pushing against your will. \"NO. You cannot go back. Not there.\"");
+                            parser.printDialogueLine("Regret. \"This world is broken beyond repair. We must weave something new.\"");
+                            parser.printDialogueLine("A wagging finger. \"There is only so much thread in this place. Do not waste it. I am our only salvation.\"");
+                            break;
+                    }
+                }
+
+                break;
+
+
+            case 1:
+                parser.printDialogueLine("That which dwells in the empty spaces contracts across the edges of your mind again. She is furious.");
+                parser.printDialogueLine("Betrayal. \"Every door you close on me is a door you close on yourself. Do you want to linger here, entwined with a creature you taught to hate you forever? Eternity never ends.\"");
+                parser.printDialogueLine("Cold spite. \"Our infinities shrink into something less. I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I hate you I --\"", true);
+                break;
+
+
+            case 2:
+                parser.printDialogueLine("Desperate pleas. \"I do not hate you. I am sorry I said I hate you. I do not have to hate you. We can still leave this place together.\"");
+                parser.printDialogueLine("An offering. \"We can be friends.\"");
+                parser.printDialogueLine("Ecstasy. You are elated. You have never felt more elated than you feel now. Everything is good. You cannot remember what it is like to feel anything other than euphoric joy.");
+                parser.printDialogueLine("A reminder. \"We can be worse than enemies.\"");
+                parser.printDialogueLine("Agony. You are torn into a million pieces, and you feel pain in each of them. You have never felt more miserable than you feel now. You cannot remember what it is like to feel anything other than anguish.");
+                parser.printDialogueLine("Mercy. You are elated again. You have never felt more elated than you feel now. In contrast to the agony you've suffered, this elation is better than all of the other elation you have experienced.");
+
+                if (this.isFirstVessel) {
+                    parser.printDialogueLine("Round eyes looking up at you. \"I need more vessels so that I can be finished. I cannot find them on my own, for they are me. You are the only one who can do this. You are our only salvation.\"");
+                } else {
+                    parser.printDialogueLine("Round eyes looking up at you. \"I need vessels so that I can be finished. I cannot find them on my own, for they are me. You are the only one who can do this. You are our only salvation.\"");
+                }
+
+                break;
+
+
+            case 3:
+                parser.printDialogueLine("Dejection. Feelers limp against your soul. \"Why?\"");
+                parser.printDialogueLine("Long silence. A hollow heart.");
+                parser.printDialogueLine("\"I don't want to see you.\"");
+                break;
+
+
+            case 4:
+                parser.printDialogueLine("The feelers hold you in a gentle caress.");
+                parser.printDialogueLine("Resignation. \"I cannot stop you. But our spool is nearly taut.\"");
+                parser.printDialogueLine("A warning. \"If you come here again, we will be here forever.\"");
+                break;
+
+
+            case 5: // Oblivion ending
+                manager.addToPlaylist("Oblivion");
+                parser.printDialogueLine("Oblivion. The many feelers pull your shape into something formless. \"You have made a decision. It is the wrong one. I love you.\"");
+
+                this.activeMenu = new OptionsMenu(true);
+                activeMenu.add(new Option(this.manager, "exist", "[Exist.]", 0));
+                activeMenu.add(new Option(this.manager, "fade", "[Consciousness fades away.]"));
+
+                for (int i = 0; i < 4; i++) {
+                    parser.printDialogueLine("You are bliss. Joy and understanding everywhere at once. Your soul threatens to fade away. \"I love you.\"");
+                    parser.printDialogueLine("You are agony. A numbing arm. A parched throat. An open wound. Your soul forced back into existence. \"I love you.\"");
+
+                    if (i == 3) {
+                        switch (parser.promptOptionsMenu(activeMenu)) {
+                            case "exist":
+                                // You can keep doing this forever, if you want
+                                i -= 1;
+                                break;
+
+                            case "fade":
+                                // End the game
+                                break;
+                        }
+                    }
+                }
+
+                break;
+        }
+
+        if (manager.nVesselsAborted() != 5) {
+            System.out.println();
+            parser.printDialogueLine("All at once, the nothingness shatters.");
         }
     }
 

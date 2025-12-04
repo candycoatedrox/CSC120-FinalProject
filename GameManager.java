@@ -236,13 +236,6 @@ public class GameManager {
     }
 
     /**
-     * Removes the most recent song from the playthrough's playlist, in case of an aborted Chapter
-     */
-    public void playlistAbort() {
-        this.playlist.remove(this.playlist.size() - 1);
-    }
-
-    /**
      * Accessor for nVesselsAborted
      * @return the number of vessels the player has aborted this playthrough
      */
@@ -1011,7 +1004,7 @@ public class GameManager {
 
     public static void main(String[] args) {
         GameManager manager = new GameManager();
-        manager.debugRunGame(ChapterEnding.ILLUSIONOFCHOICE);
+        manager.debugRunGame(ChapterEnding.TORAZORREVIVAL);
     }
 
 }
