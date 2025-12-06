@@ -252,6 +252,16 @@ public class Script {
     }
 
     /**
+     * Executes this script from a given jump anchor until a given line index
+     * @param startAnchorName the name of the jump anchor to start executing at
+     * @param endAnchorName the name of the jump anchor to stop executing at
+     * @param returnToCurrentIndex whether to reset the cursor after finishing this section
+     */
+    public void runThrough(String startAnchorName, String endAnchorName, boolean returnToCurrentIndex) {
+        this.runThrough(this.getJumpAnchorIndex(startAnchorName), this.getJumpAnchorIndex(endAnchorName), returnToCurrentIndex);
+    }
+
+    /**
      * Executes this script from a given line index until another given line index
      * @param startIndex the index of the first line to execute
      * @param endIndex the index to stop executing at
@@ -283,8 +293,8 @@ public class Script {
 
     /**
      * Executes this script from a given jump anchor until another given jump anchor
-     * @param anchorName the name of the jump anchor to start executing at
-     * @param anchorName the name of the jump anchor to stop executing at
+     * @param startAnchorName the name of the jump anchor to start executing at
+     * @param endAnchorName the name of the jump anchor to stop executing at
      */
     public void runThrough(String startAnchorName, String endAnchorName) {
         this.cursor = this.getJumpAnchorIndex(startAnchorName);
