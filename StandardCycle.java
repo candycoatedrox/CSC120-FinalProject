@@ -28,6 +28,8 @@ public class StandardCycle extends Cycle {
     private boolean knowsDestiny = false; // Used in Chapter 1, Tower, Fury
 
     private static final PrincessDialogueLine CANTSTRAY = new PrincessDialogueLine(true, "You have already committed to my completion. You cannot go further astray.");
+    private static final PrincessDialogueLine WORNPATH = new PrincessDialogueLine(true, "This path is already worn by travel and has been seen by one of my many eyes. You cannot walk it again. Change your course.");
+    private static final VoiceDialogueLine WORNPATHHERO = new VoiceDialogueLine(Voice.HERO, "Wait... what?!");
 
     // --- CONSTRUCTOR ---
 
@@ -48,10 +50,11 @@ public class StandardCycle extends Cycle {
 
         this.currentVoices = new HashMap<>();
         for (Voice v : Voice.values()) {
-            if (v == Voice.NARRATOR || v == Voice.HERO) {
-                this.currentVoices.put(v, true);
-            } else {
-                this.currentVoices.put(v, false);
+            switch (v) {
+                case NARRATOR:
+                case HERO: this.currentVoices.put(v, true);
+
+                default: this.currentVoices.put(v, false);
             }
         }
     }
@@ -65,8 +68,14 @@ public class StandardCycle extends Cycle {
     @Override
     protected void addVoice(Voice v) {
         super.addVoice(v);
-        if (v != Voice.NARRATOR && v != Voice.HERO && v != Voice.PRINCESS) {
-            this.voicesMet.add(v);
+
+        switch (v) {
+            case NARRATOR:
+            case NARRATORPRINCESS:
+            case PRINCESS:
+            case HERO: break;
+
+            default: this.voicesMet.add(v);
         }
     }
 
@@ -5076,21 +5085,373 @@ public class StandardCycle extends Cycle {
         }
 
         if (manager.trueDemoMode()) return ChapterEnding.DEMOENDING;
+
+        if (this.knowsDestiny) {
+            mainScript.runSection("startKnowsDestiny");
+            if (this.sharedLoop) {
+                mainScript.runSection("startKnowsDestinySharedLoop");
+            } else {
+                mainScript.runSection("startKnowsDestinyNoShare");
+            }
+        } else {
+            if (this.hasBlade) {
+                if (source.equals("pathetic")) {
+                    mainScript.runSection("startBladePathetic");
+                } else {
+                    mainScript.runSection("startBlade");
+                }
+            } else {
+                mainScript.runSection("startNoBlade");
+            }
+
+            if (this.sharedLoop) {
+                mainScript.runSection("startSharedLoop");
+            } else {
+                mainScript.runSection("startNoShare");
+            }
+
+            this.activeMenu = new OptionsMenu(true);
+            activeMenu.add(new Option(this.manager, "cantRefuse", "(Explore) I don't think I can refuse her. Sorry.", resistCount == 0));
+            activeMenu.add(new Option(this.manager, "noStutter", "(Explore) \"N-no. I w-won't t-tell you.\"", resistCount > 0 && submitCount > 0));
+            activeMenu.add(new Option(this.manager, "shareMotive", "\"You're supposed to end the world.\""));
+            activeMenu.add(new Option(this.manager, "noForce", manager.demoMode(), "\"I said NO!\"", activeMenu.get("shareMotive"), tookBlade && resistCount >= 3));
+            activeMenu.add(new Option(this.manager, "no", manager.demoMode(), "\"No.\"", submitCount == 0));
+            activeMenu.add(new Option(this.manager, "silent", manager.demoMode() && submitCount == 0, "[Remain silent.]"));
+
+            this.repeatActiveMenu = true;
+            while (repeatActiveMenu) {
+                switch (parser.promptOptionsMenu(activeMenu)) {
+                    case "cantRefuse":
+                        mainScript.runSection("motiveCantRefuse");
+                        break;
+                    
+                    case "noStutter":
+                        resistCount += 1;
+                        mainScript.runSection("motiveNoStutter");
+                        break;
+                    
+                    case "shareMotive":
+                        this.repeatActiveMenu = false;
+                        this.knowsDestiny = true;
+                        mainScript.runSection("motiveShare");
+                        break;
+                    
+                    case "noForce":
+                        this.repeatActiveMenu = false;
+                        mainScript.runSection("motiveNoForce");
+                        return this.towerResistBlade(resistCount, submitCount, false);
+                    
+                    case "no":
+                        this.repeatActiveMenu = false;
+                        return this.towerResistBlade(resistCount, submitCount, false);
+                    
+                    case "silent":
+                        this.repeatActiveMenu = false;
+                        this.knowsDestiny = true;
+
+                        if (submitCount == 0) {
+                            mainScript.runSection("motiveSilentNoSubmit");
+                            return this.towerResistBlade(resistCount, submitCount, false);
+                        }
+
+                        mainScript.runSection("motiveSilent");
+
+                        if (tookBlade) {
+                            mainScript.runSection("motiveShareBlade");
+                        } else {
+                            mainScript.runSection("motiveShareNoBlade");
+                        }
+
+                        break;
+                }
+            }
+        }
+
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "role", "(Explore) \"What would you have me do? What do you have planned?\""));
+        activeMenu.add(new Option(this.manager, "powerful", "(Explore) \"If you're so powerful, can't you just break the chains yourself?\"", activeMenu.get("role")));
+        activeMenu.add(new Option(this.manager, "selfDetermination", "(Explore) \"Just because you're supposed to end the world doesn't mean you actually have to do it. You can be whatever you want to be.\""));
+        activeMenu.add(new Option(this.manager, "questions", "(Explore) \"I have questions for you before I decide to do anything.\""));
+        activeMenu.add(new Option(this.manager, "happened", "(Explore) \"What happened to you after I died?\""));
+        activeMenu.add(new Option(this.manager, "refuseNoBladeA", manager.demoMode(), "\"I'm not going to help you end the world. I don't care if something new comes after. I just can't let you do that.\"", !tookBlade && resistCount >= 2));
+        activeMenu.add(new Option(this.manager, "refuseNoBladeB", manager.demoMode(), "\"No. I won't take part in this.\" [Refuse her.]", !tookBlade && resistCount >= 2));
+        activeMenu.add(new Option(this.manager, "refuseBlade", manager.demoMode(), "\"I'm not going to help you end the world. I don't care if something new comes after. I just can't let you do that.\"", tookBlade));
+        activeMenu.add(new Option(this.manager, "pledge", "\"I'm yours to command.\" [Pledge yourself to her.]"));
+
+        boolean priestOffer = false;
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            activeOutcome = parser.promptOptionsMenu(activeMenu, new VoiceDialogueLine("You have no other choice."));
+            switch (activeOutcome) {
+                case "role":
+                case "powerful":
+                case "selfDetermination":
+                    mainScript.runSection(activeOutcome);
+                    break;
+
+                case "questions":
+                    activeMenu.setCondition("happened", false);
+                case "happened":
+                    activeMenu.setCondition("questions", false);
+                    priestOffer = true;
+                    mainScript.runSection("questions");
+                    break;
+
+                case "refuseNoBladeA":
+                case "refuseNoBladeB":
+                    mainScript.runSection("refuseNoBlade");
+                    mainScript.runSection();
+                    return this.towerSlaySelf(false, true);
+
+                case "refuseBlade":
+                    mainScript.runSection("refuseBlade");
+                    return this.towerResistBlade(resistCount, submitCount, priestOffer);
+
+                case "pledge":
+                    mainScript.runSection("menuPledge");
+                    this.towerPledge(tookBlade);
+                    return ChapterEnding.OBEDIENTSERVANT;
+            }
+        }
+
+        throw new RuntimeException("No ending reached");
+    }
+
+    /**
+     * The player pledges themself to the Tower, leading to the "Your Obedient Servant" ending and claiming the Tower as a vessel
+     */
+    private void towerPledge(boolean tookBlade) {
+        mainScript.runSection("pledge");
+        mainScript.runSection("pledgeCont");
+
+        if (tookBlade) {
+            mainScript.runSection("pledgeBlade");
+        } else {
+            mainScript.runSection("pledgeNoBlade");
+        }
+
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "believe", "(Explore) \"And what if I don't believe? What happens then?\""));
+        activeMenu.add(new Option(this.manager, "sorry", "(Explore) I have to. It's over. I'm sorry."));
+        activeMenu.add(new Option(this.manager, "break", "[Break her chains.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu, new VoiceDialogueLine(Voice.NARRATORPRINCESS, "You have no other choice."))) {
+                case "believe":
+                    mainScript.runSection("pledgeBelieve");
+                    break;
+
+                case "sorry":
+                    mainScript.runSection("pledgeSorry");
+                    break;
+
+                case "break":
+                    this.repeatActiveMenu = false;
+                    break;
+            }
+        }
+
+        if (this.isFirstVessel) {
+            mainScript.runSection("endingFirstVessel");
+        } else {
+            mainScript.runSection("endingNotFirstVessel");
+        }
+
+        mainScript.runSection("pledgeBreak");
+
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "explore", "(Explore) \"What happens now?\""));
+        activeMenu.add(new Option(this.manager, "take", "[Take my hand.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu, new VoiceDialogueLine(Voice.NARRATORPRINCESS, "You have no other choice."))) {
+                case "explore":
+                    mainScript.runSection("pledgeExplore");
+                    break;
+
+                case "take":
+                    this.repeatActiveMenu = false;
+                    break;
+            }
+        }
+
+        if (this.isFirstVessel) {
+            mainScript.runSection("pledgeEndFirstVessel");
+        } else {
+            mainScript.runSection("pledgeEndNotFirstVessel");
+        }
+    }
+
+    /**
+     * The player attempts to resist the Tower after bringing down the blade, leading to Chapter III: The Apotheosis / The Fury
+     * @return the Chapter ending reached by the player
+     */
+    private ChapterEnding towerResistBlade(int resistCount, int submitCount, boolean priestOffer) {
+        mainScript.runSection("resistBlade");
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "why", true, "(Explore) \"Why? What are you going to try and make me do with it?\""));
+        activeMenu.add(new Option(this.manager, "kill", true, "(Explore) \"I'm going to kill you.\""));
+        activeMenu.add(new Option(this.manager, "divine", true, "(Explore) You're not kidding about that divine hand. Who's doing this? Is it her? Is it you?"));
+        activeMenu.add(new Option(this.manager, "no", true, "\"No.\""));
+        activeMenu.add(new Option(this.manager, "take", "[Pick up the blade.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu)) {
+                case "cTake":
+                case "take":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default: this.giveDefaultFailResponse();
+            }
+        }
+
+        this.hasBlade = true;
+        mainScript.runSection();
+
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "hate", true, "\"I hate you so much. All of you.\""));
+        activeMenu.add(new Option(this.manager, "stop", true, "\"Stop making me do things!\""));
+        activeMenu.add(new Option(this.manager, "kneel", true, "\"I'm going to kneel here forever.\""));
+        activeMenu.add(new Option(this.manager, "stand", "[Stand.]"));
+
+        parser.promptOptionsMenu(activeMenu);
+        mainScript.runSection();
+
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "end", "[End this.]"));
+
+        parser.promptOptionsMenu(activeMenu);
+        mainScript.runSection();
         
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "self", "[Slay yourself.]"));
+        activeMenu.add(new Option(this.manager, "resist", "[Resist.]", resistCount >= 3 && submitCount > 0));
+        activeMenu.add(new Option(this.manager, "slay", "[Slay the Princess.]", submitCount == 0));
 
+        this.canSlayPrincess = true;
+        this.canSlaySelf = true;
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu)) {
+                case "cSlaySelf":
+                case "self":
+                    mainScript.runSection("bladeSlaySelf");
+                    return this.towerSlaySelf(true, false);
 
+                case "cSlayPrincess":
+                case "resist":
+                case "slay":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default: this.giveDefaultFailResponse();
+            }
+        }
+
+        mainScript.runSection("advance1");
         
-        // temporary templates for copy-and-pasting
-        /*
-        parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
-        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
-        */
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "self", "[Slay yourself.]"));
+        activeMenu.add(new Option(this.manager, "push", "[Push forward.]", resistCount >= 3 && submitCount > 0));
+        activeMenu.add(new Option(this.manager, "slay", "[Slay the Princess.]", submitCount == 0));
 
-        // PLACEHOLDER
-        return null;
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu)) {
+                case "cSlaySelf":
+                case "self":
+                    mainScript.runSection("advanceSlaySelf");
+                    return this.towerSlaySelf(true, false);
+
+                case "cSlayPrincess":
+                case "push":
+                case "slay":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default: this.giveDefaultFailResponse();
+            }
+        }
+
+        this.canSlaySelf = false;
+        if (submitCount > 0) this.canSlayPrincess = false;
+        mainScript.runSection("advance2");
+
+        if (priestOffer) {
+            mainScript.runSection("advance2Offer");
+        } else {
+            mainScript.runSection("advance2NoOffer");
+        }
+        
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "pledge", "\"I'm yours.\" [Pledge yourself to her.]"));
+        activeMenu.add(new Option(this.manager, "resist", "\"I. Said. NO!\" [Resist.]", submitCount > 0));
+        activeMenu.add(new Option(this.manager, "slay", "[Slay the Princess.]", submitCount == 0));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu)) {
+                case "pledge":
+                    mainScript.runSection("advancePledge");
+                    if (!this.knowsDestiny) mainScript.runSection("advancePledgeShare");
+                    this.towerPledge(true);
+                    return ChapterEnding.OBEDIENTSERVANT;
+
+                case "resist":
+                    return this.towerSlaySelf(true, false);
+
+                case "cSlayPrincess":
+                case "slay":
+                    if (manager.hasVisited(Chapter.FURY)) {
+                        parser.printDialogueLine(WORNPATH);
+                        parser.printDialogueLine(WORNPATHHERO);
+
+                        this.canSlayPrincess = false;
+                        activeMenu.setGreyedOut("slay", true);
+                        activeMenu.setCondition("resist", true);
+                        break;
+                    } else if (!manager.confirmContentWarnings(Chapter.FURY)) {
+                        this.canSlayPrincess = false;
+                        activeMenu.setGreyedOut("slay", true);
+                        activeMenu.setCondition("resist", true);
+                        break;
+                    }
+
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default: this.giveDefaultFailResponse();
+            }
+        }
+
+        mainScript.runSection("advanceSlay");
+        return ChapterEnding.GODKILLER;
+    }
+
+    /**
+     * The Tower forces the player to kill themself, leading to Chapter III: The Apotheosis
+     * @param tookBlade whether the player took the blade in the cabin
+     * @return the Chapter ending reached by the player (indicating which Voice to gain in The Apotheosis)
+     */
+    private ChapterEnding towerSlaySelf(boolean tookBlade, boolean lateJoin) {
+
+        if (!lateJoin) {
+            mainScript.runSection("slaySelf");
+            mainScript.runSection("slaySelfCont");
+        }
+
+        mainScript.runSection("slaySelfJoin");
+
+        if (tookBlade) {
+            return ChapterEnding.APOBLADE; // Voice of the Contrarian
+        } else {
+            return ChapterEnding.APOUNARMED; // Voice of the Paranoid
+        }
     }
 
 

@@ -37,7 +37,7 @@ public class IOHandler {
      * Waits until the player presses enter to progress
      */
     public void waitForInput() {
-        this.input.nextLine();
+        if (!manager.autoAdvance()) this.input.nextLine();
     }
 
     /**
@@ -82,7 +82,7 @@ public class IOHandler {
         if (line.isInterrupted()) {
             System.out.print("\n");
         } else {
-            this.input.nextLine();
+            this.waitForInput();
         }
     }
 
@@ -100,7 +100,7 @@ public class IOHandler {
         if (line.isInterrupted()) {
             System.out.print("\n");
         } else {
-            this.input.nextLine();
+            this.waitForInput();
         }
     }
 

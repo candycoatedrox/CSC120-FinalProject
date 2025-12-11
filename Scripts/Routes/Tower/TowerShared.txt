@@ -173,3 +173,347 @@ jumpto kneelJoin
 
 jumpanchor kneelJoin
 p That's my good little bird. Now... why don't we talk?
+
+// Conversation start //
+
+jumpanchor startKnowsDestiny
+p The last time we met, you told me I was destined to end the world. That thought wrapped itself around my heart. It has pulled at me since the moment I squeezed the life out of your broken lungs.
+p I could feel its fundamental truth awaken me.
+p The collapse of the old is a necessary prelude to the birth of the new, and the world as it is now is overdue for alterations.
+p It's time for me to seize my destiny, and you, little bird, will help me seize it.
+hero Well that gives away the game, doesn't it?
+
+jumpanchor startKnowsDestinySharedLoop
+n It certainly does. And beyond that, it more than lends credence to our conversation in the woods. I don't love the thought that in some other reality you failed to destroy her, but what's done is done, and I can only hope it helped you learn a valuable lesson.
+n You are the only one who can deal with her. And if you don't... well, she's let you know what will happen, hasn't she?
+broken Then you shouldn't have trusted us with her destruction. She is inevitable. Can't you feel it?
+hero He's being melodramatic, but he's not exactly wrong, is he? What are we supposed to do to stop her?
+jumpto startKnowsDestinyjoin
+
+jumpanchor startKnowsDestinyNoShare
+n It does. But why did she say "the last time we met?" That's not right. That can't be right.
+hero She's right. We've been here before.
+broken And we've died here before. Pitifully. We might as well do what she asks of us and help her. She's inevitable. Can't you feel it?
+hero He's being melodramatic, but he's not exactly wrong, is he? What are we supposed to do to stop her?
+n Well I'll be damned. That's not good.
+jumpanchor startKnowsDestinyjoin
+n *Sigh.* Okay. First thing's first, you're going to have to stuff those pessimistic thoughts some place far far away and commit yourself to what needs to be done.
+n The stakes of the situation should be perfectly clear to everyone now. And if you're going to save the world, you have to have faith that you can pull this off. You can't win a battle that you've already lost in your mind.
+
+jumpanchor startBladePathetic
+p The last time we met, you tried to kill me. And here you are again, trying to succeed where you've already catastrophically failed.
+jumpto startJoin
+
+jumpanchor startBlade
+p The last time we met, you couldn't even scratch me. And yet here you are again, trying to succeed where you've already catastrophically failed.
+jumpto startJoin
+
+jumpanchor startNoBlade
+p The last time we met, you tried to kill me. And yet here you are again, this time groveling at my feet. What a wretched sight.
+jumpanchor startJoin
+p What draws you back here beyond the empty halls of death?
+p SPEAK.
+
+jumpanchor startSharedLoop
+n "The last time we met?" I suppose that lends credence to our conversation in the woods. Still, whatever you do, don't tell her why you're here. It's best not to give her any ideas.
+
+jumpanchor startNoShare
+n "The last time we met?"
+n Nobody should have "met" her before this. You should be the first. You're the only one I trust to deal with her.
+broken Then you shouldn't have trusted us. There was nothing we could do to stop her then, and there's nothing we can do to stop her now.
+hero He's being melodramatic, but yeah, we've been here before, and she absolutely destroyed us. What are we even supposed to do to stop her?
+n That's... worrying. Whatever you do, don't tell her why you're here. It's best not to give her any ideas.
+
+jumpanchor motiveCantRefuse
+n Are you serious? Just -- just don't say anything! How hard can it be to not say anything?
+broken You haven't felt her angelic fingers run along the edges of your mind. You haven't felt her nails dig into your thoughts.
+
+jumpanchor motiveNoStutter
+p YOU WILL.
+broken Just do it already... it will feel so much better to do as she says.
+
+jumpanchor motiveNoForce
+p Such firm resistance. How surprising.
+
+jumpanchor motiveSilentNoSubmit
+p Do you think holding shut your beak is enough to stop me from prying it open? Do you think your skull can save your thoughts from being seen?
+p Hmm. You're less broken than I'd thought.
+
+jumpanchor motiveSilent
+p Do you think holding shut your beak is enough to stop me from prying it open? Do you think your skull can save your thoughts from being seen?
+hero Can -- can she do that?
+broken There's nothing she can't do.
+
+jumpanchor motiveShare
+n You weak-willed buffoon!
+p Is that so?
+n The Princess closes her eyes in contemplation.
+jumpanchor motiveShareJoin
+p Something about that thought wraps itself around my heart. It feels like a fundamental truth to my being that I'd somehow forgotten.
+p The collapse of the old is a necessary prelude to the birth of the new, and the world as it is now is overdue for alterations.
+p It's time for me to seize my destiny, and you, little bird, will help me seize it.
+broken She's inevitable. There's nothing else for us to do but help her. Maybe she'll be nice to us.
+
+jumpanchor motiveShareBlade
+p Meekness. Despair. But a hint at something more. A small taste of stubborn resistance.
+p A grain in the storm of my cosmic wind. Enough to be felt, but not enough to matter.
+jumpto motiveShareBladeJoin
+
+jumpanchor motiveShareNoBlade
+p Confused. Meek. A chorus of submissive indecision. Is that why you came to me unarmed?
+p It doesn't matter. All of it is easily brushed aside.
+jumpanchor motiveShareBladeJoin
+p And there it is. I am destined to end the world.
+jumpto motiveShareJoin
+
+// Main conversation menu //
+
+jumpanchor role
+p All you have to do is break these chains and set me free.
+
+jumpanchor powerful
+broken Don't be rude. Of course she can.
+hero It's not rude to question someone who's apparently trying to end the world.
+broken That's exactly why it's rude. We should know our place.
+p I can. Easily. But that isn't what I want to do.
+p The story of a terrible and bountiful god unbounded of her own will is no story at all. It's not worthy of everything I am or everything I'm bound to become. It isn't even worthy of what I was.
+p The destruction and genesis that's to follow in my wake is deserving of a song that can echo for eternity.
+p The song of you, being so struck by my glory, so overwhelmed by what I am, that you feel you must deliver me unto the world.
+p And from your act of utter devotion and submission springs a new dawn. A better dawn.
+p Submit now. Submit later. It makes no difference, because in the end, no matter how vainly you struggle against me, MY WILL TRIUMPHS OVER YOURS.
+
+jumpanchor selfDetermination
+p This isn't about desire. This is about what I am, and I have little interest in discussing destiny with one that cannot see the divine truth that shines in my heart.
+
+jumpanchor questions
+p Know the limits of your privilege, little bird.
+p There is an empty place at my side for you to fill, if you'll have it. But it is not a place for an equal. It is a place for something worthy to be kept. A priest, perhaps. Or a pet.
+
+jumpanchor refuseNoBlade
+p You poor, deluded thing. Don't think you can muster up the strength to defy me now. You already submitted the moment you entered this temple without the will to end me.
+hero Wha -- what is she talking about?
+n She's talking about your ridiculous decision to come down here unarmed. But it doesn't matter, don't let her talk you into bowing down to her or whatever it is she thinks she can make you do. You can still go back and get the blade from upstairs. You can still stop her.
+broken But we're already here, and we already made our choice, and there are so many tall stairs between us and that altar...
+n You're right about one thing: you already made your choice, and your choice was to defy her. I don't care how many stairs there are or how tall they are. You're going to turn around, right now, take the blade, and save the damn world.
+p Even now your vessel twitches and trembles, consumed by conflict with yourself.
+p But that part of you standing in hopeless defiance isn't the only thing resisting me, is it? There's something else in there. Someone else. A greasy film sheltering your heart.
+jumpanchor narratorPossess
+p Is that a person? No. It used to be a person. It's something different now. An echo.
+hero Is... is she talking about you?
+n That's impossible. She's not supposed to be able to interact with me, she -- /// interrupt
+p You're a small one, aren't you?
+p A shriveling little worm stretched beyond its limits, trying to control things that it can't understand.
+n No no no, what are you talking about I'm just -- /// interrupt
+p I don't care what you are. YOU'RE MINE.
+linebreak
+truth The Narrator lets out a strangled cry.
+
+hero Uh... are you okay?
+np I'm fine. I've always been fine.
+truth The words echo both in and outside of your head as he speaks softly, as if in some sort of dreamlike trance, and in complete unison with the Princess.
+hero No no no, this isn't right! What do we do? We can't just let her control us like this!
+broken I've been trying to tell you this whole time. It isn't about can or can't. It isn't even about will or won't. There is only one path in front of us, and we will walk it.
+hero We'll -- we'll just refuse!
+broken Not even He could refuse her in the end. What are you supposed to do? We're all prisoners here. Some of us are just willing to embrace our chains.
+
+jumpanchor refuseBlade
+p I see.
+
+// General ending lines //
+
+jumpanchor endingFirstVessel
+truth A textured nothingness begins to creep into the edges of your vision.
+
+jumpanchor endingNotFirstVessel
+truth A textured nothingness begins to creep into the edges of your vision. Somehow, it feels familiar.
+
+// Pledge yourself to her //
+
+jumpanchor menuPledge
+p Your will was so easily broken. Am I that magnificent?
+p All you need to do now is break my chains.
+
+// "Your Obedient Servant" ending; claim the Tower //
+jumpanchor pledge
+hero If this is what you want, then I guess there's not much else for me to say.
+n No, you can't just give in to her! Not when the stakes are so high. Not when you're so close. I won't let you do this.
+p There's still something in the way. A greasy film inside of you, where it doesn't belong. Trying to conceal you from me.
+jumpto narratorPossess
+
+jumpanchor pledgeCont
+p Rise, my little bird.
+np Without hesitation, you're brought to your feet.
+truth The words echo both in and outside of your head as he speaks softly, as if in some sort of dreamlike trance, and in complete unison with the Princess.
+p BREAK MY CHAINS.
+
+jumpanchor pledgeBlade
+hero And how are we supposed to do that? All we have is a blade.
+jumpto pledgeJoin
+
+jumpanchor pledgeNoBlade
+hero And how are we supposed to do that? We don't even have a weapon.
+jumpanchor pledgeJoin
+np All you need to do is believe it's been done.
+
+jumpanchor pledgeBelieve
+np You poor, wretched little thing. You already do believe. You've always believed. All you have to do is open the last door to your heart.
+broken It's easy. And once you let her in, you'll be safe and free forever.
+hero Please. Don't do this.
+
+jumpanchor pledgeSorry
+broken There's nothing to be sorry about. This is how it was always going to be, and it is good.
+hero All right. I'm done with this. I'm just going to sit in the corner. Let me know if we get our agency back.
+
+jumpanchor pledgeBreak
+np Her chains shatter, and the cuff falls from her wrist. She is loose, and the end is upon us.
+truth Just over the voice in your head, you hear the Princess describe it differently: "I am free, and the end is upon us."
+p What a good disciple you are. Come. It's time for us to leave.
+
+jumpanchor pledgeExplore
+p Nothing. And then everything.
+
+jumpanchor pledgeEndFirstVessel
+truth But you do not take her hand, nor will you ever. It's time to leave. Memory returns.
+
+jumpanchor pledgeEndNotFirstVessel
+truth But you do not take her hand. Something has taken her away, and it's left something else in her place.
+
+// Resist her //
+
+jumpanchor resistBlade
+p Perhaps you need another lesson in submitting to your betters.
+p PICK UP THAT NEEDLE.
+broken Do it. It's what she wants.
+n No objections here.
+hero We don't know what she's planning, and I don't like that we don't know what she's planning, but we might as well pick up the blade.
+n As your eye falls on the blade, you feel a weight, some divine hand that sits unperceived by your senses, but that manages to push you towards its desires like an unseen puppeteer.
+
+n You reach forward and grasp the blade.
+p STAND.
+broken This one's easy! See, this isn't so bad.
+hero Okay. Yeah. We can do that. We were probably gonna stand anyway.
+
+n You can feel a creaking tension between body and will as you slowly rise to your feet, like two foes forced into an unhappy truce.
+n The Princess eyes you with soft contemplation. The moment seems to last a lifetime, the silent anticipation of what's to come dragging out the long painful seconds. But all silences are broken eventually.
+p To defy me is to claim we stand on level ground. We do not. You are quiet shadow, while I am brilliant radiance.
+p TAKE THAT KNIFE IN YOUR HAND AND SLIT YOUR THROAT.
+hero What?!
+n You don't have to listen to her. You're armed. Just steel your nerves, step forward, and end this.
+
+n Your hand lifts the blade and brings it towards your throat -- okay, I apologize for the unclear language. End *her.*
+
+// Continue resisting //
+
+jumpanchor advance1
+n Your body is sluggish and unresponsive, actively fighting against you, but you do your best to stagger forward. One step at a time, you move towards the Princess.
+p Slitting your throat would have been a mercy. But it seems you're in need of a harsher lesson.
+p PLUNGE THAT KNIFE INTO YOUR LUNGS.
+broken I'm sorry...
+hero Don't -- /// interrupt
+n As you take another step forward, the blade digs into your ribs, slicing through flesh with ease. It somehow feels like an entirely natural thing to do, while the simple act of walking has become an arduous impossibility.
+n Then it slides back out, the wound burning as a small hiss of air escapes through the fresh orifice. Blood fills your lungs.
+p NOW DO IT AGAIN. KEEP DOING IT UNTIL I GIVE YOU PERMISSION TO STOP.
+n Those are just words. You don't have have to listen to her.
+broken It's what she wants...
+n You, "heroic" one! What are you doing? Don't just let this happen. Stop him from killing you!
+hero I'm on it!
+n Your other hand locks around your wrist, struggling to keep it from perforating vital organs. But the blade still flails towards you, managing to slice bits of skin that plop to the floor to join the growing pile of blood and gore beneath you. Despite the pain, you manage to keep yourself in one piece. At least for now.
+p What a pitiful display. A wounded little bird thinking it can defy a god.
+p It doesn't have to be like this. It doesn't have to hurt so much. You can choose a gentle end. You can choose to leave that punctured vessel for the next.
+
+jumpanchor advance2
+p Or you can pathetically struggle against yourself until the floor of this temple is painted with the bloody impressions of your futility.
+n You continue to approach the Princess, even as the repeated gouges of your blade expose bone and muscle to the open air of the basement.
+hero You know, this would be a lot easier if you gave us a hand!
+n My influence only goes so far, and I can only juggle so many things at once. The best I can do right now is to continue to drive you forward. Believe me, this whole ordeal would be so much easier if I didn't have to contend with free will.
+broken You're the one making things difficult. You're the one making us hurt. She doesn't want to hurt us. She's just doing what she has to.
+p STOP.
+n As you finish crossing the room, you fall to your knees at the Princess' feet, your chest heaving as your blood pools in the crevices of the stone floor, the coppery taste coating your throat.
+n The Princess kneels down, lifting your chin with her finger as her face lowers to yours.
+p Your devotion is misplaced. You've surrendered to delusion. But something about your defiant spirit speaks to me. You are different than you were before.
+p Perhaps, if you've learned your lesson, I can spare you from the release of death.
+
+jumpanchor advance2Offer
+p There is a place at my side for you, if you'll have it. Not as an equal. But as something worthy to be kept. A priest, perhaps. Or a pet.
+hero Well that's demeaning, isn't it?
+jumpto advance2Join
+
+jumpanchor advance2NoOffer
+hero That's a little demeaning, isn't it?
+jumpanchor advance2Join
+n Yes, how *thoughtful* of her.
+broken It's a mercy. Take it.
+hero I think he's given up whatever say he had at the start of all this.
+n At least one of you is sane. She's within striking distance, and she's only negotiating now because she knows you have what it takes to put an end to her. Seize the moment before it's too late.
+
+jumpanchor advancePledge
+p That's right... I can feel your heart opening to me.
+
+jumpanchor advancePledgeShare
+p And there's what you've been chasing. The motivation that dragged you across the floor, bleeding and choking.
+p I am destined to destroy the world.
+p Something about that thought wraps itself around my heart. As if it's a fundamental truth to my being that I'd somehow forgotten.
+p The collapse of the old is a necessary prelude to the birth of the new. And the world as it is now is overdue for alterations.
+p It's time for us to seize my destiny.
+
+// Leads to Chapter III: The Fury with the Voice of the Stubborn //
+jumpanchor advanceSlay
+broken No!
+n Yes. Though your body trembles, struggling to defend itself in the face of the Princess' overwhelming will, you finally manage to break through, darting to her side before she can react.
+n The wind of your freedom rushes through you, and you channel it into a decisive blow, stabbing into the soft flesh of her ankle and severing the tendons in an act of unyielding defiance.
+n She falls to the floor, crashing unceremoniously to her knees.
+n But you don't give her any time to recover. Your heart pounding with determination, you plunge your blade into her chest.
+n As you find your target again and again, she laughs, crude emotion breaking through her once stony composure as your blade cuts her flesh.
+hero We can do this, can't we?
+n You always could. The decision to give you this task was not made lightly. You're here for a reason.
+broken It's not too late to pick up the pieces. It's not too late to toss that blade aside and beg for forgiveness.
+hero Shut up.
+p I can't believe you would actually strike me. You -- /// interrupt
+p You heathen! You worm! You defiler! You don't know the consequences of your arrogance!
+n Before you can strike the final blow, the Princess lashes out, knocking you off your feet.
+n There's an unsettling wet pop as your spine breaks, numbness and pain spreading through your body. As you rebound towards the ceiling in a moment of disorientated lightness, she drives her fist into your chest.
+n Your body is crushed as she pulverizes you into the floor, the ground itself breaking from the impact.
+linebreak
+n You lie there, broken, beyond pain, unable to even see what she's done to you. But the Princess is succumbing to her own wounds, as well. She looks down upon her body in abject horror and disgust.
+p You made me use my hands! I... I can feel myself twisting into something new. Something dull, something defiled. What have you done to me?
+broken You're monsters and conspirators. I can't bear to watch this.
+n The Princess has been nothing but cruel to you. You should feel liberated by her fall.
+broken But I don't feel liberated. I feel empty.
+hero Aside from the pain, I feel fine.
+n She collapses to the floor. Her glassy eyes watch, unblinking, yet somehow still full of anguish and fear, as the two of you perish together.
+hero I suppose we were never going to get a happy ending here, were we?
+n Don't let those be your final thoughts. You saved the world. That's worth something.
+hero I guess.
+linebreak
+n Regardless of how you feel about it, it's finally over. Thank you. Everything goes dark, and you die.
+
+// Slay yourself //
+
+// Guarantees the Voice of the Contrarian //
+jumpanchor bladeSlaySelf
+n No, you can't just slay yourself. You're perfectly healthy and capable and all you have to do is ignore her and do what has to be done!
+n The blade and the hand that wields it remain firmly locked in place until you change your mind and decide to do literally anything else.
+p Look at you quaking against my will. An ant defying a god.
+
+jumpanchor advanceSlaySelf
+n No, you can't just give in to her. Not when the stakes are so high.
+n Your body and its renegade hand freeze in place until you get a hold of yourself.
+p You're shaking.
+
+// Leads to Chapter III: The Apotheosis with the Voice of the Contrarian or Paranoid //
+jumpanchor slaySelf
+p It's pointless to resist. In the end, everything submits to oblivion.
+p But you're not the one resisting me, are you? There's something else in there.
+jumpto narratorPossess
+
+jumpanchor slaySelfCont
+np You bring the blade to your neck. You slice through soft flesh, severing veins and arteries, your blood flowing freely down your body. It's a painful lesson in obedience. But the pain won't last forever.
+truth The words echo both in and outside of your head as he speaks softly, as if in some sort of dreamlike trance, and in complete unison with the Princess.
+hero No no no no no no no!
+
+jumpanchor slaySelfJoin
+p When I see you again, you'll free me from my chains, and deliver me to the destiny that lies beyond this place.
+broken We will. I promise.
+p I know you will.
+linebreak
+np Everything goes dark, and you die.

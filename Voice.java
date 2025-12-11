@@ -1,6 +1,7 @@
 public enum Voice {
     NARRATOR("The Narrator"),
-    PRINCESS("The Princess"), // Exclusively used in Wild and Princess and the Dragon
+    NARRATORPRINCESS("The Narrator"), // Used when the Tower possesses the Narrator
+    PRINCESS("The Princess"), // Used in Wild and Princess and the Dragon
 
     HERO("Voice of the Hero"),
     BROKEN("Voice of the Broken"),
@@ -40,6 +41,9 @@ public enum Voice {
         switch (characterID) {
             case "n":
             case "narrator": return NARRATOR;
+
+            case "np":
+            case "narratorprincess": return NARRATORPRINCESS;
 
             case "pint":
             case "princessint": return PRINCESS;

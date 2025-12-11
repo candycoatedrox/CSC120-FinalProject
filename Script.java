@@ -88,6 +88,8 @@ public class Script {
         switch (characterID) {
             case "t":
             case "truth":
+            case "np":
+            case "narratorprincess":
             case "p":
             case "princess":
             case "n":

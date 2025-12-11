@@ -68,8 +68,13 @@ public class GameManager {
 
         this.voicesMet = new HashMap<>();
         for (Voice v : Voice.values()) {
-            if (v != Voice.NARRATOR && v != Voice.PRINCESS && v != Voice.HERO) {
-                this.voicesMet.put(v, false);
+            switch (v) {
+                case NARRATOR:
+                case NARRATORPRINCESS:
+                case PRINCESS:
+                case HERO: break;
+
+                default: this.voicesMet.put(v, false);
             }
         }
 
@@ -884,7 +889,7 @@ public class GameManager {
         }
 
         System.out.println();
-        parser.printDialogueLine(playlistText, true);
+        IOHandler.wrapPrintln(playlistText);
     }
 
     // --- UTILITY ---
