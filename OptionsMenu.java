@@ -290,6 +290,16 @@ public class OptionsMenu {
     }
 
     /**
+     * Adds all Options in another OptionsMenu to the end of this menu
+     * @param menu the OptionsMenu to append to the end of this menu
+     */
+    public void append(OptionsMenu menu) {
+        for (int i = 0; i < menu.size(); i++) {
+            this.add(menu.get(i));
+        }
+    }
+
+    /**
      * Sets conditionMet for the nth Option in this menu to the specified value
      * @param n the index of the Option to modify
      * @throws IllegalArgumentException if the given index is out of range

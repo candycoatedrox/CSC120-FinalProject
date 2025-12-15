@@ -208,7 +208,7 @@ jumpanchor rescueLateJoin
 linebreak
 n You walk up to the chains binding the Princess to the wall and give them a tug.
 n They're large and heavy, far too solid for you to even imagine trying to break them apart.
-p I'm guessing you don't have the key.
+p I'm guessing you don't have the key?
 hero Maybe it's somewhere upstairs.
 n Doubtful. Whoever locked the Princess away down here intended for her to never see the light of day. They wouldn't have just left the key to her chains somewhere in the cabin.
 
@@ -217,7 +217,7 @@ p Maybe there's some way to break the chains?
 p ...
 p Or if that doesn't work I guess we can always cut me out of them.
 n She offers the suggestion with almost complete nonchalance.
-hero If we were stuck down here long enough, I'm sure we'd be nonchalant about cutting our way out if it meant we could finally be free.
+hero If *we* were stuck down here long enough, I'm sure we'd be nonchalant about cutting our way out if it meant we could finally be free.
 jumpto rescueStairs
 
 jumpanchor check
@@ -240,9 +240,13 @@ jumpanchor rescueStairsTryAgain
 n You try the door again. It's still locked.
 
 jumpanchor rescueReturn
+n You make your way to the bottom of the stairs. This would have been so much easier if you'd just taken the blade like you were supposed to.
+hero Easier for whom?
+n Easier for *everyone.* Look at the mess you're in.
+linebreak
 p I heard the door slam... they locked you down here too, didn't they?
 n There's a slight panic rising in the Princess's voice.
-p If I could just get out of these chains I *know* we could force our way out of here together.
+p If I could just get out of these chains, I *know* we could force our way out of here together.
 nowplaying The World Ender
 linebreak
 n She barely hesitates before raising her arm to her mouth, her teeth tearing through her limb with the determination of a trapped wolf.
@@ -276,16 +280,16 @@ n Stop that.
 p Something's come over you, hasn't it? Y-you know you don't have to do this, right?
 n Your body lunges forward, the blade held low, ready to sink into her heart.
 n But the Princess dodges, stumbling back against the wall before the blade has a chance to connect.
-n Stop it! Stop trying to resist me! I'm trying to get you out of here alive.
+n Stop it! Stop trying to resist me! I'm *trying* to get you out of here alive.
 
 // Leads to Chapter II: The Damsel //
 n The blade! Move. The. *Blade!*
 n As your body remains frozen in stubborn resistance, the Princess takes a cautious step forward.
-p We both know this isn't you...
+p We... both know this i-isn't you...
 n She nervously reaches towards you and takes the blade from your infuriatingly rigid hands... What are you *doing?*
-p I'm sorry... I'll try to be quick.
+p I'm sorry... I-I'll try to be quick.
 n She plunges it into your chest, tearing through flesh and sinew. It is *agony.* But you aren't dead yet.
-p Oh no, I'm so sorry!
+p Oh no -- I'm so sorry...!
 hero Stay strong. We can tough it out until it's done. For her sake.
 n For *her* sake? Don't you start pretending that dying a painful death is some sort of heroic gesture. The two of you have literally doomed *everyone.*
 n Whatever. She sinks the blade into your chest again, and again, and again... and you feel *every inch* of burning pain that slices its way into your body.

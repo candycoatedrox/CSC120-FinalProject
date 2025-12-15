@@ -26,6 +26,7 @@ public class StandardCycle extends Cycle {
     private boolean touchedMirror = false; // Used in all Chapter 2s and 3s
     private boolean whatWouldYouDo = false; // Used in Chapter 1, Damsel
     private boolean knowsDestiny = false; // Used in Chapter 1, Tower, Fury
+    private boolean rescuePath = false; // Used in Chapter 1, Witch
 
     private static final PrincessDialogueLine CANTSTRAY = new PrincessDialogueLine(true, "You have already committed to my completion. You cannot go further astray.");
     private static final PrincessDialogueLine WORNPATH = new PrincessDialogueLine(true, "This path is already worn by travel and has been seen by one of my many eyes. You cannot walk it again. Change your course.");
@@ -576,7 +577,7 @@ public class StandardCycle extends Cycle {
             case FROG:
             case FROGLOCKED:
             case KNIVESOUTMASKSOFF:
-            case KNIVESOUTMASKSOFFESCAPE:
+            case KNIVESOUTMASKSOFFGIVEUP:
             case PLAYINGITSAFE:
             case PASTLIFEGAMBITSPECIAL:
             case PASTLIFEGAMBIT:
@@ -1646,6 +1647,7 @@ public class StandardCycle extends Cycle {
 
         secondaryScript.runSection();
 
+        this.rescuePath = true;
         this.canSlayPrincess = true;
         Option slay = new Option(this.manager, "slay", manager.hasVisited(Chapter.WITCH), "[Slay the Princess.]", 0);
 
@@ -1817,7 +1819,7 @@ public class StandardCycle extends Cycle {
                     this.repeatActiveMenu = false;
                     secondaryScript.runSection("rescueSlayFinish");
 
-                    return ChapterEnding.TOWITCH;
+                    return ChapterEnding.TOWITCHBETRAYAL;
 
                 case "cGoStairs":
                     if (manager.hasVisited(Chapter.NIGHTMARE)) {
@@ -4246,13 +4248,13 @@ public class StandardCycle extends Cycle {
             case WITCH:
                 if (source.equals("locked")) {
                     howDangerText = "(Explore) All she did last time was lock me in a basement until I died. Don't get me wrong, I hated it, but how can someone like that end the world?";
-                } else if (source.equals("mutual")) {
-                    tipsText = "(Explore) We killed each other last time around. How can I make sure that doesn't happen again?";
+                } else if (source.equals("normal")) {
+                    tipsText = "(Explore) She killed me last time around. How can I make sure that doesn't happen again?";
                     howDangerText = "(Explore) She killed me by ripping me to pieces. Don't get me wrong, I hated it, but how can someone like that end the world?";
                     quoteText = "(Explore) To quote you from last time around, \"she's *just* a Princess.\" Why was she able to rip me apart with her bare hands?";
                 } else {
+                    tipsText = "(Explore) We killed each other last time around. How can I make sure that doesn't happen again?";
                     howDangerText = "(Explore) She killed me by ripping me to pieces. Don't get me wrong, I hated it, but how can someone like that end the world?";
-                    tipsText = "(Explore) She killed me last time around. How can I make sure that doesn't happen again?";
                     quoteText = "(Explore) To quote you from last time around, \"she's *just* a Princess.\" Why was she able to rip me apart with her bare hands?";
                 }
 
@@ -5570,21 +5572,994 @@ public class StandardCycle extends Cycle {
 
         if (manager.trueDemoMode()) return ChapterEnding.DEMOENDING;
 
+        mainScript.runSection();
 
+        if (this.hasBlade) {
+            mainScript.runSection("bodyCommentBlade");
+        } else {
+            mainScript.runSection("bodyCommentNoBlade");
+        }
 
-        
-        // temporary templates for copy-and-pasting
-        /*
-        parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
-        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
-        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
-        */
+        boolean canWraith = true;
+        Condition isHostile = new Condition(false);
+        InverseCondition isSoft = new InverseCondition(isHostile);
 
-        // PLACEHOLDER
-        return null;
+        this.canSlayPrincess = true;
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "slay", "[Slay the Princess.]", this.hasBlade));
+        activeMenu.add(new Option(this.manager, "grab", "[Grab her.]", !this.hasBlade));
+        activeMenu.add(new Option(this.manager, "wait", "[Wait and see how things play out.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+
+            switch (activeOutcome) {
+                case "cSlayPrincess":
+                case "slay":
+                    this.repeatActiveMenu = false;
+                    this.isHarsh = true;
+                    isHostile.set(true);
+                    mainScript.runSection("softSlay");
+                    break;
+
+                case "cSlayPrincessNoBladeFail":
+                case "grab":
+                    this.repeatActiveMenu = false;
+                    this.isHarsh = true;
+                    isHostile.set(true);
+                    mainScript.runSection("softGrab");
+                    break;
+
+                case "wait":
+                    this.repeatActiveMenu = false;
+                    
+                    if (this.hasBlade) {
+                        mainScript.runSection("basementStartWaitBlade");
+                    } else {
+                        mainScript.runSection("basementStartWaitNoBlade");
+                    }
+
+                    break;
+
+                default: this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        // Conversation menu
+
+        boolean shareDied = false;
+        boolean deathComment = false;
+        Condition narratorUnconfirmed = new Condition(true);
+        Condition noBonesAsk = new Condition(true);
+        Condition noApology = new Condition(true);
+        Condition noIfOnly = new Condition(true);
+        Condition noWorldEndExplore = new Condition(true);
+        Condition thoughtsHarsh = new Condition(false);
+        Condition homeComment = new Condition(false);
+        InverseCondition noHomeComment = new InverseCondition(homeComment);
+        Condition possessionAsk = new Condition(false);
+        InverseCondition noPossessionAsk = new InverseCondition(possessionAsk);
+
+        OptionsMenu subMenu;
+        boolean repeatSub;
+
+        // 22 EXPLORE OPTIONS + 6 ACTION OPTIONS IN SOFT MENU. GOD DAMN.
+        // THERE ARE 35 TOTAL OPTIONS IN THIS MENU. SEND HELP
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "confirmLoop", "(Explore) See, this is exactly what I was trying to tell you about in the woods. This already happened. We killed her.", this.sharedLoop, narratorUnconfirmed, isSoft));
+        activeMenu.add(new Option(this.manager, "notDead", "(Explore) \"I killed you! What are you doing not being dead?\"", isSoft));
+        activeMenu.add(new Option(this.manager, "body", "(Explore) \"Your body's right there, though. Your *dead* body.\"", activeMenu.get("notDead"), isSoft));
+        activeMenu.add(new Option(this.manager, "whyBack", "(Explore) \"Do you know why you came back?\"", isSoft));
+        activeMenu.add(new Option(this.manager, "supposed", "(Explore) \"And where are you supposed to be?\"", activeMenu.get("whyBack"), noHomeComment, isSoft));
+        activeMenu.add(new Option(this.manager, "help", "(Explore) \"Is there any way I can help you get home? Do you need me to bury those bones?\"", homeComment, noPossessionAsk, noBonesAsk, isSoft));
+        activeMenu.add(new Option(this.manager, "ifOnlyHarsh", "(Explore) \"If I knew I'd have to talk to you again, I wouldn't have slain you.\"", noIfOnly, isHostile));
+        activeMenu.add(new Option(this.manager, "victim", "(Explore) \"Stop playing the victim. You threatened me last time.\""));
+        activeMenu.add(new Option(this.manager, "sorryA", "(Explore) \"I'm sorry I killed you last time, I shouldn't have done that.\"", noApology));
+        activeMenu.add(new Option(this.manager, "grovel", "(Explore) \"Do you want me to die? Do you want me to kill myself to satisfy some sort of sick revenge fantasy? Because I already did that and it wouldn't be hard to do it again.\""));
+        activeMenu.add(new Option(this.manager, "sorryB", "(Explore) \"I'm sorry. Is there any way I can make it up to you?\"", noApology));
+        activeMenu.add(new Option(this.manager, "trick", "(Explore) \"The people who wanted you dead tricked me, and the enemy of my enemy is my friend. Let's team up.\"", noHomeComment));
+        activeMenu.add(new Option(this.manager, "wantA", "(Explore) \"What do you want from me?\"", noPossessionAsk, isSoft));
+        activeMenu.add(new Option(this.manager, "ifOnlySoft", "(Explore) \"If I knew I'd wind up having to talk to you again, I wouldn't have slain you.\"", noIfOnly, isSoft));
+        activeMenu.add(new Option(this.manager, "alsoDead", "(Explore) \"I died too and I'm not floating around like you are. What happened? Why am I different? Why are you different?\""));
+        activeMenu.add(new Option(this.manager, "bonesAsk", "(Explore) \"What if I buried your bones outside?\"", thoughtsHarsh, noBonesAsk));
+        activeMenu.add(new Option(this.manager, "worldEndHarsh", "(Explore) \"Of course I attacked you. You're supposed to end the world. That's why I killed you last time, too.\"", noWorldEndExplore, isHostile));
+        activeMenu.add(new Option(this.manager, "howHurt", "(Explore) \"You're dead. Or at least mostly dead. What can you even do to hurt me?\""));
+        activeMenu.add(new Option(this.manager, "teleport", "(Explore) \"After I killed you, this cabin... I want to say it teleported? It wasn't in the woods anymore, time stopped meaning anything, and I had to kill myself to escape.\"", isSoft));
+        activeMenu.add(new Option(this.manager, "worldEndA", "(Explore) \"Before I agree to anything, we need to talk about what happens after you leave this place. I was told you'd end the world.\"", noWorldEndExplore, possessionAsk, isSoft));
+        activeMenu.add(new Option(this.manager, "worldEndB", "(Explore) \"I guess I should tell you why I was sent to kill you. You were going to end the world.\"", noWorldEndExplore, isSoft));
+        activeMenu.add(new Option(this.manager, "worldEndC", "(Explore) \"I was told you were going to end the world.\"", noWorldEndExplore, isSoft));
+        activeMenu.add(new Option(this.manager, "wantB", "(Explore) \"Okay, clearly slaying you isn't going to work. What do you want?\"", noPossessionAsk, isSoft));
+        activeMenu.add(new Option(this.manager, "wantHarsh", "(Explore) \"What do you want from me?\"", noPossessionAsk, isHostile));
+        activeMenu.add(new Option(this.manager, "walls", "(Explore) \"If you can go through walls, can't you just leave on your own?\"", homeComment, isSoft));
+        activeMenu.add(new Option(this.manager, "thoughts", "(Explore) Okay team, I'm out of ideas. Thoughts?"));
+        activeMenu.add(new Option(this.manager, "possess", "\"Okay. I've given it enough thought. Let's get you out of here.\" [Let the Princess possess you.]", possessionAsk));
+        activeMenu.add(new Option(this.manager, "refuse", manager.demoMode(), "\"Okay. I've given it enough thought. The answer is no. I can't let you out, and I won't let you possess me.\"", 0, possessionAsk));
+        activeMenu.add(new Option(this.manager, "smashBones", manager.demoMode(), "\"[Smash her bones.]\"", 0, thoughtsHarsh));
+        activeMenu.add(new Option(this.manager, "slayHarsh", manager.demoMode(), "\"[Slay the Princess, harder.]\"", 0, this.hasBlade, isHostile));
+        activeMenu.add(new Option(this.manager, "grabHarsh", manager.demoMode(), "\"[Grab the Princess, but try harder.]\"", 0, !this.hasBlade, isHostile));
+        activeMenu.add(new Option(this.manager, "leaveSoft", manager.demoMode(), "\"If you're dead, then there really isn't much for me to do, is there? I guess I'll get going.\" [Leave her in the basement.]", 0, isSoft));
+        activeMenu.add(new Option(this.manager, "leaveHarsh", manager.demoMode(), "\"Fine. If I can't hurt you, then there really isn't anything for me to do here. I guess I'll get going.\" [Leave her in the basement.]", 0, isHostile));
+        activeMenu.add(new Option(this.manager, "retrieve", manager.demoMode(), "\"Right. I don't think there's much more for us to talk about. I'm going to get my blade, and then the two of us can fight.\" [Retrieve the blade.]", 0, !this.hasBlade));
+        activeMenu.add(new Option(this.manager, "slaySoft", "\"[Slay the Princess.]\"", this.hasBlade, isSoft));
+        activeMenu.add(new Option(this.manager, "grabSoft", "\"[Grab the Princess.]\"", !this.hasBlade, isSoft));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+
+            if (activeOutcome.equals("cSlayPrincess")) {
+                if (!this.isHarsh) {
+                    this.activeOutcome = "slaySoft";
+                } else if (canWraith) {
+                    this.activeOutcome = "slayHarsh";
+                }
+            } else if (activeOutcome.equals("cSlayPrincessNoBladeFail")) {
+                if (!this.isHarsh) {
+                    this.activeOutcome = "grabSoft";
+                } else if (canWraith) {
+                    // Could be interpreted as either smashBones or grabHarsh -- redirects to the most violent option available to you
+                    if (thoughtsHarsh.check()) {
+                        this.activeOutcome = "smashBones";
+                    } else {
+                        this.activeOutcome = "grabHarsh";
+                    }
+                }
+            }
+
+            switch (activeOutcome) {
+                case "confirmLoop":
+                    narratorUnconfirmed.set(true);
+                    mainScript.runSection("confirmLoopMenu");
+
+                    if (this.hasBlade) {
+                        mainScript.runSection("confirmLoopBlade");
+                    } else {
+                        mainScript.runSection("confirmLoopNoBlade");
+                    }
+
+                    break;
+
+                case "notDead":
+                    deathComment = true;
+                    mainScript.runSection("notDeadMenu");
+                    if (this.mirrorComment || this.touchedMirror) mainScript.runSection("notDeadMirror");
+                    mainScript.runSection("notDeadCont");
+                    break;
+                    
+                case "sorryA":
+                    noApology.set(false);
+                case "body":
+                case "whyBack":
+                    mainScript.runSection(activeOutcome + "Menu");
+                    break;
+                    
+                case "supposed":
+                    homeComment.set(true);
+                    mainScript.runSection("supposedMenu");
+                    break;
+                    
+                case "help":
+                    noBonesAsk.set(false);
+                    possessionAsk.set(true);
+                    mainScript.runSection("helpMenu");
+
+                    switch (this.spectrePossessAsk(noWorldEndExplore, narratorUnconfirmed, shareDied, canWraith, false)) {
+                        case 1:
+                            canWraith = false;
+                            break;
+
+                        case 2:
+                            return this.spectrePossess();
+
+                        case 3:
+                            return this.spectreKill(false);
+                    }
+
+                    break;
+
+                case "ifOnlySoft":
+                case "ifOnlyHarsh":
+                    noIfOnly.set(false);
+                    mainScript.runSection("ifOnlyMenu");
+                    break;
+                    
+                case "victim":
+                    mainScript.runSection("victimMenu");
+
+                    subMenu = new OptionsMenu(true);
+                    subMenu.add(new Option(this.manager, "defend", "(Explore) \"That knife could have been for anything!\""));
+                    subMenu.add(new Option(this.manager, "return", "(Return) [Leave it at that.]"));
+
+                    if (parser.promptOptionsMenu(subMenu).equals("defend")) {
+                        mainScript.runSection("victimMenuPush");
+                    }
+
+                    break;
+                    
+                case "grovel":
+                    shareDied = true;
+                    mainScript.runSection("grovelMenu");
+
+                    if (homeComment.check()) {
+                        mainScript.runSection("grovelNoHomeComment");
+                    } else {
+                        homeComment.set(true);
+                        mainScript.runSection("grovelHomeComment");
+                    }
+                    
+                    break;
+                    
+                case "sorryB":
+                    noApology.set(false);
+
+                    if (possessionAsk.check()) {
+                        mainScript.runSection("sorryBMenuAlreadyAsked");
+                    } else {
+                        mainScript.runSection("sorryBMenuPossessAsk");
+
+                        switch (this.spectrePossessAsk(noWorldEndExplore, narratorUnconfirmed, shareDied, canWraith, false)) {
+                            case 1:
+                                canWraith = false;
+                                break;
+
+                            case 2:
+                                return this.spectrePossess();
+
+                            case 3:
+                                return this.spectreKill(false);
+                        }
+                    }
+
+                    break;
+                    
+                case "trick":
+                    homeComment.set(true);
+
+                    if (!narratorUnconfirmed.check()) {
+                        mainScript.runSection("trickMenuConfirmed");
+                    } else if (this.sharedLoop) {
+                        narratorUnconfirmed.set(false);
+                        mainScript.runSection("trickMenuSharedLoop");
+                    } else {
+                        narratorUnconfirmed.set(false);
+                        mainScript.runSection("trickMenuNoShare");
+
+                        switch (this.spectrePossessAsk(noWorldEndExplore, narratorUnconfirmed, shareDied, canWraith, true)) {
+                            case 1:
+                                canWraith = false;
+                                break;
+
+                            case 2:
+                                return this.spectrePossess();
+
+                            case 3:
+                                return this.spectreKill(false);
+                        }
+                    }
+
+                    break;
+                    
+                case "alsoDead":
+                    shareDied = true;
+                    mainScript.runSection("alsoDeadMenu");
+
+                    if (possessionAsk.check()) {
+                        mainScript.runSection("alsoDeadMenuAlreadyAsked");
+                    } else if (!this.isHarsh) {
+                        homeComment.set(true);
+                        mainScript.runSection("alsoDeadMenuPossessAsk");
+                    }
+
+                    break;
+
+                case "bonesAsk":
+                    noBonesAsk.set(false);
+                    mainScript.runSection("bonesAskMenu");
+                    break;
+                    
+                case "howHurt":
+                    if (deathComment) {
+                        mainScript.runSection("howHurtMenuGhost");
+                    } else {
+                        mainScript.runSection("howHurtMenuDead");
+                    }
+
+                    break;
+                    
+                case "teleport":
+                    shareDied = true;
+                    mainScript.runSection("teleportMenu");
+                    break;
+                    
+                case "walls":
+                    mainScript.runSection("wallsMenu");
+
+                    if (noPossessionAsk.check()) {
+                        possessionAsk.set(true);
+
+                        switch (this.spectrePossessAsk(noWorldEndExplore, narratorUnconfirmed, shareDied, canWraith, false)) {
+                            case 1:
+                                canWraith = false;
+                                break;
+
+                            case 2:
+                                return this.spectrePossess();
+
+                            case 3:
+                                return this.spectreKill(false);
+                        }
+                    }
+
+                    break;
+                    
+                case "thoughts":
+                    if (this.isHarsh) {
+                        thoughtsHarsh.set(true);
+                        mainScript.runSection("thoughtsMenuHarsh");
+                    } else {
+                        mainScript.runSection("thoughtsMenuSoft");
+
+                        if (possessionAsk.check())
+                        {
+                            mainScript.runSection("thoughtsSoftAsked");
+                        } else {
+                            mainScript.runSection("thoughtsSoftNoAsk");
+                        }
+                    }
+
+                    break;
+                    
+                case "worldEndA":
+                case "worldEndB":
+                case "worldEndC":
+                case "worldEndHarsh":
+                    noWorldEndExplore.set(false);
+                    this.spectreShareTask(narratorUnconfirmed, shareDied);
+                    break;
+                    
+                case "wantA":
+                    possessionAsk.set(true);
+
+                    if (homeComment.check()) {
+                        mainScript.runSection("wantANoHomeComment");
+                    } else {
+                        homeComment.set(true);
+                        mainScript.runSection("wantAHomeComment");
+                    }
+
+                    switch (this.spectrePossessAsk(noWorldEndExplore, narratorUnconfirmed, shareDied, canWraith, false)) {
+                        case 1:
+                            canWraith = false;
+                            break;
+
+                        case 2:
+                            return this.spectrePossess();
+
+                        case 3:
+                            return this.spectreKill(false);
+                    }
+
+                    break;
+                    
+                case "wantB":
+                    homeComment.set(true);
+                    possessionAsk.set(true);
+                    mainScript.runSection("wantBMenu");
+
+                    switch (this.spectrePossessAsk(noWorldEndExplore, narratorUnconfirmed, shareDied, canWraith, false)) {
+                        case 1:
+                            canWraith = false;
+                            break;
+
+                        case 2:
+                            return this.spectrePossess();
+
+                        case 3:
+                            return this.spectreKill(false);
+                    }
+
+                    break;
+
+                case "wantHarsh":
+                    possessionAsk.set(true);
+                    mainScript.runSection("wantHarshMenu");
+
+                    switch (this.spectrePossessAsk(noWorldEndExplore, narratorUnconfirmed, shareDied, canWraith, false)) {
+                        case 1:
+                            canWraith = false;
+                            break;
+
+                        case 2:
+                            return this.spectrePossess();
+
+                        case 3:
+                            return this.spectreKill(false);
+                    }
+
+                    break;
+                    
+                case "possess":
+                    return this.spectrePossess();
+                    
+                case "refuse":
+                    if (manager.hasVisited(Chapter.WRAITH)) {
+                        canWraith = false;
+                        this.spectreCantWraith();
+                        parser.printDialogueLine(WORNPATH);
+                        parser.printDialogueLine(WORNPATHHERO);
+                        break;
+                    } else if (!manager.confirmContentWarnings(Chapter.WRAITH)) {
+                        canWraith = false;
+                        this.spectreCantWraith();
+                        break;
+                    }
+
+                    if (this.isHarsh) {
+                        mainScript.runSection("refuseHarsh");
+                    } else {
+                        mainScript.runSection("refuseSoft");
+                    }
+
+                    return this.spectreKill(false);
+
+                case "smashBones":
+                    if (manager.hasVisited(Chapter.WRAITH)) {
+                        canWraith = false;
+                        this.spectreCantWraith();
+                        parser.printDialogueLine(WORNPATH);
+                        parser.printDialogueLine(WORNPATHHERO);
+                        break;
+                    } else if (!manager.confirmContentWarnings(Chapter.WRAITH)) {
+                        canWraith = false;
+                        this.spectreCantWraith();
+                        break;
+                    }
+
+                    if (noBonesAsk.check()) {
+                        mainScript.runSection("smashBonesNoAsk");
+                    } else {
+                        mainScript.runSection("smashBonesAsk");
+                    }
+
+                    return this.spectreKill(false);
+
+                case "slayHarsh":
+                    if (manager.hasVisited(Chapter.WRAITH)) {
+                        canWraith = false;
+                        this.spectreCantWraith();
+                        parser.printDialogueLine(WORNPATH);
+                        parser.printDialogueLine(WORNPATHHERO);
+                        break;
+                    } else if (!manager.confirmContentWarnings(Chapter.WRAITH)) {
+                        canWraith = false;
+                        this.spectreCantWraith();
+                        break;
+                    }
+
+                    mainScript.runSection("slayAgain");
+                    return this.spectreKill(false);
+
+                case "grabHarsh":
+                    if (manager.hasVisited(Chapter.WRAITH)) {
+                        canWraith = false;
+                        this.spectreCantWraith();
+                        parser.printDialogueLine(WORNPATH);
+                        parser.printDialogueLine(WORNPATHHERO);
+                        break;
+                    } else if (!manager.confirmContentWarnings(Chapter.WRAITH)) {
+                        canWraith = false;
+                        this.spectreCantWraith();
+                        break;
+                    }
+
+                    mainScript.runSection("grabAgain");
+                    return this.spectreKill(false);
+                    
+                case "cGoStairs":
+                    if (!canWraith) {
+                        parser.printDialogueLine(DEMOBLOCK);
+                        break;
+                    }
+                case "leaveSoft":
+                case "leaveHarsh":
+                    if (manager.hasVisited(Chapter.WRAITH)) {
+                        canWraith = false;
+                        this.spectreCantWraith();
+                        parser.printDialogueLine(WORNPATH);
+                        parser.printDialogueLine(WORNPATHHERO);
+                        break;
+                    } else if (!manager.confirmContentWarnings(Chapter.WRAITH)) {
+                        canWraith = false;
+                        this.spectreCantWraith();
+                        break;
+                    }
+
+                    mainScript.runSection("leaveAttempt");
+                    return this.spectreKill(true);
+                    
+                case "retrieve":
+                    if (manager.hasVisited(Chapter.WRAITH)) {
+                        canWraith = false;
+                        this.spectreCantWraith();
+                        parser.printDialogueLine(WORNPATH);
+                        parser.printDialogueLine(WORNPATHHERO);
+                        break;
+                    } else if (!manager.confirmContentWarnings(Chapter.WRAITH)) {
+                        canWraith = false;
+                        this.spectreCantWraith();
+                        break;
+                    }
+
+                    mainScript.runSection("retrieveAttempt");
+                    return this.spectreKill(true);
+
+                case "slaySoft":
+                    this.isHarsh = true;
+                    isHostile.set(true);
+                    mainScript.runSection("softSlay");
+                    break;
+
+                case "grabSoft":
+                    this.isHarsh = true;
+                    isHostile.set(true);
+                    mainScript.runSection("softGrab");
+                    break;
+
+                case "cSlayPrincessFail":
+                case "cSlayPrincessNoBladeFail":
+                    parser.printDialogueLine(DEMOBLOCK);
+                    break;
+
+                default: this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        throw new RuntimeException("No ending reached");
+    }
+
+    /**
+     * The player tells the Princess that she's allegedly going to end the world
+     * @param narratorUnconfirmed whether the Narrator has finally agreed that you've been here before
+     * @param shareDied whether the player has mentioned that they died
+     */
+    private void spectreShareTask(Condition narratorUnconfirmed, boolean shareDied) {
+        OptionsMenu subMenu = new OptionsMenu(true);
+        boolean repeatSub = true;
+
+        if (this.isHarsh) {
+            mainScript.runSection("worldEndHarshMenu");
+
+            subMenu.add(new Option(this.manager, "end1", "(Explore) \"Well? Were you going to end the world? Would you end it, if you could?\""));
+            subMenu.add(new Option(this.manager, "end2", "(Explore) \"Things end. Things have to end. This sentence just ended.\"", subMenu.get("end1")));
+            subMenu.add(new Option(this.manager, "yesNo", "(Explore) \"It's a yes or no question. Do you want to end the world?\""));
+            subMenu.add(new Option(this.manager, "return", "(Return) [Leave it at that.]"));
+
+            while (repeatSub) {
+                this.activeOutcome = parser.promptOptionsMenu(subMenu);
+                switch (activeOutcome) {
+                    case "end1":
+                        mainScript.runSection("end1EndWorldHarsh");
+                        if (shareDied) mainScript.runSection("end1HarshSharedDeath");
+                        mainScript.runSection("end1HarshCont");
+                        break;
+
+                    case "end2":
+                    case "yesNo":
+                        mainScript.runSection(activeOutcome + "EndWorldHarsh");
+                        break;
+
+                    case "return":
+                        repeatSub = false;
+                        break;
+
+                    default: super.giveDefaultFailResponse();
+                }
+            }
+        } else {
+            mainScript.runSection("worldEndSoftMenu");
+
+            Condition firstOption = new Condition(true);
+            subMenu.add(new Option(this.manager, "grovel2", "(Explore) Shit. Everyone sounds disappointed in me. I should grovel even more.", subMenu.get("grovel1")));
+            subMenu.add(new Option(this.manager, "wrong", "(Explore) \"Obviously it was wrong of me to believe that. How could you have ended the world if all it took to kill you was a knife to the heart?\"", firstOption));
+            subMenu.add(new Option(this.manager, "whatDo", "(Explore) \"What are you going to do if I help you get out of here?\""));
+            subMenu.add(new Option(this.manager, "wereYou", "(Explore) \"Well, were you going to end the world?\""));
+            subMenu.add(new Option(this.manager, "whatDo2", "(Explore) \"You didn't answer my question. Do you want to end the world?\""));
+            subMenu.add(new Option(this.manager, "whatDo3", "(Explore) \"You still didn't answer my question. Even if you don't *want* to end it, does letting you out of here mean the world is going to end?\"", subMenu.get("whatDo2")));
+            subMenu.add(new Option(this.manager, "grovel1", "(Explore) \"I'm not cold! I'm just... dumb! I'm just a big dumb stupid idiot! Stupid stupid stupid what was I thinking just believing what I was told?\"", firstOption));
+            subMenu.add(new Option(this.manager, "return", "(Return) [Leave it at that.]"));
+
+            while (repeatSub) {
+                this.activeOutcome = parser.promptOptionsMenu(subMenu);
+                switch (activeOutcome) {
+                    case "grovel2":
+                        if (this.hasBlade) {
+                            mainScript.runSection("grovel2EndWorldSoftBlade");
+                        } else {
+                            mainScript.runSection("grovel2EndWorldSoftNoBlade");
+                        }
+                        
+                        break;
+
+                    case "wrong":
+                        firstOption.set(false);
+
+                        if (narratorUnconfirmed.check()) {
+                            narratorUnconfirmed.set(false);
+                            mainScript.runSection("wrongConfirmedEndWorldSoft");
+                        }
+
+                        mainScript.runSection("wrongEndWorldSoft");
+                        break;
+
+                    case "whatDo":
+                    case "wereYou":
+                    case "whatDo2":
+                    case "grovel1":
+                        firstOption.set(false);
+                        break;
+
+                    case "whatDo3":
+                        mainScript.runSection("whatDo3WorldEndSoft");
+                        if (shareDied) mainScript.runSection("whatDo3SharedDeath");
+                        mainScript.runSection("whatDo3Cont");
+                        break;
+                    
+                    case "return":
+                        repeatSub = false;
+                        break;
+
+                    default: super.giveDefaultFailResponse();
+                }
+            }
+        }
+    }
+
+    /**
+     * The Spectre asks the player to let her possess them
+     * @param noWorldEndExplore whether the player has already told the Spectre she's allegedly going to end the world
+     * @param narratorUnconfirmed whether the Narrator has finally agreed that you've been here before
+     * @param shareDied whether the player has mentioned that they died
+     * @param canWraith whether or not the player has already attempted (and failed) to trigger Chapter III: The Wraith
+     * @param lateJoin whether to skip the first bit of dialogue
+     * @return 0 if the player decides to ask more questions; 1 if the player backed out of triggering Chapter III: The Wraith and decides to ask more questions; 2 if they agree to let the Spectre possess them; 3 otherwise
+     */
+    private int spectrePossessAsk(Condition noWorldEndExplore, Condition narratorUnconfirmed, boolean shareDied, boolean canWraith, boolean lateJoin) {
+        if (this.isHarsh) {
+            if (!lateJoin) mainScript.runSection("possessAskSoftEarlyJoin");
+            mainScript.runSection("possessAskSoftJoin");
+        } else {
+            mainScript.runSection("possessAskHarshJoin");
+        }
+
+        String moodSuffix;
+        String agreeDisplay;
+        if (this.isHarsh) {
+            moodSuffix = "Harsh";
+            agreeDisplay = "\"No complaints here. Do it.\" [Let the Princess possess you.]";
+        } else {
+            moodSuffix = "Soft";
+            agreeDisplay = "\"Sounds great. Do it.\" [Let the Princess possess you.]";
+        }
+
+        boolean trapSuggest = false;
+        OptionsMenu possessMenu = new OptionsMenu(true);
+        possessMenu.add(new Option(this.manager, "no", "(Explore) \"What if I say no?\""));
+        possessMenu.add(new Option(this.manager, "wont", "(Explore) \"You *won't* hitch a ride if I say no, or you *can't* hitch a ride?\"", possessMenu.get("no"), !this.isHarsh));
+        possessMenu.add(new Option(this.manager, "temp", "(Explore) \"This would just be temporary, right? You'll leave once we're out of the cabin?\""));
+        possessMenu.add(new Option(this.manager, "control", "(Explore) \"If... if I let you in, do I still get to be in control?\""));
+        possessMenu.add(new Option(this.manager, "worldEnd", "\"Before I agree to anything, we need to talk about what happens after you leave this place. I was told you'd end the world.\"", noWorldEndExplore));
+        possessMenu.add(new Option(this.manager, "agree", agreeDisplay));
+        possessMenu.add(new Option(this.manager, "refuse", manager.demoMode() || !canWraith, "\"The answer's no.\""));
+        possessMenu.add(new Option(this.manager, "return", "(Return) \"I need to think on this.\""));
+
+        boolean repeatMenu = true;
+        while (repeatMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(possessMenu);
+            switch (activeOutcome) {
+                case "no":
+                    mainScript.runSection("noPossessAsk" + moodSuffix);
+
+                    if (this.isHarsh) {
+                        if (narratorUnconfirmed.check()) {
+                            narratorUnconfirmed.set(false);
+                            mainScript.runSection("noPossessAskNoConfirm");
+                        } else {
+                            mainScript.runSection("noPossessAskConfirmed");
+                        }
+                    }
+
+                    break;
+
+                case "wont":
+                    mainScript.runSection("wontPossessAsk");
+                    
+                    if (!trapSuggest) {
+                        trapSuggest = true;
+                        mainScript.runSection("coldTrapSuggest");
+                    }
+
+                    break;
+
+                case "temp":
+                    mainScript.runSection("tempPossessAsk" + moodSuffix);
+
+                    if (!this.isHarsh) {
+                        if (trapSuggest) {
+                            mainScript.runSection("tempNoSuggest");
+                        } else {
+                            trapSuggest = true;
+                            mainScript.runSection("tempColdSuggest");
+                        }
+                    }
+
+                    break;
+
+                case "control":
+                    mainScript.runSection("controlPossessAsk" + moodSuffix);
+
+                    if (!this.isHarsh) {
+                        if (trapSuggest) {
+                            mainScript.runSection("controlNoSuggest");
+                        } else {
+                            trapSuggest = true;
+                            mainScript.runSection("coldTrapSuggest");
+                        }
+                    }
+
+                    break;
+
+                case "worldEnd":
+                    noWorldEndExplore.set(false);
+                    this.spectreShareTask(narratorUnconfirmed, shareDied);
+                    return (canWraith) ? 0 : 1;
+
+                case "agree":
+                    return 2;
+
+                case "refuse":
+                    if (manager.hasVisited(Chapter.WRAITH)) {
+                        canWraith = false;
+                        this.spectreCantWraith();
+                        parser.printDialogueLine(WORNPATH);
+                        parser.printDialogueLine(WORNPATHHERO);
+                        break;
+                    } else if (!manager.confirmContentWarnings(Chapter.WRAITH)) {
+                        canWraith = false;
+                        this.spectreCantWraith();
+                        break;
+                    }
+
+                    mainScript.runSection("askRefuse" + moodSuffix);
+                    return 3;
+
+                case "return":
+                    mainScript.runSection("returnPossessAsk" + moodSuffix);
+                    return (canWraith) ? 0 : 1;
+
+                default: super.giveDefaultFailResponse();
+            }
+        }
+
+        throw new RuntimeException("No conclusion reached");
+    }
+
+    /**
+     * Force the player into the "Hitch a Ride" ending of The Spectre, either because the game is in demo mode or because they chose not to continue after seeing the Wraith's content warnings
+     */
+    private void spectreCantWraith() {
+        this.canSlayPrincess = false;
+        activeMenu.setGreyedOut("refuse", true);
+        activeMenu.setGreyedOut("smashBones", true);
+        activeMenu.setGreyedOut("slayHarsh", true);
+        activeMenu.setGreyedOut("grabHarsh", true);
+        activeMenu.setGreyedOut("leaveSoft", true);
+        activeMenu.setGreyedOut("leaveHarsh", true);
+        activeMenu.setGreyedOut("retrieve", true);
+    }
+
+    /**
+     * The player either offends the Spectre for a second time, refuses to let her possess them, or attempts to leave the basement; the Spectre kills them, leading to Chapter III: The Wraith
+     * @return the Chapter ending reached by the player
+     */
+    private ChapterEnding spectreKill(boolean leaveAttempt) {
+        mainScript.runSection("killStart");
+
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "miss", "\"Did you miss?\""));
+        activeMenu.add(new Option(this.manager, "afraid", "\"I'm not afraid of you.\""));
+        activeMenu.add(new Option(this.manager, "silent", "[Stare at her in silence.]"));
+        activeMenu.add(new Option(this.manager, "away", "[Step away.]"));
+
+        this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+        switch (activeOutcome) {
+            case "miss":
+            case "afraid":
+            case "away":
+                mainScript.runSection(activeOutcome + "Kill");
+                break;
+
+            case "silent":
+                // No extra dialogue
+                break;
+        }
+
+        mainScript.runSection("killCont");
+
+        // isHarsh is used here to indicate whether you tried to take the Princess down with you, which changes a couple dialogue lines in The Wraith
+        if (this.hasBlade) {
+            mainScript.runSection("killBladeStart");
+            
+            this.canSlayPrincess = true;
+            this.activeMenu = new OptionsMenu();
+            activeMenu.add(new Option(this.manager, "slay", "[Slay the Princess.]"));
+            activeMenu.add(new Option(this.manager, "die", "[Die.]"));
+
+            this.repeatActiveMenu = true;
+            while (repeatActiveMenu) {
+                switch (parser.promptOptionsMenu(activeMenu)) {
+                    case "cSlayPrincess":
+                    case "slay":
+                        this.isHarsh = true;
+                        mainScript.runSection("killBladeSlay");
+                        break;
+
+                    case "die":
+                        this.isHarsh = false;
+                        mainScript.runSection("killBladeDie");
+                        break;
+                }
+            }
+        } else {
+            this.isHarsh = false;
+            mainScript.runSection("killNoBlade");
+        }
+
+        if (leaveAttempt && !this.isHarsh) {
+            return ChapterEnding.HEARTRIPPERLEAVE;
+        } else {
+            return ChapterEnding.HEARTRIPPER;
+        }
+    }
+
+    /**
+     * The player allows the Spectre to possess them
+     * @return the Chapter ending reached by the player
+     */
+    private ChapterEnding spectrePossess() {
+        String moodSuffix = (this.isHarsh) ? "Harsh" : "Soft";
+
+        mainScript.runSection("possessStart" + moodSuffix);
+        mainScript.runSection("possessCont" + moodSuffix);
+        mainScript.runSection("possessVoiceComment" + moodSuffix);
+        mainScript.runSection("possessCont2" + moodSuffix);
+
+        boolean canDragon = true;
+        this.canSlayPrincess = true;
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "explore", "(Explore) I can't think straight... there's too much noise."));
+        activeMenu.add(new Option(this.manager, "slay", manager.demoMode(), "[Slay the Princess.]", 0, this.hasBlade));
+        activeMenu.add(new Option(this.manager, "leave", "[Leave the basement.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "explore":
+                    mainScript.runSection("possessExplore" + moodSuffix);
+                    break;
+
+                case "cSlayPrincess":
+                    if (manager.demoMode() || !canDragon) {
+                        parser.printDialogueLine(DEMOBLOCK);
+                    }
+                case "slay":
+                    if (!manager.confirmContentWarnings(Chapter.DRAGON, "suicide")) {
+                        canDragon = false;
+                        activeMenu.setGreyedOut("slay", true);
+                        break;
+                    }
+
+                    mainScript.runSection("exorcismStart");
+                    mainScript.runSection("exorcismStart" + moodSuffix);
+                    return ChapterEnding.EXORCIST;
+
+                case "cGoStairs":
+                case "leave":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default: this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        this.currentLocation = GameLocation.BASEMENT;
+        if (!this.hasBlade) this.withBlade = true;
+        boolean tookBladeStart = this.hasBlade;
+        mainScript.runSection("possessUpstairs");
+        mainScript.runSection("possessUpstairs" + moodSuffix);
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "take", "(Explore) [Take the blade.]", !this.hasBlade));
+        activeMenu.add(new Option(this.manager, "slay", manager.demoMode() || !canDragon, "[Slay the Princess.]", 0, this.hasBlade));
+        activeMenu.add(new Option(this.manager, "cont", "[Trudge forward.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "cTake":
+                case "take":
+                    this.withBlade = false;
+                    this.hasBlade = true;
+                    activeMenu.setCondition("slay", true);
+                    mainScript.runSection("possessTakeBlade");
+                    break;
+
+                case "cSlayPrincess":
+                    if (manager.demoMode() || !canDragon) {
+                        parser.printDialogueLine(DEMOBLOCK);
+                    }
+                case "slay":
+                    if (!manager.confirmContentWarnings(Chapter.DRAGON, "suicide")) {
+                        canDragon = false;
+                        activeMenu.setGreyedOut("slay", true);
+                        break;
+                    }
+
+                    mainScript.runSection("exorcismStart");
+                    mainScript.runSection("exorcismStart" + moodSuffix);
+                    return ChapterEnding.EXORCIST;
+
+                case "cGoHill":
+                case "cont":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                case "cGoStairs":
+                    mainScript.runSection("possessTurnAround" + moodSuffix);
+                    break;
+
+                case "cSlayPrincessNoBladeFail":
+                    mainScript.runSection("possessSlaySuggest");
+                    break;
+
+                default: this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        if (this.hasBlade && !tookBladeStart) {
+            mainScript.runSection("possessForwardTookBlade");
+        } else {
+            mainScript.runSection("possessForwardOther");
+        }
+
+        mainScript.runSection("possessForward" + moodSuffix);
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "open", "[Open the door.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu)) {
+                case "cGoHill":
+                case "open":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default: super.giveDefaultFailResponse();
+            }
+        }
+
+        mainScript.runSection();
+
+        if (this.isFirstVessel) {
+            mainScript.runSection("possessEndFirstVessel");
+        } else {
+            mainScript.runSection("possessEndNotFirstVessel");
+        }
+
+        return ChapterEnding.HITCHHIKER;
     }
 
 
@@ -7662,7 +8637,7 @@ public class StandardCycle extends Cycle {
     }
 
     /**
-     * Force the player into the "Dissolved Will" ending of The Beast, either because the game is in demo mode or because they chose not to continue after seeing the Wild's content warnings.
+     * Force the player into the "Dissolved Will" ending of The Beast, either because the game is in demo mode or because they chose not to continue after seeing the Wild's content warnings
      */
     private void beastForceDissolvedWill() {
         this.canSlayPrincess = false;
@@ -7735,6 +8710,7 @@ public class StandardCycle extends Cycle {
     private ChapterEnding witch() {
         // You gain the Voice of the Opportunist
 
+        boolean mutualDeath = false;
         switch (this.prevEnding) {
             case TOWITCHLOCKED:
                 this.source = "locked";
@@ -7742,7 +8718,14 @@ public class StandardCycle extends Cycle {
                 break;
 
             case TOWITCHMUTUAL:
+                mutualDeath = true;
                 this.source = "mutual";
+                if (!this.chapter2Intro(true, true, false)) return ChapterEnding.ABORTED;
+                break;
+
+            case TOWITCHBETRAYAL:
+                mutualDeath = true;
+                this.source = "betrayal";
                 if (!this.chapter2Intro(true, true, false)) return ChapterEnding.ABORTED;
                 break;
 
@@ -7861,20 +8844,668 @@ public class StandardCycle extends Cycle {
         }
 
         if (manager.trueDemoMode()) return ChapterEnding.DEMOENDING;
+
+        if (this.sharedLoopInsist) {
+            mainScript.runSection("basementSharedLoopInsist");
+        } else if (this.sharedLoop) {
+            mainScript.runSection("basementSharedLoop");
+        } else {
+            mainScript.runSection("basementNoShare");
+        }
+
+        boolean cantWild = false;
+        boolean talked = false;
+        boolean offeredBlade = false;
+        boolean heartComment = false;
+        Condition witchFree = new Condition(false);
+        InverseCondition witchChained = witchFree.getInverse();
+        Condition apologized = new Condition(false);
+        InverseCondition noApology = apologized.getInverse();
+        Condition leaveMentioned = new Condition(false);
+        InverseCondition leaveNotMentioned = leaveMentioned.getInverse();
+        Condition noStall = new Condition(true);
+
+        this.canSlayPrincess = true;
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "sorry", "(Explore) \"I'm sorry about last time.\"", noApology));
+        activeMenu.add(new Option(this.manager, "mistake", "(Explore) \"Look, I made a mistake. We all make mistakes, right? I'm sure you've made mistakes.\"", noApology, leaveNotMentioned));
+        activeMenu.add(new Option(this.manager, "getOutA", "(Explore) \"Don't worry, the blade isn't for you. Or, not for killing you. We've got to get you out somehow, right?\"", this.hasBlade, witchChained));
+        activeMenu.add(new Option(this.manager, "notHappy", "(Explore) \"I get the sense that you're not happy with me.\""));
+        activeMenu.add(new Option(this.manager, "scared", "(Explore) \"You scared me, okay? When you started gnawing your arm off, it scared me, so I stabbed you. Things got out of hand.\"", source.equals("betrayal"), noStall, noApology));
+        activeMenu.add(new Option(this.manager, "goodWill", "(Explore) \"I'm unarmed. That's a gesture of good will! So why don't we talk it out?\"", !this.hasBlade, noStall, noApology));
+        activeMenu.add(new Option(this.manager, "bygones", "(Explore) \"We both died last time. Can't bygones be bygones?\"", source.equals("betrayal"), noStall));
+        activeMenu.add(new Option(this.manager, "locked", "(Explore) \"I didn't do shit to you last time. You're the one who locked me away until I died.\"", source.equals("locked"), noStall, leaveNotMentioned));
+        activeMenu.add(new Option(this.manager, "trusted", "(Explore) \"I died last time. You didn't. If anyone here shouldn't be trusted, it's you!\"", !mutualDeath, noStall));
+        activeMenu.add(new Option(this.manager, "messy", "(Explore) \"Look, I know, I know. Things got messy last time. But I think there's something bigger than both of us at work. We should team up.\"", leaveNotMentioned));
+        activeMenu.add(new Option(this.manager, "impasse", "(Explore) \"So we're at an impasse. Neither of us are gonna get anywhere if we can't trust each other. Unless you want to fight. But I don't want to fight.\"", activeMenu.get("sorry"), leaveNotMentioned, apologized));
+        activeMenu.add(new Option(this.manager, "cutA", "(Explore) \"I didn't bring my blade down, remember? How am I supposed to get you out of those chains?\"", !this.hasBlade, leaveMentioned, witchChained));
+        activeMenu.add(new Option(this.manager, "cutB", "(Explore) \"I guess I'll cut you out of here.\"", this.hasBlade, leaveMentioned, witchChained));
+        activeMenu.add(new Option(this.manager, "getOutB", "(Explore) \"Can't you get out of those on your own? Those chains didn't stop you last time.\"", !source.equals("betrayal"), witchChained));
+        activeMenu.add(new Option(this.manager, "free", "(Explore) \"If you could have gotten out this whole time, what do you even need me for? The cabin isn't locked.\"", false));
+        activeMenu.add(new Option(this.manager, "betray", "(Explore) \"Why do I have a nagging feeling you're going to stab me in the back if I help you out of here?\"", witchFree, leaveNotMentioned));
+        activeMenu.add(new Option(this.manager, "stairs", "\"Okay. Let's leave.\" [Leave with the Princess.]", witchFree));
+        activeMenu.add(new Option(this.manager, "offer", manager.demoMode(), "\"I don't want to hurt you, but clearly there's some broken trust. Take this as a gesture of my good will.\" [Give her the blade.]", this.hasBlade));
+        activeMenu.add(new Option(this.manager, "leave", manager.demoMode(), "\"I don't trust you. Not enough to free you, and definitely not enough to get close to you. I'm leaving. Bye.\" [Leave her in the basement.]", 0, this.hasBlade));
+        activeMenu.add(new Option(this.manager, "slayYap", manager.demoMode(), "\"I'd like to be straightforward with my intentions. I didn't care for how you treated me last time, and I think you might be a danger to the world. I'm going to attack you now.\" [Slay the Princess.]", 0, this.hasBlade));
+        activeMenu.add(new Option(this.manager, "slaySilent", manager.demoMode(), "[Slay the Princess.]", 0, this.hasBlade));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "mistake":
+                    leaveMentioned.set(true);
+                case "sorry":
+                    apologized.set(true);
+                    mainScript.runSection(activeOutcome + "Menu");
+                    break;
+                    
+                case "notHappy":
+                case "betray":
+                    mainScript.runSection(activeOutcome + "Menu");
+                    break;
+                    
+                case "locked":
+                    leaveMentioned.set(true);
+                    activeMenu.setCondition("sorry", false);
+                case "scared":
+                case "goodWill":
+                case "bygones":
+                    noStall.set(false);
+                    mainScript.runSection(activeOutcome + "Menu");
+                    break;
+                    
+                case "trusted":
+                    noStall.set(false);
+
+                    if (this.rescuePath) {
+                        mainScript.runSection("trustedRescueMenu");
+                    } else {
+                        mainScript.runSection("trustedMenu");
+                    }
+                    
+                    break;
+                    
+                case "messy":
+                case "impasse":
+                case "free":
+                    leaveMentioned.set(true);
+                    mainScript.runSection(activeOutcome + "Menu");
+                    break;
+                    
+                case "getOutB":
+                    witchFree.set(true);
+                    mainScript.runSection("getOutBMenu");
+
+                    if (!heartComment) {
+                        heartComment = true;
+                        mainScript.runSection("chainsHeartComment");
+                    }
+
+                    mainScript.runSection("chainsFallCont");
+                    break;
+
+                case "getOutA":
+                case "cutA":
+                case "cutB":
+                    witchFree.set(true);
+                    mainScript.runSection("cutMenu");
+
+                    if (!heartComment) {
+                        heartComment = true;
+                        mainScript.runSection("chainsHeartComment");
+                    }
+
+                    mainScript.runSection("chainsFallCont");
+                    break;
+                    
+                case "stairs":
+                    return this.witchStairs(offeredBlade);
+                    
+                case "offer":
+                    offeredBlade = true;
+
+                    if (this.witchGiveBladeStart()) {
+                        return this.witchGiveBlade(false, witchFree.check(), heartComment);
+                    }
+
+                    break;
+                    
+                case "cGoStairs":
+                    if (manager.demoMode() || cantWild) {
+                        parser.printDialogueLine(DEMOBLOCK);
+                        break;
+                    }
+                case "leave":
+                    if (manager.hasVisited(Chapter.WILD)) {
+                        cantWild = true;
+                        activeMenu.setGreyedOut("leave", true);
+                        activeMenu.setGreyedOut("slayYap", true);
+                        activeMenu.setGreyedOut("slaySilent", true);
+                        parser.printDialogueLine(WORNPATH);
+                        break;
+                    } else if (!manager.confirmContentWarnings(Chapter.WILD)) {
+                        cantWild = true;
+                        activeMenu.setGreyedOut("leave", true);
+                        activeMenu.setGreyedOut("slayYap", true);
+                        activeMenu.setGreyedOut("slaySilent", true);
+                        parser.printDialogueLine(WORNPATH);
+                        break;
+                    }
+
+                    return this.witchToWild(false, witchFree.check(), heartComment);
+                    
+                case "slayYap":
+                    if (manager.hasVisited(Chapter.WILD)) {
+                        cantWild = true;
+                        activeMenu.setGreyedOut("leave", true);
+                        activeMenu.setGreyedOut("slayYap", true);
+                        activeMenu.setGreyedOut("slaySilent", true);
+                        parser.printDialogueLine(WORNPATH);
+                        break;
+                    } else if (!manager.confirmContentWarnings(Chapter.WILD)) {
+                        cantWild = true;
+                        activeMenu.setGreyedOut("leave", true);
+                        activeMenu.setGreyedOut("slayYap", true);
+                        activeMenu.setGreyedOut("slaySilent", true);
+                        parser.printDialogueLine(WORNPATH);
+                        break;
+                    }
+
+                    return this.witchToWild(true, witchFree.check(), heartComment);
+                    
+                case "cSlayPrincess":
+                    if (manager.demoMode() || cantWild) {
+                        parser.printDialogueLine(DEMOBLOCK);
+                        break;
+                    }
+                case "slaySilent":
+                    if (manager.hasVisited(Chapter.WILD)) {
+                        cantWild = true;
+                        activeMenu.setGreyedOut("leave", true);
+                        activeMenu.setGreyedOut("slayYap", true);
+                        activeMenu.setGreyedOut("slaySilent", true);
+                        parser.printDialogueLine(WORNPATH);
+                        break;
+                    } else if (!manager.confirmContentWarnings(Chapter.WILD)) {
+                        cantWild = true;
+                        activeMenu.setGreyedOut("leave", true);
+                        activeMenu.setGreyedOut("slayYap", true);
+                        activeMenu.setGreyedOut("slaySilent", true);
+                        parser.printDialogueLine(WORNPATH);
+                        break;
+                    }
+
+                    return this.witchToWild(true, witchFree.check(), heartComment);
+
+                default: this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
         
+        throw new RuntimeException("No ending reached");
+    }
+
+    /**
+     * The player offers to leave with the Witch
+     * @param offeredBlade whether the player has already offered the Witch the blade
+     * @return the Chapter ending reached by the player
+     */
+    private ChapterEnding witchStairs(boolean offeredBlade) {
+        mainScript.runSection("leaveStart");
+
+        if (this.hasBlade) {
+            mainScript.runSection("leaveStartBlade");
+        } else {
+            mainScript.runSection("leaveStartNoBlade");
+        }
+
+        Condition witchNotFirst = new Condition(true);
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "explore", "(Explore) \"You first.\"", witchNotFirst));
+        activeMenu.add(new Option(this.manager, "offer", manager.demoMode(), "(Explore) \"Clearly, there's some broken trust here. What if I gave you this?\" [Give her the blade.]", this.hasBlade && !offeredBlade, witchNotFirst));
+        activeMenu.add(new Option(this.manager, "implore", "(Explore) \"You're the one who said you can't leave here without me, which means I hold all the cards. Either you go first, or we stay here. Up to you!\"", activeMenu.get("explore"), witchNotFirst));
+        activeMenu.add(new Option(this.manager, "silent", "\"[Step onto the stairs.]\""));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "explore":
+                    mainScript.runSection("leaveStartExplore");
+                    break;
+
+                case "offer":
+                    if (this.witchGiveBladeStart()) {
+                        return this.witchGiveBlade(false, true, true);
+                    }
+
+                    break;
+
+                case "implore":
+                    witchNotFirst.set(false);
+                    mainScript.runSection("leaveStartImplore");
+                    break;
+                
+                case "cGoStairs":
+                case "silent":
+                    this.repeatActiveMenu = false;
+                    break;
+            }
+        }
+
+        if (witchNotFirst.check()) {
+            if (this.hasBlade) {
+                mainScript.runSection("followStartNoBlade");
+
+                this.activeMenu = new OptionsMenu();
+                activeMenu.add(new Option(this.manager, "refuse", "(Explore) I'm not stabbing her in the back."));
+                activeMenu.add(new Option(this.manager, "refuse2", "I said I'm not stabbing her in the back. And I make the choices here."));
+                activeMenu.add(new Option(this.manager, "praise", "Wow, that's an amazing idea that I totally never saw coming, thanks for looking out for us! [Stab her in the back.]"));
+                activeMenu.add(new Option(this.manager, "noPraise", "I am not going to praise you, but I am going to [Stab her in the back.]"));
+                activeMenu.add(new Option(this.manager, "ugh", "Ugh. Fine. [Stab her in the back.]"));
+
+                this.repeatActiveMenu = true;
+                while (repeatActiveMenu) {
+                    this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+                    switch (activeOutcome) {
+                        case "refuse":
+                            mainScript.runSection("followRefuse");
+                            break;
+
+                        case "refuse2":
+                            mainScript.runSection("followTopStartBlade");
+                            this.witchLeaveBasement();
+                            return ChapterEnding.FROGLOCKED;
+
+                        case "praise":
+                            mainScript.runSection("backStabPraise");
+                            this.witchBetrayal(false);
+                            return ChapterEnding.SCORPION;
+                        
+                        case "cSlayPrincess":
+                        case "noPraise":
+                        case "ugh":
+                            mainScript.runSection("backStabUgh");
+                            this.witchBetrayal(false);
+                            return ChapterEnding.SCORPION;
+
+                        default: this.giveDefaultFailResponse();
+                    }
+                }
+            } else {
+                mainScript.runSection("followStartNoBlade");
+                this.witchLeaveBasement();
+                return ChapterEnding.FROGLOCKED;
+            }
+        } else {
+            mainScript.runSection("leadStart");
+
+            if (this.hasBlade) {
+                mainScript.runSection("leadStartBlade");
+            } else {
+                mainScript.runSection("leadStartNoBlade");
+            }
+
+            this.witchBetrayal(true);
+            return ChapterEnding.FROG;
+        }
         
-        // temporary templates for copy-and-pasting
-        /*
-        parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
-        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
-        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
-        */
+        throw new RuntimeException("No ending reached");
+    }
+
+    /**
+     * The player either chooses to stab the Witch in the back as they leave the basement together, leading to "The Scorpion" ending, or goes first up the stairs, leading to "The Frog" ending; either way, they claim the Witch
+     */
+    private void witchBetrayal(boolean wentFirst) {
+        boolean brokenShare = false;
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "broken", "\"I can't get up. You broke my back.\""));
+        activeMenu.add(new Option(this.manager, "help", "\"What the hell was that for? I was trying to help you out of here!\"", wentFirst));
+        activeMenu.add(new Option(this.manager, "damn", "\"Damn. I thought I had you there.\"", !wentFirst));
+        activeMenu.add(new Option(this.manager, "never", "\"We were never going to get up those stairs, were we?\""));
+        activeMenu.add(new Option(this.manager, "trust", "\"We could have gotten out of here if we'd just trusted each other.\""));
+        activeMenu.add(new Option(this.manager, "silent", "[Say nothing.]"));
+
+        switch (parser.promptOptionsMenu(activeMenu)) {
+            case "broken":
+                brokenShare = true;
+            case "help":
+            case "damn":
+                mainScript.runSection(activeOutcome + "Betrayal");
+                break;
+
+            case "never":
+                if (wentFirst) {
+                    if (source.equals("locked")) {
+                        mainScript.runSection("neverBetrayalLocked");
+                    } else {
+                        mainScript.runSection("neverBetrayalOther");
+                    }
+                } else {
+                    mainScript.runSection("betrayalGenericLead");
+                }
+                
+                break;
+
+            case "trust":
+                if (source.equals("locked")) {
+                    mainScript.runSection("trustBetrayalLocked");
+                } else {
+                    mainScript.runSection("trustBetrayalOther");
+                }
+
+                if (wentFirst) {
+                    if (source.equals("locked")) {
+                        mainScript.runSection("betrayalJokeLocked");
+                    } else {
+                        mainScript.runSection("betrayalJokeOther");
+                    }
+                } else {
+                    mainScript.runSection("betrayalGenericLead");
+                }
+
+                break;
+
+            case "silent":
+                if (wentFirst) {
+                    mainScript.runSection("silentBetrayalFollow");
+
+                    if (source.equals("locked")) {
+                        mainScript.runSection("betrayalJokeLocked");
+                    } else {
+                        mainScript.runSection("betrayalJokeOther");
+                    }
+                } else {
+                    mainScript.runSection("betrayalGenericLead");
+                }
+
+                break;
+        }
+
+        if (wentFirst) {
+            if (this.hasBlade) {
+                mainScript.runSection("betrayalContLeadBlade");
+                mainScript.runSection("betrayalContLeadBlade2");
+            } else {
+                mainScript.runSection("betrayalContLeadNoBlade");
+                mainScript.runSection("betrayalContLeadNoBlade2");
+            }
+        } else {
+            mainScript.runSection("betrayalContFollow");
+        }
+
+        if (brokenShare) {
+            mainScript.runSection("betrayalEndBrokenShare");
+        } else {
+            mainScript.runSection("betrayalEndNohare");
+        }
+
+        this.quietCreep();
+        mainScript.runSection();
+
+        if (this.isFirstVessel) {
+            mainScript.runSection("witchEndFirstVessel");
+        } else {
+            mainScript.runSection("witchEndNotFirstVessel");
+        }
+    }
+
+    /**
+     * The player chooses to peacefully follow the Witch out of the basement, leading to "The Frog" ending and claiming the Witch
+     */
+    private void witchLeaveBasement() {
+        if (source.equals("locked")) mainScript.runSection("lockedNotAgain");
+
+        if (this.hasBlade) {
+            mainScript.runSection("lockedBlade");
+        } else {
+            mainScript.runSection("lockedNoBlade");
+        }
+
+        if (source.equals("locked")) {
+            mainScript.runSection("lockedReplyAgain");
+        } else {
+            mainScript.runSection("lockedReplyOther");
+        }
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "try", "(Explore) [Try the door.]"));
+        activeMenu.add(new Option(this.manager, "force", "(Explore) [Force the door.]"));
+        activeMenu.add(new Option(this.manager, "funny", "(Explore) \"Okay. Fine. You got me. Very funny. Can you let me out now?\""));
+        activeMenu.add(new Option(this.manager, "plead", "(Explore) \"Please just let me out, I promise I won't be mad.\""));
+        activeMenu.add(new Option(this.manager, "need", "(Explore) \"I thought you needed me to get out.\""));
+        activeMenu.add(new Option(this.manager, "stuck", "\"Okay. What happens now? I'm stuck here.\""));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "force":
+                    activeMenu.setCondition("try", false);
+                case "try":
+                case "funny":
+                case "plead":
+                case "need":
+                    mainScript.runSection(activeOutcome + "LockedMenu");
+                    break;
+
+                case "cGoStairs":
+                    if (!activeMenu.hasBeenPicked("try")) {
+                        activeMenu.setCondition("try", false);
+                        mainScript.runSection("tryLockedMenu");
+                    } else if (!activeMenu.hasBeenPicked("force")) {
+                        activeMenu.setCondition("force", false);
+                        mainScript.runSection("forceLockedMenu");
+                    } else {
+                        mainScript.runSection("tryAgainLockedMenu");
+                    }
+
+                case "stuck":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default: this.giveDefaultFailResponse();
+            }
+        }
+
+        this.quietCreep();
+        mainScript.runSection("lockedEnd");
+
+        if (this.isFirstVessel) {
+            mainScript.runSection("witchEndFirstVessel");
+        } else {
+            mainScript.runSection("witchEndNotFirstVessel");
+        }
+    }
+
+    /**
+     * The player considers giving the Witch the blade as a gesture of good will
+     * @return true if the player commits to giving the Witch the blade; false otherwise
+     */
+    private boolean witchGiveBladeStart() {
+        OptionsMenu offerMenu = new OptionsMenu(true);
+        offerMenu.add(new Option(this.manager, "commit", "This isn't a democracy. We're giving her the blade. [Give her the blade.]"));
+        offerMenu.add(new Option(this.manager, "backOut", "Haha. Yeah, nevermind, that was such a silly idea. I'm not going to give her the blade. She clearly hates us. [Don't do it.]"));
+
+        switch (parser.promptOptionsMenu(offerMenu)) {
+            case "commit":
+                return true;
+
+            case "nevermind":
+                mainScript.runSection("offerBackOut");
+                return false;
+        }
+
+        throw new RuntimeException("No conclusion reached");
+    }
+
+    /**
+     * The player gives the Witch the blade as a gesture of good will, leading to Chapter III: The Thorn
+     * @param fromStairs whether the player offered to leave with the Witch and is at the stairs
+     * @param witchFree whether the Witch has freed herself from her chains
+     * @param heartComment whether the Voice of the Opportunist has made a comment about the Witch being "a woman after [his] own heart"
+     * @return the Chapter ending reached by the player
+     */
+    private ChapterEnding witchGiveBlade(boolean fromStairs, boolean witchFree, boolean heartComment) {
+        if (fromStairs) {
+            mainScript.runSection("offerCommitStairs");
+        } else {
+            mainScript.runSection("offerCommitBasement");
+
+            if (!witchFree) {
+                mainScript.runSection("offerCommitBasementNotFree");
+                
+                if (heartComment) {
+                    mainScript.runSection("offerCommitBasementHeartComment");
+                } else {
+                    mainScript.runSection("offerCommitBasementHeartComment");
+                }
+
+                mainScript.runSection("offerCommitBasementCont");
+            }
+        }
+
+        boolean smittenFlag = false;
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "yourChoice", "\"That's up to you. It's why I gave you the blade. I chose last time, and I regret it. So now it's your time to choose.\""));
+        activeMenu.add(new Option(this.manager, "scared", "\"We're both scared and we're both hurting. If one of us doesn't make a change, we'll probably kill each other forever. Do you want that? I don't. We can be better than this.\""));
+        activeMenu.add(new Option(this.manager, "beautiful", "\"You're beautiful. I want to *actually* save you, and this feels like the only way to do it.\""));
+        activeMenu.add(new Option(this.manager, "someone", "\"If you're like someone I know, you're probably going to kill me.\""));
+        activeMenu.add(new Option(this.manager, "silent", "[Remain silent.]"));
+
+        this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+        switch (activeOutcome) {
+            case "scared":
+                smittenFlag = true;
+            case "yourChoice":
+                mainScript.runSection("trickOffer");
+                break;
+
+            case "beautiful":
+                smittenFlag = true;
+            case "someone":
+            case "silent":
+                mainScript.runSection(activeOutcome + "Offer");
+                break;
+        }
+
+        if (smittenFlag) {
+            return ChapterEnding.PASTLIFEGAMBITSPECIAL;
+        } else {
+            return ChapterEnding.PASTLIFEGAMBIT;
+        }
+    }
+
+    /**
+     * The player chooses to either fight the Witch or leave the basement alone, leading to Chapter III: The Wild
+     * @param fight whether the player chose to fight the Witch
+     * @param witchFree whether the Witch has freed herself from her chains
+     * @param heartComment whether the Voice of the Opportunist has made a comment about the Witch being "a woman after [his] own heart"
+     * @return the Chapter ending reached by the player
+     */
+    private ChapterEnding witchToWild(boolean fight, boolean witchFree, boolean heartComment) {
+        String jumpSuffix = (fight) ? "Fight" : "Flee";
+
+        boolean fightContinue = false;
+        String sucksDisplay = "(Explore) \"Come on! They're pressing in on me. ";
+        String sorryDisplay = "(Explore) \"I take it all back! I can help you get out of here! You and I can work together! We can be friends.";
+        if (fight) {
+            this.canSlayPrincess = true;
+            sucksDisplay += "They're pressing in on you! This sucks!\"";
+            sorryDisplay += " I'm sorry!\"";
+
+            if (witchFree) {
+                mainScript.runSection("fightStartFree");
+            } else {
+                mainScript.runSection("fightStartNotFree");
+
+                if (!heartComment) {
+                    mainScript.runSection("fightHeartComment");
+                }
+
+                mainScript.runSection("fightStartNotFreeCont");
+            }
+        } else {
+            this.currentLocation = GameLocation.CABIN;
+            this.withPrincess = false;
+            this.canSlayPrincess = false;
+            sucksDisplay += "They're probably pressing in on you too! I'm only assuming that because I can't see you but it sure sounds like they are!\"";
+            sorryDisplay += "\"";
+            mainScript.runSection("abandonStart");
+        }
         
-        // PLACEHOLDER
-        return null;
+        Condition mutualNotFollowedUp = new Condition(true);
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "mutual", "(Explore) \"What about you? They'll crush you just as easily as they'll crush me.\""));
+        activeMenu.add(new Option(this.manager, "stop", "(Explore) \"Make them stop! You can make them stop, right?\"", mutualNotFollowedUp));
+        activeMenu.add(new Option(this.manager, "why", "(Explore) \"Why, though? Why are you doing this?\"", activeMenu.get("mutual"), mutualNotFollowedUp));
+        activeMenu.add(new Option(this.manager, "sucks", sucksDisplay, false));
+        activeMenu.add(new Option(this.manager, "animals", "(Explore) \"We're not animals! We're people. We can work this out. We can make things better.\""));
+        activeMenu.add(new Option(this.manager, "sorry", sorryDisplay));
+        activeMenu.add(new Option(this.manager, "wait", "[Give up, and await your death.]"));
+        activeMenu.add(new Option(this.manager, "fight", "[Go out fighting.]", fight));
+
+        for (int menuCount = 0; menuCount < 3; menuCount++) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "why":
+                    mutualNotFollowedUp.set(false);
+                case "mutual":
+                case "sucks":
+                case "animals":
+                case "sorry":
+                    mainScript.runSection(activeOutcome + "Wild" + jumpSuffix);
+                    break;
+
+                case "stop":
+                    mutualNotFollowedUp.set(false);
+
+                    if (activeMenu.hasBeenPicked("mutual")) {
+                        mainScript.runSection("stopWild" + jumpSuffix);
+                    } else {
+                        mainScript.runSection("stopWildMutual");
+                    }
+
+                    break;
+
+                case "wait":
+                    menuCount = 2; // Fast-forward
+                    if (fight) mainScript.runSection("waitWildFight");
+                    break;
+
+                case "cSlayPrincess":
+                case "fight":
+                    menuCount = 2; // Fast-forward
+                    fightContinue = true;
+                    mainScript.runSection("fightWild");
+                    break;
+
+                default:
+                    menuCount -= 1;
+                    this.giveDefaultFailResponse(activeOutcome);
+            }
+
+            switch (menuCount) {
+                case 0:
+                    mainScript.runSection("rootsComment1");
+                    break;
+
+                case 1:
+                    mainScript.runSection("rootsComment2");
+                    break;
+            }
+        }
+
+        // Crushed to death
+        mainScript.runSection("crushed" + jumpSuffix);
+
+        if (!fight) {
+            return ChapterEnding.PLAYINGITSAFE;
+        } else if (fightContinue) {
+            return ChapterEnding.KNIVESOUTMASKSOFF;
+        } else {
+            return ChapterEnding.KNIVESOUTMASKSOFFGIVEUP;
+        }
     }
 
 

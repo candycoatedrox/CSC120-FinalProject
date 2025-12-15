@@ -18,7 +18,7 @@ public class GameManager {
     private String nowPlaying;
 
     // Global progress trackers
-    private Chapter firstPrincess;
+    private Chapter firstPrincess; // need more nuance here for harsh/soft and different variations (ex. Razor-revival)
     private ArrayList<Vessel> claimedVessels;
     private ArrayList<ChapterEnding> endingsFound;
     private HashMap<Chapter, Boolean> visitedChapters;
@@ -519,7 +519,7 @@ public class GameManager {
         }
 
         if (this.nClaimedVessels() == 5) {
-            this.currentCycle = new Finale(this, this.claimedVessels, this.firstPrincess, this.parser);
+            this.currentCycle = new Finale(this, this.claimedVessels, this.endingsFound, this.firstPrincess, this.parser);
             ending = this.currentCycle.runCycle();
 
             switch (ending) {
@@ -615,7 +615,7 @@ public class GameManager {
         }
 
         if (this.nClaimedVessels() == 5) {
-            this.currentCycle = new Finale(this, this.claimedVessels, this.firstPrincess, this.parser);
+            this.currentCycle = new Finale(this, this.claimedVessels, this.endingsFound, this.firstPrincess, this.parser);
             ending = this.currentCycle.runCycle();
 
             switch (ending) {
@@ -720,7 +720,7 @@ public class GameManager {
         }
 
         if (this.nClaimedVessels() == 5) {
-            this.currentCycle = new Finale(this, this.claimedVessels, this.firstPrincess, this.parser);
+            this.currentCycle = new Finale(this, this.claimedVessels, this.endingsFound, this.firstPrincess, this.parser);
             ending = this.currentCycle.runCycle();
 
             switch (ending) {

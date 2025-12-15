@@ -31,8 +31,8 @@ jumpanchor hillDialogue
 smitten If only you knew what you did to us, you villain.
 n Excuse me?
 hero Forget he said anything.
-smitten But He *is* a villain. He made our beloved brutally take our life last time. He's trying to keep us apart, but He won't be able to withstand the power of our love!
-n Last time? What are you talking about?
+smitten But He *is* a villain. He made our beloved brutally take our life last time! He's trying to keep us apart, but He won't be able to withstand the power of our love!
+n Last time? What are you *talking* about?
 hero I think he just likes to hear the sound of his own voice. Let's try to ignore him.
 jumpto hillDialogueJoin
 
@@ -40,8 +40,8 @@ jumpanchor hillDialogueSharedLoop
 smitten We already told you we're not playing along with your little game, it's your lies that can't be trusted. Her beauty is the only thing in the world we *can* believe in!
 hero I think we've already been over this. I'm pretty sure he just likes the sound of his own voice.
 jumpanchor hillDialogueJoin
-smitten I do, but I also speak from the heart. My passions are too great to be stifled, they must be expressed!
-hero Sure, yeah, your passions are strong and all, but not everyone needs to hear them. Some things are better kept quiet.
+smitten I do, but I also speak from the heart. My passions are too great to be stifled, they *must* be expressed!
+hero Sure, yeah, your passions are strong and all, but not everyone needs to hear them. Some things are better kept quiet...
 n Don't pay their bickering any mind. Focus on the task ahead.
 
 // Abort attempt //
@@ -94,7 +94,7 @@ smitten I'm sure the Princess would tell us there was a mirror if *she* were up 
 n In which case she'd be lying to you, because again, there isn't a mirror.
 
 jumpanchor mirrorGone
-smitten And now it's gone. Pity. We could have a feather out of place and now we'll never know. We can't gallantly sweep her off her feet if we have a feather out of place.
+smitten And now it's gone. Pity. We could have a feather out of place and now we'll never know. We can't gallantly sweep her off her feet if we have a feather out of place!
 
 // Stairs //
 
@@ -102,7 +102,7 @@ jumpanchor stairsStart
 n The door to the basement creaks open, revealing an intricate stairwell. Gold-trimmed carpet glimmers in the light of the torches positioned along the walls. The basement almost seems welcoming in the dim firelight.
 n But it's still a stone basement. If the Princess lives here, slaying her is probably doing her a favor.
 n A soft voice carries up the stairs.
-p H-hello? Is someone there?
+p Hello? Is someone there?
 
 jumpanchor stairsSharedLoop
 smitten Her voice... it's somehow even more beautiful than last time. I can hear wedding bells already...
@@ -110,15 +110,15 @@ hero I've held my tongue 'til now, but you're taking this a little too far. We b
 jumpto stairsJoin
 
 jumpanchor stairsNoShare
-smitten Her voice... it's somehow even more beautiful than last time. I think we're in love.
+smitten Her voice... it's somehow even more beautiful than last time. I think we're in love...
 hero Okay, I'm with you that we should be doing whatever we can to save her, but saying we're in love is a bit much, don't you think?
-hero We don't even know the Princess. We can still do right by her without all this... fawning.
+hero We don't even *know* the Princess. We can still do right by her without all this... fawning.
 jumpanchor stairsJoin
 n Yes. For everyone's sake, you're not in love. *Sigh.* Just remember that her charms are all part of the manipulation.
 linebreak
 n You walk down the stairs and lock eyes with the Princess. There's a heavy chain around her wrist, binding her to the far wall.
 truth Her dress is more elaborate than last time, with several layers of ruffles at the bottom, and she wears a more traditional crown in place of her tiara.
-smitten My love! We're here to rescue you from your unjust and foul imprisonment!
+smitten *My love!* We're here to rescue you from your unjust and foul imprisonment!
 n You know she can't hear you, right?
 smitten She may not be able to hear my words, but surely, she can hear my spirit.
 n Oh, your spirit's plenty loud, alright.
@@ -142,13 +142,13 @@ jumpanchor basementStartNoShare
 n "Waiting for you to come back?" You've been here before, haven't you?
 jumpanchor basementStartJoin
 smitten That's right, villain. And you killed us.
-hero Well... she killed us.
-smitten Only because he made us try and kill her! It was self-defense. Our beloved's hands remain unstained by cruelty.
-n And you've died before. So an entire world has been damned to oblivion. I'd really hoped I'd be the first... but what's done is done. What matters is you have a chance to do it right this time.
+hero Well... *she* killed us.
+smitten Only because he made us try and kill her! It was self-defense. Our beloved's hands remain unstained by cruelty!
+n And you've *died* before. So an entire world has been damned to oblivion. I'd really hoped I'd be the first, but... what's done is done. What *matters* is you have a chance to do it right this time.
 
 jumpanchor basementStartNoInsist
 hero We... damned a whole world? But everything reset.
-n Nothing "resets." You're just somewhere else, and you can't keep hopping between worlds forever. Especially not without leaving a trail of incomprehensible devastation behind you. *Sigh.* This is horrible.
+n Nothing "resets." You're just somewhere else, and you can't keep hopping between worlds forever. Especially not without leaving a trail of *incomprehensible* devastation behind you. *Sigh.* This is horrible.
 
 // Conversation menu //
 
@@ -161,7 +161,7 @@ n She made the best decision for her. Don't be so quick to assign kindness, you'
 jumpanchor howFree
 p I'm okay with whatever you come up with. You can cut my arm off again.
 smitten We won't be laying a finger on her perfect wrists, and indeed, we won't even have to! Do you see how dainty her hands are? We'll be able to slip her right out, with no harm done.
-n What?! No. She's a prisoner here. You can't just slip her hand through the chains!
+n What?! No, she's a prisoner here. You can't just slip her hand through the chains!
 hero Why are you two arguing over the logistics of slipping her hand out of her shackles? She just said she'd be okay with *any* idea we came up with. Am I the only one here who thinks that's weird?
 smitten She didn't care last time! Why should she care this time? That's our stoic, smiling angel.
 n No, you're right. It's extremely bizarre behavior, and further evidence that she's a monster who's not to be trusted. So go ahead and slay her.
@@ -191,7 +191,7 @@ jumpanchor burnEndWorld
 n *Sigh.* I can't believe that the fate of the entire world has been left in the hands of a misanthrope.
 p Lucky for you, I did destroy the world! I destroyed all of it and made it awful for everyone.
 n I'd point out that she just admitted to obliterating the entire world, but I guess that wouldn't actually move you.
-hero Oh, it moves me. Whatever we do next, we should do our best to *not* let her out.
+hero Oh, it moves *me.* Whatever we do next, we should do our best to *not* let her out.
 smitten But have you seen her angelic face? She should get a pass! She just wanted to make us happy.
 hero By destroying the world?
 smitten Apparently, yes!
@@ -207,7 +207,7 @@ jumpanchor sorry
 n If another version of me was pushed to such drastic action, it was for a good reason!
 p That's okay! You were just doing your best, and that's all that matters.
 hero She took that in stride. To a surprising extent. An almost unsettling extent, actually.
-smitten That's because she's perfect!
+smitten That's because she's *perfect!*
 hero Do you think she has someone like Him telling her what to do?
 n She doesn't. There's no one else like me.
 smitten I think he's right. Because I like it better if she doesn't have some horrid little voice like Him always trying to drive her to violence.
@@ -236,12 +236,12 @@ jumpto rescueStartJoin
 jumpanchor rescueStartNoBlade
 n No. I can't let you do that. If you take another step towards the Princess, I'll -- /// interrupt
 hero You'll what? Take over our body and force us to try and kill her?
-n I would if I had a weapon.
+n I would if you had a weapon.
 jumpanchor rescueStartJoin
-smitten Not on my watch, villain! My passions contain titanic depths, and if you try *anything* that might harm our dearest I will end our life without a second thought.
+smitten Not on my watch, villain! My passions contain *titanic* depths, and if you try *anything* that might harm our dearest I will end our life without a second thought.
 n You wouldn't.
 smitten I would!
-hero I'd listen to him if I were you. He has a lot of strong feelings. And doesn't the world end if we don't stop her?
+hero I'd listen to him if I were you. He has a *lot* of strong feelings. And doesn't the world end if we don't stop her?
 linebreak
 n *Sigh.* You approach the Princess and gingerly slide her hand from her bindings. That... shouldn't have worked. I'll be damned. We're doomed.
 hero I can't believe it. But I guess I have to.
@@ -257,7 +257,7 @@ n You're going to regret this.
 jumpto rescueContJoin
 
 jumpanchor rescueContNoBlade
-n If only you had a weapon. One slip of the wrist and your pristine blade would be buried in her back, and everyone out there would be saved.
+n If only you had a weapon. One slip of the wrist and your pristine blade would be buried in her back, and everyone out there would be *saved!*
 hero Luckily for mister romance, we don't have a weapon.
 smitten Who needs a weapon when we have the power of love on our side?
 jumpanchor rescueContJoin
@@ -274,15 +274,16 @@ smitten You wouldn't dare.
 jumpanchor whatWant
 n Let me guess. "End the world?"
 smitten Spoken with the rank cynicism of someone who has never felt love in His heart.
-p I... don't actually know. Nobody's ever asked me what I've wanted before.
+p I... don't actually know. Nobody's ever asked me what I wanted before.
 
 jumpanchor whatWouldYouDo
 p I mean, you sort of did last time, but this is different.
 
 jumpanchor whatWantCont
-hero She doesn't even know what she wants. You may have had her all wrong. What if this whole thing is just a misunderstanding? What if she doesn't want to end the world?
-n You're so gullible. Is the only thing you've ever doubted the actual truth?
-p I think I want to leave. And I think...
+hero She doesn't even know what she wants. You may have had her all wrong. What if this whole thing is just a misunderstanding? What if she doesn't *want* to end the world?
+n You're so *gullible!* Is the only thing you've ever doubted the actual truth?
+p I think I want to leave? And I think...
+n The Princess closes her eyes in deep reflection.
 n And then she shrugs.
 p I dunno. What do you want to do?
 
@@ -554,9 +555,9 @@ smitten ... If we just showed her the contents of our heart... she'd be happy he
 n As the voice thinks its thought, your hands raise, fingers pointing towards your chest, and then... what?! No, you absolutely do *not* do that!
 smitten Oh, but I do.
 hero What. What is he doing? We can't see unless you tell us.
-n Are you sure you want to know? *Sigh.* I suppose I can't stall forever.
+n ... Are you sure you want to know? *Sigh.* I suppose I can't stall forever.
 n You plunge your nails into your chest, digging deep, grasping for a handhold. And you find it, your fingers curling around your ribs.
-p Oh no, what are you doing? Are you okay? You can't do that and be okay!
+p Oh no, what are you doing?! Are you okay? You can't do that and be okay!
 hero Time out! He should not be allowed to do that. He's not the decider.
 smitten ... And yet... it's *done,* isn't it?
 n It will be soon. You yank violently, your bones cracking with wet pops as you pull yourself apart inch by painful inch.

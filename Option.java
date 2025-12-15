@@ -1,3 +1,5 @@
+
+
 public class Option {
     
     /*
@@ -18,6 +20,7 @@ public class Option {
     private Chapter leadsToChapter;
 
     private boolean conditionMet;
+    private AbstractCondition[] conditions;
     private boolean greyedOut;
     private int timesPicked;
 
@@ -35,8 +38,9 @@ public class Option {
      * @param prerequisiteOption another Option that must be chosen before this Option appears
      * @param leadsToChapter the Chapter that the Option leads to
      * @param conditionMet whether other conditions necessary for the Option to be available are met
+     * @param conditions an array of Conditions that must be met for the Option to be available
      */
-    private Option(GameManager manager, String id, String display, int maxTimesPicked, boolean greyedOut, Option prerequisiteOption, Chapter leadsToChapter, boolean conditionMet) {
+    private Option(GameManager manager, String id, String display, int maxTimesPicked, boolean greyedOut, Option prerequisiteOption, Chapter leadsToChapter, boolean conditionMet, AbstractCondition... conditions) {
         this.manager = manager;
         
         this.id = id;
@@ -48,7 +52,52 @@ public class Option {
         this.leadsToChapter = leadsToChapter;
 
         this.conditionMet = conditionMet;
+        this.conditions = conditions;
         this.timesPicked = 0;
+    }
+
+    /**
+     * Constructor including all attributes except conditions; should only ever be called by other constructors
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param display the text displayed to the player for the Option
+     * @param maxTimesPicked the maximum number of times the Option can be picked; a value of 0 means there is no maximum
+     * @param greyedOut whether the Option is initially greyed out or not
+     * @param prerequisiteOption another Option that must be chosen before this Option appears
+     * @param leadsToChapter the Chapter that the Option leads to
+     * @param conditionMet whether other conditions necessary for the Option to be available are met
+     */
+    private Option(GameManager manager, String id, String display, int maxTimesPicked, boolean greyedOut, Option prerequisiteOption, Chapter leadsToChapter, boolean conditionMet) {
+        this(manager, id, display, maxTimesPicked, greyedOut, prerequisiteOption, leadsToChapter, conditionMet, new AbstractCondition[0]);
+    }
+
+    /**
+     * Constructor including all attributes except conditionMet; should only ever be called by other constructors
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param display the text displayed to the player for the Option
+     * @param maxTimesPicked the maximum number of times the Option can be picked; a value of 0 means there is no maximum
+     * @param greyedOut whether the Option is initially greyed out or not
+     * @param prerequisiteOption another Option that must be chosen before this Option appears
+     * @param leadsToChapter the Chapter that the Option leads to
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    private Option(GameManager manager, String id, String display, int maxTimesPicked, boolean greyedOut, Option prerequisiteOption, Chapter leadsToChapter, AbstractCondition[] conditions) {
+        this(manager, id, display, maxTimesPicked, greyedOut, prerequisiteOption, leadsToChapter, true, conditions);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param display the text displayed to the player for the Option
+     * @param maxTimesPicked the maximum number of times the Option can be picked; a value of 0 means there is no maximum
+     * @param prerequisiteOption another Option that must be chosen before this Option appears
+     * @param conditionMet whether other conditions necessary for the Option to be available are met
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, String display, int maxTimesPicked, Option prerequisiteOption, boolean conditionMet, AbstractCondition... conditions) {
+        this(manager, id, display, maxTimesPicked, false, prerequisiteOption, null, conditionMet, conditions);
     }
 
     /**
@@ -62,6 +111,19 @@ public class Option {
      */
     public Option(GameManager manager, String id, String display, int maxTimesPicked, Option prerequisiteOption, boolean conditionMet) {
         this(manager, id, display, maxTimesPicked, false, prerequisiteOption, null, conditionMet);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param display the text displayed to the player for the Option
+     * @param maxTimesPicked the maximum number of times the Option can be picked; a value of 0 means there is no maximum
+     * @param prerequisiteOption another Option that must be chosen before this Option appears
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, String display, int maxTimesPicked, Option prerequisiteOption, AbstractCondition... conditions) {
+        this(manager, id, display, maxTimesPicked, false, prerequisiteOption, null, conditions);
     }
 
     /**
@@ -97,6 +159,20 @@ public class Option {
      */
     public Option(GameManager manager, String id, boolean greyedOut, String display, int maxTimesPicked) {
         this(manager, id, display, maxTimesPicked, greyedOut, null, null, true);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param greyedOut whether the Option is initially greyed out or not
+     * @param display the text displayed to the player for the Option
+     * @param prerequisiteOption another Option that must be chosen before this Option appears
+     * @param conditionMet whether other conditions necessary for the Option to be available are met
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, boolean greyedOut, String display, Option prerequisiteOption, boolean conditionMet, AbstractCondition... conditions) {
+        this(manager, id, display, 1, greyedOut, prerequisiteOption, null, conditionMet, conditions);
     }
 
     /**
@@ -143,9 +219,48 @@ public class Option {
      * @param greyedOut whether the Option is initially greyed out or not
      * @param display the text displayed to the player for the Option
      * @param conditionMet whether other conditions necessary for the Option to be available are met
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, boolean greyedOut, String display, boolean conditionMet, AbstractCondition... conditions) {
+        this(manager, id, display, 1, greyedOut, null, null, conditionMet, conditions);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param greyedOut whether the Option is initially greyed out or not
+     * @param display the text displayed to the player for the Option
+     * @param conditionMet whether other conditions necessary for the Option to be available are met
      */
     public Option(GameManager manager, String id, boolean greyedOut, String display, boolean conditionMet) {
         this(manager, id, display, 1, greyedOut, null, null, conditionMet);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param greyedOut whether the Option is initially greyed out or not
+     * @param display the text displayed to the player for the Option
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, boolean greyedOut, String display, AbstractCondition... conditions) {
+        this(manager, id, display, 1, greyedOut, null, null, conditions);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param display the text displayed to the player for the Option
+     * @param prerequisiteOption another Option that must be chosen before this Option appears
+     * @param leadsToChapter the Chapter that the Option leads to
+     * @param conditionMet whether other conditions necessary for the Option to be available are met
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, String display, Option prerequisiteOption, Chapter leadsToChapter, boolean conditionMet, AbstractCondition... conditions) {
+        this(manager, id, display, 1, false, prerequisiteOption, leadsToChapter, conditionMet, conditions);
     }
 
     /**
@@ -159,6 +274,34 @@ public class Option {
      */
     public Option(GameManager manager, String id, String display, Option prerequisiteOption, Chapter leadsToChapter, boolean conditionMet) {
         this(manager, id, display, 1, false, prerequisiteOption, leadsToChapter, conditionMet);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param display the text displayed to the player for the Option
+     * @param prerequisiteOption another Option that must be chosen before this Option appears
+     * @param leadsToChapter the Chapter that the Option leads to
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, String display, Option prerequisiteOption, Chapter leadsToChapter, AbstractCondition... conditions) {
+        this(manager, id, display, 1, false, prerequisiteOption, leadsToChapter, conditions);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param greyedOut whether the Option is initially greyed out or not
+     * @param display the text displayed to the player for the Option
+     * @param maxTimesPicked the maximum number of times the Option can be picked; a value of 0 means there is no maximum
+     * @param prerequisiteOption another Option that must be chosen before this Option appears
+     * @param conditionMet whether other conditions necessary for the Option to be available are met
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, boolean greyedOut, String display, int maxTimesPicked, Option prerequisiteOption, boolean conditionMet, AbstractCondition... conditions) {
+        this(manager, id, display, maxTimesPicked, greyedOut, prerequisiteOption, null, conditionMet, conditions);
     }
 
     /**
@@ -183,6 +326,20 @@ public class Option {
      * @param display the text displayed to the player for the Option
      * @param maxTimesPicked the maximum number of times the Option can be picked; a value of 0 means there is no maximum
      * @param prerequisiteOption another Option that must be chosen before this Option appears
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, boolean greyedOut, String display, int maxTimesPicked, Option prerequisiteOption, AbstractCondition... conditions) {
+        this(manager, id, display, maxTimesPicked, greyedOut, prerequisiteOption, null, conditions);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param greyedOut whether the Option is initially greyed out or not
+     * @param display the text displayed to the player for the Option
+     * @param maxTimesPicked the maximum number of times the Option can be picked; a value of 0 means there is no maximum
+     * @param prerequisiteOption another Option that must be chosen before this Option appears
      * @param leadsToChapter the Chapter that the Option leads to
      */
     public Option(GameManager manager, String id, String display, int maxTimesPicked, Option prerequisiteOption, Chapter leadsToChapter) {
@@ -197,9 +354,36 @@ public class Option {
      * @param display the text displayed to the player for the Option
      * @param maxTimesPicked the maximum number of times the Option can be picked; a value of 0 means there is no maximum
      * @param conditionMet whether other conditions necessary for the Option to be available are met
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, boolean greyedOut, String display, int maxTimesPicked, boolean conditionMet, AbstractCondition... conditions) {
+        this(manager, id, display, maxTimesPicked, greyedOut, null, null, conditionMet, conditions);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param greyedOut whether the Option is initially greyed out or not
+     * @param display the text displayed to the player for the Option
+     * @param maxTimesPicked the maximum number of times the Option can be picked; a value of 0 means there is no maximum
+     * @param conditionMet whether other conditions necessary for the Option to be available are met
      */
     public Option(GameManager manager, String id, boolean greyedOut, String display, int maxTimesPicked, boolean conditionMet) {
         this(manager, id, display, maxTimesPicked, greyedOut, null, null, conditionMet);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param greyedOut whether the Option is initially greyed out or not
+     * @param display the text displayed to the player for the Option
+     * @param maxTimesPicked the maximum number of times the Option can be picked; a value of 0 means there is no maximum
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, boolean greyedOut, String display, int maxTimesPicked, AbstractCondition... conditions) {
+        this(manager, id, display, maxTimesPicked, greyedOut, null, null, conditions);
     }
 
     /**
@@ -221,9 +405,47 @@ public class Option {
      * @param display the text displayed to the player for the Option
      * @param prerequisiteOption another Option that must be chosen before this Option appears
      * @param conditionMet whether other conditions necessary for the Option to be available are met
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, String display, Option prerequisiteOption, boolean conditionMet, AbstractCondition... conditions) {
+        this(manager, id, display, 1, false, prerequisiteOption, null, conditionMet, conditions);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param display the text displayed to the player for the Option
+     * @param prerequisiteOption another Option that must be chosen before this Option appears
+     * @param conditionMet whether other conditions necessary for the Option to be available are met
      */
     public Option(GameManager manager, String id, String display, Option prerequisiteOption, boolean conditionMet) {
         this(manager, id, display, 1, false, prerequisiteOption, null, conditionMet);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param display the text displayed to the player for the Option
+     * @param prerequisiteOption another Option that must be chosen before this Option appears
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, String display, Option prerequisiteOption, AbstractCondition... conditions) {
+        this(manager, id, display, 1, false, prerequisiteOption, null, conditions);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param display the text displayed to the player for the Option
+     * @param leadsToChapter the Chapter that the Option leads to
+     * @param conditionMet whether other conditions necessary for the Option to be available are met
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, String display, Chapter leadsToChapter, boolean conditionMet, AbstractCondition... conditions) {
+        this(manager, id, display, 1, false, null, leadsToChapter, conditionMet, conditions);
     }
 
     /**
@@ -236,6 +458,18 @@ public class Option {
      */
     public Option(GameManager manager, String id, String display, Chapter leadsToChapter, boolean conditionMet) {
         this(manager, id, display, 1, false, null, leadsToChapter, conditionMet);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param display the text displayed to the player for the Option
+     * @param leadsToChapter the Chapter that the Option leads to
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, String display, Chapter leadsToChapter, AbstractCondition... conditions) {
+        this(manager, id, display, 1, false, null, leadsToChapter, conditions);
     }
 
     /**
@@ -268,9 +502,34 @@ public class Option {
      * @param display the text displayed to the player for the Option
      * @param maxTimesPicked the maximum number of times the Option can be picked; a value of 0 means there is no maximum
      * @param conditionMet whether other conditions necessary for the Option to be available are met
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, String display, int maxTimesPicked, boolean conditionMet, AbstractCondition... conditions) {
+        this(manager, id, display, maxTimesPicked, false, null, null, conditionMet, conditions);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param display the text displayed to the player for the Option
+     * @param maxTimesPicked the maximum number of times the Option can be picked; a value of 0 means there is no maximum
+     * @param conditionMet whether other conditions necessary for the Option to be available are met
      */
     public Option(GameManager manager, String id, String display, int maxTimesPicked, boolean conditionMet) {
         this(manager, id, display, maxTimesPicked, false, null, null, conditionMet);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param display the text displayed to the player for the Option
+     * @param maxTimesPicked the maximum number of times the Option can be picked; a value of 0 means there is no maximum
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, String display, int maxTimesPicked, AbstractCondition... conditions) {
+        this(manager, id, display, maxTimesPicked, false, null, null, conditions);
     }
 
     /**
@@ -290,9 +549,32 @@ public class Option {
      * @param id the shorthand ID of the Option
      * @param display the text displayed to the player for the Option
      * @param conditionMet whether other conditions necessary for the Option to be available are met
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, String display, boolean conditionMet, AbstractCondition... conditions) {
+        this(manager, id, display, 1, false, null, null, conditionMet, conditions);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param display the text displayed to the player for the Option
+     * @param conditionMet whether other conditions necessary for the Option to be available are met
      */
     public Option(GameManager manager, String id, String display, boolean conditionMet) {
         this(manager, id, display, 1, false, null, null, conditionMet);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param display the text displayed to the player for the Option
+     * @param conditions an array of Conditions that must be met for the Option to be available
+     */
+    public Option(GameManager manager, String id, String display, AbstractCondition... conditions) {
+        this(manager, id, display, 1, false, null, null, conditions);
     }
 
     /**
@@ -369,14 +651,10 @@ public class Option {
      * @return true if this Option is visible
      */
     public boolean isShown() {
-        if (this.maxTimesPicked != 0 && this.timesPicked >= this.maxTimesPicked) {
-            return false;
-        } else if (!this.conditionMet) {
+        if ((this.maxTimesPicked != 0 && this.timesPicked >= this.maxTimesPicked) || !check(this.conditions) || !this.conditionMet) {
             return false;
         } else if (this.prerequisiteOption != null) {
-            if (!this.prerequisiteOption.hasBeenPicked()) {
-                return false;
-            }
+            if (!this.prerequisiteOption.hasBeenPicked()) return false;
         }
         
         return true;
@@ -463,6 +741,19 @@ public class Option {
     @Override
     public Option clone() {
         return new Option(this.manager, this.id, this.display, this.maxTimesPicked, this.greyedOut, this.prerequisiteOption, this.leadsToChapter, this.conditionMet);
+    }
+
+    /**
+     * Checks if all conditions in a given list are met
+     * @param conditions the list of conditions to check
+     * @return true if all conditions are met; false otherwise
+     */
+    private static boolean check(AbstractCondition[] conditions) {
+        for (AbstractCondition c : conditions) {
+            if (!c.check()) return false;
+        }
+
+        return true;
     }
 
 }

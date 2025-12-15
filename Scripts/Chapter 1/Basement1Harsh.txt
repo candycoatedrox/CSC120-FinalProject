@@ -621,7 +621,7 @@ jumpanchor rescueWhatIfB
 p Well, you do have that big sharp knife. You could always cut me out of here.
 jumpanchor rescueWhatIfJoin
 n She speaks with almost complete nonchalance.
-hero If we were stuck down here for long enough, I'm sure we'd be nonchalant about cutting our way out. Anything to finally be free.
+hero If *we* were stuck down here for long enough, I'm sure we'd be nonchalant about cutting our way out. Anything to finally be free.
 jumpto rescueStairs
 
 jumpanchor rescueCheck
@@ -679,7 +679,7 @@ n Watch me.
 n Stop that.
 n I thought this was a little too easy.
 n Your body lunges forward to sink the blade into her back, but the Princess swiftly moves out the way before you can connect.
-n Stop it! Stop trying to resist me! I'm trying to get you out of here alive.
+n Stop it! Stop trying to resist me! I'm *trying* to get you out of here alive.
 
 n The blade! Move. The. *Blade!*
 p You're doing your best to help me, aren't you? I can see the conflict in your eyes.
