@@ -152,3 +152,577 @@ n Why would you be worried about her restraints. If anything, they'll make your 
 skeptic Have you noticed the empty chain on the wall? Odd that in a place where everything seems to serve a distinct purpose, there would be something so obviously useless.
 jumpanchor basementStartJoin2
 p What an interesting development. Why don't you have a seat? The two of us should chat before you bury that thing in my heart.
+
+// Basement //
+
+jumpanchor narratorProofSharedLoopInsist
+n I guess what you said back in the woods really was true.
+jumpto narratorProofJoin
+
+jumpanchor narratorProofSharedLoop
+n First you make a comment about having been here before, and now this.
+jumpto narratorProofJoin
+
+jumpanchor narratorProofNoShare
+n So you've already been here.
+jumpanchor narratorProofJoin
+n *Sigh.* As much as I'd like to remain in denial, it's no use. This has complicated things.
+skeptic It's complicated things how, exactly?
+n Ideally this was supposed to be one-and-done. You go to the cabin, you heroically slay the Princess, and in the process, you save the entire world from being damned to oblivion.
+n This situation right now, where you're getting a second shot at things, is a contingency.
+skeptic A contingency for what?
+n For you failing. Obviously. And you being here means that things are going to be a lot harder than they were. I really shouldn't say anything else, I'm just going to make it worse. Just... Good luck.
+
+jumpanchor narratorProofContInsist
+skeptic Now hold on. If you knew this could happen, why didn't you believe us back in the woods? Why lay out all of those hypotheticals? We didn't have to talk in circles.
+n I needed you to believe this was your first time here, even if that wasn't the truth. I hoped if I pushed back hard enough I could cram this seeping mess back into the bottle.
+jumpto narratorProofContJoin
+
+jumpanchor narratorProofContNoInsist
+skeptic If you knew this could happen, why didn't you tell us? All of this is incredibly valuable information. It would have changed our actions considerably.
+n I needed you to be in the dark for as long as I could keep you there. It's important. Necessary, even.
+jumpanchor narratorProofContJoin
+n And... maybe I wanted to be the first version of me that you met. I didn't want to be confronted by the alternative.
+skeptic That's *pathetic.*
+n I never said I wasn't.
+hero I get it. It would be pretty upsetting, wouldn't it? To know that you might not be the first version of yourself? At least we can remember what happened before, seems like we should count ourselves lucky for that.
+n Exactly. He gets it. You're lucky. So don't waste that luck by messing it up again, all right?
+skeptic Moving on. Why is it important for us to be ignorant? How is it ever helpful to be in the dark?
+n The more I say, the more your mind will swim into dangerous waters. Even saying that is too much.
+n Your success hinges on you having imperfect information. For the sake of the entire world, you need to accept that.
+skeptic I won't.
+hero Just give it a rest. This isn't helping.
+p Focus. This is a serious situation, you shouldn't be daydreaming.
+
+jumpanchor sitStart
+n You step towards the Princess, but she stops you before you get too close, holding up one shackled hand.
+p There is fine. I'd prefer we keep some distance until we've sorted this out.
+hero That's reasonable. We do have a weapon. Might as well put her at ease.
+
+n You do as she asks and sit on the floor, still a good distance away from her.
+p Thank you. Now, what are your intentions for me?
+
+jumpanchor inspectMenu
+n I wouldn't do that if I were you.
+skeptic And why is that?
+n Do I even need to explain myself? It's a shackle, and it's one without a key. Do you want to be stuck here like she is?
+skeptic And what? Is it going to lock the second we put our wrist into it?
+n I don't know. Maybe it will.
+skeptic He doesn't want us to look at it. That's all the reason we need to investigate.
+hero But what if he's telling the truth?
+skeptic He isn't.
+n I am.
+
+n Good. Forget you ever saw it.
+skeptic Nice try, but I won't. Specifically because you told me to.
+
+jumpanchor lockedBegMenu
+n You have everything you need to deal with her and save the world. I'm sure the door will open as soon as you finish your incredibly important task.
+hero It doesn't sound like we'll be able to talk Him into letting us leave.
+skeptic Yeah, not a chance. He's single-minded about this. But don't worry, there are plenty of things that aren't in His control.
+n Oh? For instance...
+skeptic Us. Her. But mostly us. If He didn't have his limits, we wouldn't be here. Not like this.
+
+jumpanchor intentionsMenuProof
+p Yes. Your intentions. You have a knife. What are you going to do with it? Why are you here?
+p There isn't a keyhole in these shackles, and I don't see any keys in your hands, either. So I'm afraid my only way out is another surgical removal.
+jumpto intentionsJoin
+
+jumpanchor intentionsMenuNoProof
+p Yes. Your intentions. You have a knife. What are you going to do with it? Why are you here?
+p There isn't a keyhole in these shackles, so I'm afraid my only way out is surgical removal.
+jumpanchor intentionsJoin
+hero Is she forgetting about the shackle on her neck?!
+skeptic Or does she think she'd survive a beheading?
+n You're right. Maybe she's delusional. All the more reason not to trust her.
+skeptic Unless she really could survive.
+p Though I suppose you could just be here to kill me. But I don't think that's in either of our best interests.
+
+jumpanchor memoryMenu
+p Oh? Are we acknowledging that? I thought we weren't going to give away the game. But yeah. I remember.
+
+jumpanchor afterDiedMenuNoProof
+p Oh? Are we talking about that? I thought we weren't going to give away the game. But sure, I'll fill you in.
+
+jumpanchor afterDiedMenu
+p Nothing happened. You died. I went upstairs. I couldn't leave. I found myself in a new place, in chains again. More of them.
+p And now you're back.
+skeptic Is that really all she knows?
+hero It's not like we have much of a clue about how things work. And she's probably even more in the dark than we are.
+p You're looking at me like I might be hiding something. I'm not.
+skeptic I guess it's possible she really doesn't know anything. Maybe both of us are stuck in this loop without any idea why or how.
+
+jumpanchor otherChainMenu
+p I don't know. But you could always try it on.
+p Maybe it'll fit.
+n I hope I don't actually have to say this, but please don't lock yourself in chains. We need you ambulatory if you're going to save the world.
+
+jumpanchor headMenu
+p Hah. No. Like I trust you to come any closer with that knife. All you're going to do is hand it to me, and watch me work.
+hero But she would have to cut her head off, right? She can't be suggesting that.
+skeptic She certainly seems confident. Maybe she knows something we don't.
+n Or maybe you should consider the most likely scenario: she's bluffing so she can disarm you.
+jumpto whatDoJoin
+
+jumpanchor whatDoMenu
+p Let me borrow that knife.
+p Don't worry, you'll get it back.
+hero That's... ominous.
+skeptic But she seems confident. Whatever it is she has planned, I think she knows what she's doing.
+n Oh, please. She's just putting on act to disarm you. That much should be obvious. And in case you need to hear a voice of reason, it would obviously be unwise to give away your only weapon.
+jumpanchor whatDoJoin
+skeptic Though if she isn't bluffing, whatever she has planned might be for her benefit alone. There's no guarantee that what's good for her is good for us.
+hero So... what should we do?
+skeptic I don't know. I'm just spelling out our options. Listing the pros and cons.
+n Then let me help you. I'll start with the cons. If you're handing her your weapon, the cons are that she might use it to escape and end the entire world. And she might use it to kill you.
+hero That doesn't sound great. What about the pros?
+n There are none.
+skeptic The pros are that we can't trust Him, possibly even more than we can't trust her, and whatever she has planned could do something to mess with what He has planned. Or maybe they're both screwing us over in their own ways.
+
+jumpanchor noGiveBMenuProof
+p Sure, let's talk about what happened. Because what happened is exactly my issue.
+
+jumpanchor noGiveBMenuNoProof
+p Oh? Are we talking about that? I thought we weren't going to give away the game.
+p But sure, let's talk about what happened. Because what happened is exactly my issue.
+
+jumpanchor noGiveJoinProof
+p The last time we met, your body tried to kill me.
+p If you take a moment to imagine yourself in my position, I think you'll understand why letting you near me with that thing is untenable.
+p So be a good bird and hand it over.
+p And if being nice isn't enough motivation? Well, I think you're aware that I'm not afraid to resort to violence.
+jumpto noGiveJoin
+
+jumpanchor noGiveJoinNoProof
+p If you take a moment to imagine yourself in my position, I think you'll understand why letting you near me with that thing is untenable.
+p So be a good bird and hand it over.
+p And if being nice isn't enough motivation? Well, I'm not afraid to resort to violence.
+jumpanchor noGiveJoin
+p If you come near me with that thing I will strangle you with these chains.
+hero She doesn't beat around the bush, does she?
+n Yes, it's almost like she's a fundamentally bad person who wishes to inflict pain on others.
+skeptic Or it's another bluff.
+p No hard feelings, of course. But you should be aware of my position.
+
+jumpanchor distrustMenu
+p I do. So I guess this all comes down to which of us caves first. And it's not going to be me.
+p It's probably better if we take action, anyway. No use trying to wait her out. That's playing to her strengths.
+skeptic It's probably better if we take action, anyway. No use trying to wait her out. That's playing to her strengths.
+
+jumpanchor threatenMenu
+p That attitude is exactly why I don't trust you to get close while you're holding a knife.
+p If that's unacceptable to you, then try me. See what happens.
+n She sure was quick to threaten you, wasn't she? Stop hesitating already, you know you can't trust her.
+skeptic Both of them are using the same argument. It's not making it any easier to pick a side.
+
+jumpanchor negotiateMenuLocked
+p I might be the one in chains but we're both locked in here. The only thing you have to bargain with is that scrap of metal. Admittedly, it's a scrap of metal that I want, but...
+
+jumpanchor negotiateMenuNotLocked
+p Usually, you'd be right. But this isn't exactly a usual situation. I'm not someone you can wait out.
+
+jumpanchor negotiateMenuPatient
+p You'll find that I'm extremely patient.
+
+jumpanchor negotiateMenuOther
+p We've already been over this. I'm more patient than you'll ever be.
+
+// Attempt to leave the basement //
+
+jumpanchor leaveAttemptA
+p I think you'll regret this.
+
+jumpanchor leaveAttemptB
+p Oh, you bastard! You'll regret this.
+
+jumpanchor doorLockSharedLoop
+skeptic The door locked behind us the last time we tried that, remember?
+
+jumpanchor doorLock
+n As if by divine will, just as you finish the thought, you hear a door slam. I'm afraid you won't be leaving until the task is finished. It doesn't matter how many chains she's in, without your intervention, she'll find a way out eventually.
+hero That's not fair!
+n Unless you deal with her right here, right now, she will remain an existential threat to the entire world. What seems unfair to you is fair for everyone else.
+skeptic Huh. So it's not even safe to think. I see how it is.
+
+jumpanchor doorLockCommentStart
+p How surprising. They locked you down here, too.
+
+jumpanchor doorLockCommentAbandon
+p I told you that you'd regret saying that. But I didn't think you'd regret it so fast. And with so little effort on my part.
+p I guess we're stuck together.
+
+jumpanchor leaveAttemptLocked
+skeptic The door's locked, remember?
+
+// Inspect the extra shackle //
+
+// "Prisoner of the Mind" ending; claim the Prisoner //
+jumpanchor chainedStart
+n Against your better judgment, you approach the chain dangling from the far wall. The Princess watches you with faux-disinterest as you inspect it, though she can't fully hide her curiosity.
+n I don't want to say what I'm supposed to say next.
+hero What is that supposed to mean? It sounds bad. Is it bad?
+n Yes. It's bad.
+skeptic Come out and say it, then. You're just wasting time.
+n Fine. As you hoist the shackle, its heft shifts within your grasp, as if pulled by some odd magnetism. Before you can so much as blink, it practically leaps from your hands, snapping around your neck.
+n And, as if your situation weren't bad enough, the same magnetism repels your blade, which is flung from your hand and sent skittering across the floor of the basement.
+hero Um... e-excuse me?
+n Yes?
+hero Are we... stuck here now?
+n Yes.
+p Huh. So it does fit. And I guess it doesn't like your knife. We're stuck here together, aren't we? That's funny.
+hero What are we supposed to do now?
+skeptic Can't even cut ourselves out. Guess we'll... starve.
+hero That's horrible!
+skeptic It's not all bad. We learned a valuable piece of information.
+hero Not to touch things we're specifically told not to touch?
+skeptic No. That there's something special about this loose chain. It's clearly important.
+
+jumpanchor stuckChained
+p Yep.
+
+jumpanchor whatDoChained
+p Wait, I guess. Maybe something else will happen. Maybe not.
+
+jumpanchor knowChained
+p Nope.
+
+jumpanchor smallTalkChained
+p Nope.
+hero That's rude.
+
+jumpanchor chainedNoSmallTalk
+p ...
+
+jumpanchor chainedCont
+n You and the Princess wait in silence, though neither of you knows what you're waiting for. But you're waiting for something. You're waiting for anything.
+hero This is so boring!
+skeptic There must be something we can do to get out of here. There must be something we're missing.
+n But there isn't.
+n Time passes.
+n It passes, and passes, and passes, and the basement of the cabin remains much the same. It is cold, and silent.
+hero At least the world is safe.
+n It isn't. You're stuck, too far away from both the Princess and your blade to do much of anything.
+hero But she's not ending anything! She's just sitting there.
+n Her very existence is a threat. It harms everything around it.
+skeptic How exactly does that work?
+n It just does.
+skeptic But -- /// interrupt
+n Your line of questioning is interrupted by the passage of even more time, and after that, even more time passes again.
+hero And let me guess! The cabin remains the same.
+skeptic If time is passing, the cabin can't be the same. Even if the differences are small they have to exist. That's just how things work.
+n I suppose you're correct. Things are changing. The differences are small at first. A bit of weathering here, a bit of erosion there. But then they get larger. And larger.
+
+jumpanchor basementSmallTalk
+p I don't like small talk, remember?
+hero Still rude.
+
+jumpanchor basementNoSmallTalk
+p I don't like small talk.
+hero That's rude.
+
+jumpanchor chainedEnd
+n You continue to wait in silence, and the cabin continues to change. The decay comes faster now. You can see earth through holes in the stonework, can watch lichen spread along the seams of the walls.
+skeptic That doesn't make sense. Has our entire concept of time changed? What happened to starving? We should have died by now if the rocks around us are starting to erode.
+hero She hasn't starved.
+skeptic I guess she hasn't.
+n Even more silent time passes as you watch roots push themselves through the increasingly porous walls of the basement. Dirt seeps inside, flowing across the stone floor like a liquid, covering the ground and threatening to swallow you both. Time continues to pass. And pass. And pass.
+n Until suddenly, there are no walls. And then...
+
+hero ... And?
+skeptic I think He's gone.
+p Would you look at that? We made it out of the cabin, and nothing bad had to happen to either of us.
+p So this is the outside world. It's... cold.
+linebreak
+truth Something reaches out and folds her into its myriad arms.
+linebreak
+
+jumpanchor endFirstVessel
+truth But you don't get the chance to respond. Something has taken her away, and it's left something else in her stead.
+
+jumpanchor endNotFirstVessel
+truth But you do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.
+
+// Violate the Princess's agency, either by attempting to slay her or sitting too close //
+
+jumpanchor slayAStart
+p You don't have to do anything, but fine. Let's see if you'll live to regret trying to kill me.
+jumpto attackJoin
+
+jumpanchor slayBStart
+p Sorry doesn't cut it.
+jumpto attackJoin
+
+jumpanchor attackStart
+n Without a moment of hesitation, you charge the Princess, your blade primed to deliver a lethal strike.
+p Hm.
+jumpanchor attackJoin
+p I am not a damsel to be helplessly murdered!
+n As you move to strike at the Princess, she stands, her chains clinking as she wraps them around her fists.
+n In an instant they're around your neck, both of you dropping to the ground as she pulls them taut, bracing her body against yours as you struggle uselessly.
+p Drop it or you die!
+
+jumpanchor attackProof
+hero I thought this was going to be a safe move, but she's going to kill us again! Just listen to her! Do what she says!
+jumpto strangleJoin
+
+jumpanchor attackNoProof
+hero I thought this was going to be a safe move, but she's going to kill us! Just listen to her! Do what she says!
+jumpto strangleJoin
+
+jumpanchor sitTooClose
+p Do you think this is a game? Do you think these chains take away my say in things?!
+jumpto strangleNoAttackJoin
+
+jumpanchor attemptCut
+p Do you think these chains take away my say in things?! I said no!
+jumpanchor strangleNoAttackJoin
+n As you move towards the Princess, she stands, her chains clinking as she wraps them around her fists.
+n In an instant they're around your neck, both of you dropping to the ground as she pulls them taut, bracing her body against yours as you struggle uselessly.
+n The metal chains constrict around your windpipe as the Princess heaves with a muscled intensity.
+p Drop the knife or you die!
+hero What is she doing?! We weren't trying to attack her!
+
+jumpanchor noAttackProof
+skeptic I can see where she might have gotten the wrong idea. She doesn't have much agency here. Would we have trusted her if she walked up to us with a blade again, after what happened between us?
+jumpto strangleJoin
+
+jumpanchor noAttackNoProof
+skeptic I can see where she might have gotten the wrong idea. She doesn't have much agency here. Would we have trusted her if the roles were reversed?
+hero I don't know! How about we think about the nuances of interpersonal relationships when we're not being strangled?!
+jumpto strangleJoin
+
+jumpanchor strangleJoin
+n How many times did I warn you -- she's not to be trusted! But while strangulation can be very distracting, she's not armed, and you have your pristine blade. End her. Before she ends you.
+
+jumpanchor strangleDropStart
+n As your weapon falls pathetically to the floor, the Princess releases you from her stranglehold, shoving you away with a swift kick.
+n Your hands test the bruised flesh of your neck as you regain your senses, watching with a dazed expression as the Princess snatches up the blade.
+
+jumpanchor strangleDropAttack
+p I'm going to pretend for both our sakes that this was a round of make believe. A trick to get me what I needed to get us out of here.
+n That wasn't a trick. I'd have known if it were a trick. You just didn't have the guts to see things through and save the world.
+skeptic Or maybe we outwitted you. Who's to say.
+p But I wouldn't try anything else if I were you. Don't push your luck.
+jumpto strangleDropJoin
+
+jumpanchor strangleDropNoAttack
+p That wasn't so hard, was it?
+jumpanchor strangleDropJoin
+n She pulls up her hair, smiling slightly as she raises the blade to her throat.
+p You can stay right where you are for this next part.
+
+// Slay her //
+
+// Leads to Chapter III: The Grey with the Voice of the Cold //
+jumpanchor slayStart
+n You steel your will and refuse to give in to the Princess's demands, ignoring the stars dancing in your eyes and the screaming of your starved lungs. You strike.
+n You fumble your first few attempts, only making surface-level scratches and gouges as your arm flails forward, barely able to obey you.
+n But a single focused blow was all it took. Your blade pierces up through her ribs, slicing through flesh, striking her heart.
+n The chains loosen. The darkness creeping in at the edges of your vision subsides.
+p None of this was ever very fair, was it? But I did kill you last time. I should have expected you might want some petty revenge.
+p Unfortunately for you, that means you've dug your own grave. You can forget about me ever helping you again. Even if it damns us both.
+linebreak
+n And just like that, the Princess is slain, and the world is saved. Whenever you're ready, you can proceed to your reward.
+skeptic I don't like this. It was too easy.
+hero It was not "too easy!" We almost died!
+n That's right. This was an incredibly difficult task, and you performed it admirably.
+hero Let's just get out of here. I don't like looking at her body... plus He said there'd be a reward. I'd appreciate a reward right about now.
+skeptic You have the attention span of a fly. How are we supposed to unravel the mysteries of this place if you're so easily distracted by empty promises?
+n It's better to have a short attention span in a situation like this. There's no use dwelling on the past, especially when it's already set in stone.
+n And especially when your promised reward is not, in fact, empty, and is worth all the adversity you've been through to get here.
+
+// Give the Princess the blade //
+
+jumpanchor giveBladeStart
+p Slide it over.
+n No. Absolutely not. I am not letting you hand your only weapon over to the *world-ending* Princess. Until you come up with any other idea -- like, say, I don't know, doing your job and slaying her -- you remain rigidly in place.
+
+jumpanchor giveBladeProof
+skeptic You tried this last time. Do you want to know how it went for you?
+hero Oh, I remember! She killed us, which by your estimation, ended the world. Right?
+n *Angry grumbling.*
+skeptic Exactly. If I were you, I wouldn't be too keen on repeating your mistake. Hell, we could even force your hand and do it ourselves. I'm not afraid of dying again. Are you?
+hero A little...
+n I think you got your point across. Fine.
+jumpto giveBladeJoin
+
+jumpanchor giveBladeNoProof
+skeptic Do you think this will work? Interesting that you're only having us remain in place. It's almost like there are very real limits to your power.
+n I don't know what you're talking about.
+skeptic The world ends if we fail, right? Her killing us might not be our only failure state, if you catch my meaning.
+hero I don't know where you're going with this. Could you explain?
+n Yes. Explain it.
+skeptic Sure. I'm insinuating that we could kill ourself. Ruin this whole thing.
+n You wouldn't.
+skeptic I'm not afraid of dying. Are you?
+hero A little...
+n You got your point across. Fine.
+jumpanchor giveBladeJoin
+n *Sigh.* You slide the blade across the floor.
+n The Princess maintains unsettling eye contact as she reaches down to pick it up.
+p Thanks.
+n She pulls up her hair, smiling slightly as she raises the blade to her throat.
+
+// The Princess decapitates herself //
+
+jumpanchor headStart
+hero What is she *doing?*
+n She doesn't say another word as she cuts into her own neck.
+hero No...!
+
+jumpanchor awayHead
+n You close your eyes, but that doesn't stop you from hearing every grisly detail. The splitting of skin, the wet mulching of severed veins, the grinding of metal against bone.
+n I'll be damned. She's actually doing your job for you. Why would she do that?
+skeptic Huh. So that's her play.
+hero Killing herself?!
+skeptic We don't know that she's dead yet. We're not even watching it happen. She could just be faking those sounds.
+n And then finally you hear a snap, and an uneasy silence.
+n There is a slow and fleshy tear. Hard to fake that.
+hero This is worse than watching.
+skeptic And yet our eyes are still closed.
+n Finally, there's the soft thud of something roughly head-sized bouncing against the floor, and the clattering of chains as they drop along with it.
+n I think you can open your eyes now.
+jumpto headJoin
+
+jumpanchor watchHead
+n Her eyes stare forward, unblinking, as she saws through skin, veins, cartilage. At last she reaches bone, the blade grinding audibly against her vertebrae as it continues to slice its way through her neck.
+n I'll be damned. She's actually doing your job for you. Why would she do that?
+skeptic Huh. So that's her play.
+hero Killing herself?!
+skeptic She isn't dead yet.
+n Finally, you hear a snap. Her eye twitches.
+n There's an uneasy silence. She remains motionless for a long moment, her twitching eye the only movement in the room, until at last it stops in an unsettling half-wink.
+n Her head twists slowly to the side, flopping to her shoulder, and her neck... opens.
+n The remaining tissue is not enough to hold the weight of her severed head. It stretches and tears, until finally, it falls to the floor, completely free. It bounces a few times before rolling to a stop at your feet.
+jumpanchor headJoin
+hero Oh no oh no o-oh no what did we do? C-can we put it back? *Please* tell me we can put it back.
+n The Princess' eyes stare up at you. Dead. Congratulations. You saved the world.
+skeptic Huh. So I guess that's it. What a way to go. But she is gone, isn't she?
+hero I. Hate. This. Can we just -- get out of here now. *Please.*
+n Of course. The Princess is slain, and the world is saved. Whenever you're ready you can proceed to your reward.
+skeptic Now hold on. She's dead. So what's the rush? What's your angle?
+n I don't have an angle. I'm just looking forward to putting all this behind us, I'm sure you can understand that.
+skeptic Look, I'm just not ready to put my guard down. It's best to keep sharp. She wouldn't have done all that without some kind of reason, she's left us with this dangling thread and I need to know *why.*
+n You're just wasting your energy. The danger has passed, and now we can all relax and enjoy your reward!
+
+// "Talking Heads" ending; claim the Prisoner's head //
+n Ugh. Fine. You pick up the Princess' severed head, its neck stump still oozing bodily fluids, then make your way back upstairs to the first floor of the cabin.
+skeptic Did you see that? I could have sworn she moved.
+n She didn't. She's dead.
+hero But... what if she's not?
+n Are you listening to yourself? Do I need to explain to you why decapitation is lethal? The door to your bountiful reward is right in front of you -- all you have to do is open it.
+
+n You open the cabin door, ready to return to a world saved from certain doom.
+n Only, a world saved from certain doom isn't what you find. Instead, what you find is -- wait, no, that's not right.
+truth The Princess slowly opens her eyes.
+p Well played.
+
+n This is -- this -- this is the end of the world, isn't it? I always thought I'd at least have time to explain myself before I had to watch it happen, but it's already --
+hero ... Over? Is He gone?
+skeptic But we're still here. Maybe it wasn't the end of the world after all. Maybe it was just the end of His.
+p Thanks for carrying me up here. I had to take it on faith that you would know what to do. I'm glad I was right to trust you.
+p So this is the outside. Maybe it's just my lack of body, but... it's colder than I expected.
+linebreak
+truth Something reaches out and folds her into its myriad arms.
+linebreak
+
+// Return upstairs with the Princess dead //
+
+// Leads to either Chapter III: The Cage or Chapter III: The Grey with the Voice of the Cold //
+jumpanchor slainStart
+skeptic ... Fine. But if we're leaving, then we're taking the blade. I feel exposed without it.
+linebreak
+n With your work done, you remove the blade from the Princess' corpse and make your way back upstairs, closing the door to the basement behind you. You can think of it as sealing yourself off from an unpleasant chapter of your life. It's all uphill from here!
+skeptic The windows. Do you see that? We used to be able to see the outside world from up here, but now it's just... empty.
+skeptic The door! Check the door!
+
+n You open the cabin door, ready to return to a world saved from certain doom.
+n Only, a world saved from certain doom isn't what you find. Instead, what you find is nothing at all. Where a lush forest stood mere minutes ago, the only thing in front of you now is the vast emptiness of some place far away.
+skeptic You don't have to act surprised. We could see this "vast emptiness" through the windows.
+hero But if everything's gone... Does that mean we're not gonna get our reward?
+n This *is* your reward. An eternity of bliss, if you'll have it. And I suggest that you have it.
+hero O... kay...
+n This is what's best for everyone. Trust me.
+skeptic Like hell it is!
+
+jumpanchor bullshitDoorMenu
+n What's done is done, and there's no going back now.
+jumpto doorMenuJoin
+
+jumpanchor okDoorMenu
+n I'm so glad you're keeping an open mind.
+jumpto doorMenuJoin
+
+jumpanchor betterDoorMenu
+n This isn't an ending. In fact, now that the Princess has been slain, endings are a thing of the past. No... this is the beginning of *eternity.* Your reward. Like I just told you.
+jumpanchor doorMenuJoin
+n Time passes. You can't be sure if it's days, or months, or years, or even decades. It's all a wonderful, boring blur. You've never been happier.
+skeptic Decades?! No. It can't be decades. We can't go along with this. We can't let Him win.
+
+jumpanchor happySlain
+skeptic But we're not happy. He's just telling us that we are! I can tell you for a fact that I'm extremely unhappy right now.
+hero Yeah, what he said!
+
+jumpanchor suggestSlain
+skeptic We still have a blade. Let's use it on ourselves and start over.
+n He's suggesting you kill yourself. You shouldn't kill yourself when you have an eternity of bliss right in front of you.
+
+jumpanchor slainAccept
+n That's great! Congratulations. You've earned it.
+n More happy time passes, though the word begins to lose its meaning. "Time," that is, not "happy." "Happy" still has plenty of meaning.
+skeptic He's just saying things.
+n The voice's protestations fall on deaf ears.
+n Eventually, you pass into a blissful state of pure existence. Though words like "eventually" and "pass" ceased to have any meaning to you long before that shift. You simply exist. Happy. Forever.
+linebreak
+linebreak
+truth --- Good Ending! =:) YOU DID IT!!! you saved EVERYONE! --- /// interrupt
+
+linebreak
+skeptic No. You stop that! Stop all this nonsense.
+n You really don't want to be happy, do you?
+
+jumpanchor suggestSlain2
+skeptic You know what you have to do.
+
+jumpanchor noWaySlain
+skeptic If it makes it easier for you, I can do it. Let me have it.
+
+jumpanchor happy2Slain
+skeptic That wasn't real happiness. The truth is still out there for us to find, but we can't find it here.
+
+jumpanchor brokenSuicide
+skeptic All right. I'll make this quick.
+jumpto suicideStart
+
+jumpanchor cheatedSuicide
+skeptic Don't apologize. I'm sorry.
+hero Wait, why are you sorry?
+n Your body lurches as your heart suddenly stops beating.
+hero Are you killing us?!
+skeptic You'll forgive me eventually.
+jumpto suicideStart
+
+jumpanchor paranoidSuicide
+jumpanchor suicideStart
+n You goddamned spiteful bastard. Are you really going to turn down immortality itself just to make me lose?
+skeptic Why should it matter if we die at this point? Haven't you already gotten what you want?
+n I... I don't have to answer that!
+skeptic That's all we needed to hear.
+
+// Grants you the Voice of the Broken in The Cage //
+jumpanchor brokenSuicideCont
+n Gah! Fine! The little voice raises the pristine blade to your throat and cuts it open. You rapidly bleed out, and then you die. You're a genocidal maniac, you know that, right?
+jumpto suicideJoin
+
+// Grants you the Voice of the Cheated in The Cage //
+jumpanchor cheatedSuicideCont
+n It turns that it doesn't take long to die after your heart stops beating.
+n You collapse to the floor, everything goes dark, and you die. You're a genocidal maniac, you know that, right?
+jumpto suicideJoin
+
+// Grants you the Voice of the Paranoid in The Cage //
+jumpanchor paranoidSuicideCont
+n You raise the blade, then drive it into your heart.
+n You collapse to the floor. Everything goes dark, and you die. You're a genocidal maniac, you know that, right?
+jumpanchor suicideJoin
+skeptic Yeah. We'll see about that.

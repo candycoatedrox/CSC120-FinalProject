@@ -8905,7 +8905,7 @@ public class StandardCycle extends Cycle {
                     } else {
                         mainScript.runSection("biologyWayOutStuck");
                     }
-                    
+
                     break;
 
                 case "take":
@@ -12451,21 +12451,695 @@ public class StandardCycle extends Cycle {
 
         if (manager.trueDemoMode()) return ChapterEnding.DEMOENDING;
 
+        Condition narratorProof = new Condition(false);
+        InverseCondition narratorNoProof = new InverseCondition(narratorProof);
+        Condition locked = new Condition(false);
+        InverseCondition notLocked = new InverseCondition(locked);
 
+        this.canSlayPrincess = true;
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "leave", "I'm not sure I need to do much of anything. Do you see how locked up she is? I'm just going to leave her here. [Leave the Princess in the basement.]"));
+        activeMenu.add(new Option(this.manager, "sit", "[Sit with her.]"));
+        activeMenu.add(new Option(this.manager, "slay", manager.demoMode(), "[Slay the Princess.]", 0));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "cGoStairs":
+                    if (locked.check()) {
+                        mainScript.runSection("leaveAttemptLocked");
+                        break;
+                    }
+                case "leave":
+                    locked.set(true);
+                    if (this.sharedLoopInsist) mainScript.runSection("doorLockSharedLoop");
+                    mainScript.runSection("doorLock");
+                    mainScript.runSection("doorLockCommentStart");
+                    break;
+
+                case "sit":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                case "cSlayPrincess":
+                    if (manager.demoMode() || !this.canJoint3) {
+                        parser.printDialogueLine(DEMOBLOCK);
+                        break;
+                    }
+                case "slay":
+                    if (manager.hasVisited(Chapter.GREY)) {
+                        parser.printDialogueLine(WORNPATH);
+                        this.canJoint3 = false;
+                        activeMenu.setGreyedOut("slay", true);
+                        break;
+                    } else if (!manager.confirmContentWarnings(Chapter.GREY, ChapterEnding.COLDLYRATIONAL)) {
+                        this.canJoint3 = false;
+                        activeMenu.setGreyedOut("slay", true);
+                        break;
+                    }
+
+                    mainScript.runSection("attackStart");
+                    return this.prisonerStrangled(true, narratorProof);
+
+                default: this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        // Sit with her
+        mainScript.runSection("sitStart");
+
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "right", "[Sit where you were told to sit.]"));
+        activeMenu.add(new Option(this.manager, "closer", "[Sit closer.]"));
+
+        switch (parser.promptOptionsMenu(activeMenu)) {
+            case "right":
+                this.repeatActiveMenu = false;
+                break;
+
+            case "closer":
+                mainScript.runSection("sitTooClose");
+                return this.prisonerStrangled(false, narratorProof);
+        }
+
+        mainScript.runSection();
+
+        Condition talked = new Condition(false);
+        InverseCondition noTalk = new InverseCondition(talked);
+        Condition askedIntentions = new Condition(false);
+        InverseCondition noIntentions = new InverseCondition(askedIntentions);
+        Condition whatDo = new Condition(false);
+        InverseCondition noWhatDo = new InverseCondition(whatDo);
+        Condition noGiveExplore = new Condition(false);
+        InverseCondition noGiveNotExplored = new InverseCondition(noGiveExplore);
+        Condition noPatientComment = new Condition(true);
+        Condition immovable = new Condition(false);
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "inspect", "(Explore) [Inspect the shackle.]"));
+        activeMenu.add(new Option(this.manager, "lockedBeg", "(Explore) Hey! Let me out of here! Open the door!", locked));
+        activeMenu.add(new Option(this.manager, "intentionsA", "(Explore) \"You were asking about my intentions earlier. What did you mean by that?\"", talked, noIntentions));
+        activeMenu.add(new Option(this.manager, "intentionsB", "(Explore) \"My intentions? What do you mean?\"", noTalk, noIntentions));
+        activeMenu.add(new Option(this.manager, "memory", "(Explore) \"I've been here before. Am I the only one who remembers that?\"", narratorNoProof));
+        activeMenu.add(new Option(this.manager, "afterDied", "(Explore) \"What happened after I died last time?\""));
+        activeMenu.add(new Option(this.manager, "head", "(Explore) \"How am I supposed to cut you out? If you didn't notice, your head is in a shackle, too.\"", askedIntentions, noWhatDo));
+        activeMenu.add(new Option(this.manager, "otherChain", "(Explore) \"That other chain on the wall... who is it for?\""));
+        activeMenu.add(new Option(this.manager, "whatDo", "(Explore) \"What would you have me do?\"", noWhatDo));
+        activeMenu.add(new Option(this.manager, "noGiveA", "(Explore) \"I'm not giving you a weapon.\"", whatDo, noGiveNotExplored));
+        activeMenu.add(new Option(this.manager, "distrust", "(Explore) \"You realize that I have as much reason to distrust you as you have to distrust me, right?\"", whatDo, noPatientComment));
+        activeMenu.add(new Option(this.manager, "noGiveB", "(Explore) \"I'm not giving you a weapon. In case you've forgotten, you killed me with it last time.\"", whatDo, noGiveNotExplored));
+        activeMenu.add(new Option(this.manager, "noGiveC", "(Explore) \"*I* can cut you out of here. I'm not giving you a weapon.\"", whatDo, noGiveNotExplored));
+        activeMenu.add(new Option(this.manager, "threaten", "(Explore) \"If you don't give up now, then I have no choice but to slay you.\"", noGiveExplore));
+        activeMenu.add(new Option(this.manager, "negotiate", "(Explore) \"You're the one in chains. If anyone should be to negotiating here, it's you, not me.\"", noGiveExplore));
+        activeMenu.add(new Option(this.manager, "giveBlade", "\"Okay. I'm trusting you.\" [Give her the blade.]", whatDo));
+        activeMenu.add(new Option(this.manager, "cutAttempt", "\"If you want to leave, I'm going to be the one with the weapon. Deal with it.\" [Cut her out on your own.]", whatDo));
+        activeMenu.add(new Option(this.manager, "slayA", manager.demoMode() || !this.canJoint3, "\"If that's how you're going to be, then I guess I have to do this.\" [Slay the Princess.]", noGiveExplore));
+        activeMenu.add(new Option(this.manager, "slayB", manager.demoMode() || !this.canJoint3, "\"It seems I don't have much of a choice. I'm sorry.\" [Slay the Princess.]", locked));
+        activeMenu.add(new Option(this.manager, "leaveA", "\"If you're so immovable, then I'm just going to leave you here. Bye!\" [Leave the Princess in the basement.]", notLocked, immovable));
+        activeMenu.add(new Option(this.manager, "leaveB", "\"I think I'm just going to leave you here, actually. You're not much of a threat to anyone locked up like that. Bye!\" [Leave the Princess in the basement.]", notLocked));
+        activeMenu.add(new Option(this.manager, "slayC", manager.demoMode() || !this.canJoint3, "[Slay the Princess.]"));
+
+        activeMenu.get("inspect").setPrerequisite(activeMenu.get("otherChain"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "inspect":
+                    mainScript.runSection("inspectMenu");
+
+                    OptionsMenu inspectMenu = new OptionsMenu(true);
+                    inspectMenu.add(new Option(this.manager, "inspect", "[Inspect the shackle.]"));
+                    inspectMenu.add(new Option(this.manager, "return", "[Let it go.]"));
+
+                    switch (parser.promptOptionsMenu(inspectMenu)) {
+                        case "inspect":
+                            this.prisonerChained();
+                            return ChapterEnding.PRISONEROFMIND;
+                        
+                        case "return":
+                            mainScript.runSection();
+                            break;
+                    }
+
+                    break;
+
+                case "lockedBeg":
+                case "otherChain":
+                    talked.set(true);
+                    mainScript.runSection(activeOutcome + "Menu");
+                    break;
+
+                case "intentionsA":
+                case "intentionsB":
+                    talked.set(true);
+                    askedIntentions.set(true);
+                    
+                    if (narratorProof.check()) {
+                        mainScript.runSection("intentionsMenuProof");
+                    } else {
+                        mainScript.runSection("intentionsMenuNoProof");
+                    }
+
+                    break;
+
+                case "memory":
+                    talked.set(true);
+                    mainScript.runSection("memoryMenu");
+                    this.prisonerNarratorProof(narratorProof);
+                    break;
+
+                case "afterDied":
+                    talked.set(true);
+                    if (narratorNoProof.check()) mainScript.runSection("afterDiedMenuNoProof");
+                    mainScript.runSection("afterDiedMenu");
+                    this.prisonerNarratorProof(narratorProof);
+                    break;
+
+                case "head":
+                case "whatDo":
+                    talked.set(true);
+                    whatDo.set(true);
+                    mainScript.runSection(activeOutcome + "Menu");
+                    break;
+
+                case "noGiveA":
+                case "noGiveC":
+                    noGiveExplore.set(true);
+
+                    if (narratorProof.check()) {
+                        mainScript.runSection("noGiveJoinProof");
+                    } else {
+                        mainScript.runSection("noGiveJoinNoProof");
+                    }
+
+                    this.prisonerNarratorProof(narratorProof);
+                    break;
+
+                case "noGiveB":
+                    noGiveExplore.set(true);
+
+                    if (narratorProof.check()) {
+                        mainScript.runSection("noGiveBMenuProof");
+                        mainScript.runSection("noGiveJoinProof");
+                    } else {
+                        mainScript.runSection("noGiveBMenuNoProof");
+                        mainScript.runSection("noGiveJoinNoProof");
+                    }
+
+                    break;
+
+                case "distrust":
+                    noPatientComment.set(false);
+                    break;
+
+                case "threaten":
+                    immovable.set(true);
+                    mainScript.runSection("threatenMenu");
+                    break;
+
+                case "negotiate":
+                    immovable.set(true);
+                    
+                    if (locked.check()) {
+                        mainScript.runSection("negotiateMenuLocked");
+                    } else {
+                        mainScript.runSection("negotiateMenuNotLocked");
+                    }
+                    
+                    if (noPatientComment.check()) {
+                        noPatientComment.set(false);
+                        mainScript.runSection("negotiateMenuPatient");
+                    } else {
+                        mainScript.runSection("negotiateMenuOther");
+                    }
+
+                    break;
+
+                case "giveBlade":
+                    mainScript.runSection("giveBladeStart");
+
+                    if (narratorProof.check()) {
+                        mainScript.runSection("giveBladeProof");
+                    } else {
+                        mainScript.runSection("giveBladeNoProof");
+                    }
+
+                    return this.prisonerDecapitate();
+
+                case "cutAttempt":
+                    mainScript.runSection("attemptCut");
+                    return this.prisonerStrangled(false, narratorProof);
+
+                case "slayA":
+                case "slayB":
+                    if (manager.hasVisited(Chapter.GREY)) {
+                        parser.printDialogueLine(WORNPATH);
+                        this.prisonerCantGrey();
+                        break;
+                    } else if (!manager.confirmContentWarnings(Chapter.GREY, ChapterEnding.COLDLYRATIONAL)) {
+                        this.prisonerCantGrey();
+                        break;
+                    }
+
+                    mainScript.runSection(activeOutcome + "Start");
+                    return this.prisonerStrangled(true, narratorProof);
+
+                case "cSlayPrincess":
+                    if (manager.demoMode() || !this.canJoint3) {
+                        parser.printDialogueLine(DEMOBLOCK);
+                        break;
+                    }
+                case "slayC":
+                    if (manager.hasVisited(Chapter.GREY)) {
+                        parser.printDialogueLine(WORNPATH);
+                        this.prisonerCantGrey();
+                        break;
+                    } else if (!manager.confirmContentWarnings(Chapter.GREY, ChapterEnding.COLDLYRATIONAL)) {
+                        this.prisonerCantGrey();
+                        break;
+                    }
+
+                    mainScript.runSection("attackJoin");
+                    return this.prisonerStrangled(true, narratorProof);
+
+                case "leaveA":
+                    locked.set(true);
+                    mainScript.runSection("leaveAttemptA");
+                    if (this.sharedLoopInsist || narratorProof.check()) mainScript.runSection("doorLockSharedLoop");
+                    mainScript.runSection("doorLock");
+                    mainScript.runSection("doorLockCommentAbandon");
+                    break;
+
+                case "cGoStairs":
+                    if (locked.check()) {
+                        mainScript.runSection("leaveAttemptLocked");
+                        break;
+                    }
+                case "leaveB":
+                    locked.set(true);
+                    mainScript.runSection("leaveAttemptB");
+                    if (this.sharedLoopInsist || narratorProof.check()) mainScript.runSection("doorLockSharedLoop");
+                    mainScript.runSection("doorLock");
+                    mainScript.runSection("doorLockCommentAbandon");
+                    break;
+            }
+        }
+
+        throw new RuntimeException("No ending reached");
+    }
+
+    /**
+     * Disable all options to slay the Prisoner once the player chooses not to continue after seeing The Grey's content warnings
+     */
+    private void prisonerCantGrey() {
+        this.canJoint3 = false;
+        activeMenu.setGreyedOut("slayA", true);
+        activeMenu.setGreyedOut("slayB", true);
+        activeMenu.setGreyedOut("slayC", true);
+    }
+
+    /**
+     * The Narrator finally accepts that the player and the Prisoner have met before (if He hasn't already)
+     * @param narratorProof whether the Narrator has accepted that you've been here before
+     */
+    private void prisonerNarratorProof(Condition narratorProof) {
+        if (narratorProof.check()) return;
+
+        narratorProof.set(true);
+        if (this.sharedLoopInsist) {
+            mainScript.runSection("narratorProofSharedLoopInsist");
+            mainScript.runSection("narratorProofContInsist");
+        } else if (this.sharedLoop) {
+            mainScript.runSection("narratorProofSharedLoop");
+            mainScript.runSection("narratorProofContNoInsist");
+        } else {
+            mainScript.runSection("narratorProofNoShare");
+            mainScript.runSection("narratorProofContNoInsist");
+        }
+    }
+
+    /**
+     * The player continues to investigate the empty chain, leading to the "Prisoner of the Mind" ending and claiming the Prisoner
+     */
+    private void prisonerChained() {
+        this.hasBlade = false;
+        mainScript.runSection("chainedStart");
+
+        int talkCount = 0;
+        boolean smallTalk = false;
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "stuck", "(Explore) \"So we're both stuck here.\""));
+        activeMenu.add(new Option(this.manager, "whatDo", "(Explore) \"What should we do?\""));
+        activeMenu.add(new Option(this.manager, "know", "(Explore) \"Did you know that this was going to happen to me?\""));
+        activeMenu.add(new Option(this.manager, "smallTalk", "(Explore) \"Not one for small talk, are you?\"", false));
+        activeMenu.add(new Option(this.manager, "wait", "[Wait in silence.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            if (talkCount >= 2) activeMenu.setCondition("smallTalk", true);
+
+            switch (parser.promptOptionsMenu(activeMenu)) {
+                case "stuck":
+                case "whatDo":
+                case "know":
+                    if (smallTalk) {
+                        mainScript.runSection("chainedNoSmallTalk");
+                    } else {
+                        mainScript.runSection(activeOutcome + "Chained");
+                    }
+                    
+                    break;
+
+                case "smallTalk":
+                    smallTalk = true;
+                    mainScript.runSection("smallTalkChained");
+                    break;
+
+                case "wait":
+                    this.repeatActiveMenu = false;
+                    break;
+            }
+        }
+
+        mainScript.runSection("chainedCont");
+
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "explore", "(Explore) \"Hey, have you noticed the basement changing?\""));
+        activeMenu.add(new Option(this.manager, "wait", "[Continue to wait in silence.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu)) {
+                case "explore":
+                    if (smallTalk) {
+                        mainScript.runSection("basementNoSmallTalk");
+                    } else {
+                        mainScript.runSection("basementSmallTalk");
+                    }
+
+                    break;
+
+                case "wait":
+                    this.repeatActiveMenu = false;
+                    break;
+            }
+        }
+
+        mainScript.runSection("chainedEnd");
+        this.quietCreep();
+        mainScript.runSection();
+
+        if (this.isFirstVessel) {
+            mainScript.runSection("endFirstVessel");
+        } else {
+            mainScript.runSection("endNotFirstVessel");
+        }
+    }
+
+    /**
+     * The player violates the Prisoner's agency and she attempts to strangle them
+     * @param attack whether the player attempted to slay the Princess
+     * @param narratorProof whether the Narrator has accepted that you've been here before
+     * @return the Chapter ending reached by the player
+     */
+    private ChapterEnding prisonerStrangled(boolean attack, Condition narratorProof) {
+        if (attack) {
+            if (narratorProof.check()) {
+                mainScript.runSection("attackProof");
+            } else {
+                mainScript.runSection("attackNoProof");
+            }
+        } else {
+            if (narratorProof.check()) {
+                mainScript.runSection("noAttackProof");
+            } else {
+                mainScript.runSection("noAttackNoProof");
+            }
+        }
+
+        this.canSlayPrincess = true;
+        this.canDropBlade = true;
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "slay", manager.demoMode() || !this.canJoint3, "[Slay the Princess.]", 0));
+        activeMenu.add(new Option(this.manager, "drop", "[Drop it.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "cSlayPrincess":
+                    if (manager.demoMode() || !this.canJoint3) {
+                        parser.printDialogueLine(DEMOBLOCK);
+                        break;
+                    }
+                case "slay":
+                    if (manager.hasVisited(Chapter.GREY)) {
+                        parser.printDialogueLine(WORNPATH);
+                        parser.printDialogueLine(WORNPATHHERO);
+                        this.canJoint3 = false;
+                        activeMenu.setGreyedOut("slay", true);
+                        break;
+                    } else if (!attack) {
+                        if (!manager.confirmContentWarnings(Chapter.GREY, ChapterEnding.COLDLYRATIONAL)) {
+                            this.canJoint3 = false;
+                            activeMenu.setGreyedOut("slay", true);
+                            break;
+                        }
+                    }
+
+                    mainScript.runSection("slayStart");
+                    return this.prisonerSlain(false);
+
+                case "cDrop":
+                case "drop":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default: this.giveDefaultFailResponse();
+            }
+        }
+
+        // Drop the blade
+        this.hasBlade = false;
+        mainScript.runSection("strangleDropStart");
+
+        if (attack) {
+            mainScript.runSection("strangleDropAttack");
+        } else {
+            mainScript.runSection("strangleDropNoAttack");
+        }
+
+        return this.prisonerDecapitate();
+    }
+
+    /**
+     * The Prisoner cuts off her own head after the player gives her the knife (willingly or not)
+     * @return the Chapter ending reached by the player
+     */
+    private ChapterEnding prisonerDecapitate() {
+        mainScript.runSection("headStart");
+
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "away", "[Look away.]"));
+        activeMenu.add(new Option(this.manager, "watch", "[Watch in uneasy silence.]"));
+
+        mainScript.runSection(parser.promptOptionsMenu(activeMenu) + "Head");
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "leave", manager.demoMode(), "[Leave the basement to claim your reward.]", 0));
+        activeMenu.add(new Option(this.manager, "take", "[Take the Princess with you.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu)) {
+                case "cGoStairs":
+                    if (manager.demoMode() || !this.canUnique3) {
+                        parser.printDialogueLine(DEMOBLOCK);
+                        break;
+                    }
+                case "leave":
+                    if (!manager.confirmContentWarnings(Chapter.CAGE, "suicide")) {
+                        this.canJoint3 = false;
+                        activeMenu.setGreyedOut("leave", true);
+                        break;
+                    }
+
+                    return this.prisonerSlain(true);
+
+                case "take":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default: this.giveDefaultFailResponse();
+            }
+        }
+
+        this.currentLocation = GameLocation.CABIN;
+        mainScript.runSection();
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "leave", "[Leave the cabin and claim your reward.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu)) {
+                case "cGoHill":
+                case "leave":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default: this.giveDefaultFailResponse();
+            }
+        }
+
+        mainScript.runSection();
+        this.quietCreep();
+        mainScript.runSection();
+
+        if (this.isFirstVessel) {
+            mainScript.runSection("endFirstVessel");
+        } else {
+            mainScript.runSection("endNotFirstVessel");
+        }
+
+        return ChapterEnding.TALKINGHEADS;
+    }
+
+    /**
+     * With the Prisoner dead, the player leaves the basement
+     * @param selfSlain whether the Princess decapitated herself (indicating which Chapter this leads to)
+     * @return the Chapter ending reached by the player
+     */
+    private ChapterEnding prisonerSlain(boolean selfSlain) {
+        this.currentLocation = GameLocation.CABIN;
+        this.hasBlade = true;
+        mainScript.runSection("slainStart");
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "leave", "[Open the door and accept your reward.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu)) {
+                case "cGoHill":
+                case "leave":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default: this.giveDefaultFailResponse();
+            }
+        }
+
+        mainScript.runSection();
+
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "bullshit", "That's bullshit! Let us out of here!"));
+        activeMenu.add(new Option(this.manager, "ok", "I don't know. I'm pretty okay with this."));
+        activeMenu.add(new Option(this.manager, "better", "I was kind of hoping we'd get a better ending for saving the world."));
+
+        mainScript.runSection(parser.promptOptionsMenu(activeMenu) + "DoorMenu");
+
+        boolean suggestion = false;
+        Condition happyExplored = new Condition(false);
+        InverseCondition noHappyExplore = new InverseCondition(happyExplored);
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "happy", "(Explore) Didn't you hear The Narrator? I'm happy. We're happy."));
+        activeMenu.add(new Option(this.manager, "suggest", "(Explore) What do you suggest, then?"));
+        activeMenu.add(new Option(this.manager, "acceptA", "I don't want to die again. I didn't like dying last time. I'm going to accept my reward now.", activeMenu.get("suggest")));
+        activeMenu.add(new Option(this.manager, "acceptB", "I dunno, I'm pretty happy. I'm going to accept my reward now.", noHappyExplore));
+        activeMenu.add(new Option(this.manager, "acceptC", "Well, you might not be happy, but I am. I'm going to accept my reward now.", happyExplored));
+        activeMenu.add(new Option(this.manager, "suicide", "[Slay yourself.]", activeMenu.get("suggest")));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "happy":
+                    happyExplored.set(true);
+                    mainScript.runSection("happySlain");
+                    break;
+
+                case "suggest":
+                    this.canSlaySelf = true;
+                    suggestion = true;
+                    mainScript.runSection("suggestSlain");
+                    break;
+
+                case "acceptA":
+                case "acceptB":
+                case "acceptC":
+                    this.repeatActiveMenu = false;
+                    break;
+                    
+                case "cSlaySelf":
+                case "suicide":
+                    mainScript.runSection("suicideStart");
+                    mainScript.runSection("paranoidSuicideCont");
+                    break;
+
+                default: super.giveDefaultFailResponse();
+            }
+        }
+
+        // Attempt to accept your reward
+        mainScript.runSection("slainAccept");
+
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Thread interrupted");
+        }
+
+        mainScript.runSection();
+
+        if (suggestion) {
+            mainScript.runSection("suggestSlain2");
+        } else {
+            mainScript.runSection("suggestSlain");
+        }
+
+        // Option names here correspond to which Voice you gain in The Cage
+        this.canSlaySelf = true;
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "noWay", "(Explore) Is there really no other way? Because I don't want to use the blade on myself."));
+        activeMenu.add(new Option(this.manager, "happy2", "(Explore) But I liked being happy! Are you really going to take it away from me?"));
+        activeMenu.add(new Option(this.manager, "broken", "[Give the blade to the Voice of the Skeptic.]", activeMenu.get("noWay")));
+        activeMenu.add(new Option(this.manager, "paranoid", "[Slay yourself.]"));
+        activeMenu.add(new Option(this.manager, "cheated", "Sorry, but we're not doing that."));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "noWay":
+                case "happy2":
+                    mainScript.runSection(activeOutcome + "Slain");
+                    break;
+
+                case "broken":
+                case "paranoid":
+                case "cheated":
+                    this.repeatActiveMenu = false;
+                    mainScript.runSection(activeOutcome + "Suicide");
+                    mainScript.runSection(activeOutcome + "SuicideCont");
+                    break;
+
+                default: super.giveDefaultFailResponse();
+            }
+        }
         
-        
-        // temporary templates for copy-and-pasting
-        /*
-        parser.printDialogueLine(new VoiceDialogueLine("XXXXX"));
-        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
-        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
-        */
-        
-        // PLACEHOLDER
-        return null;
+        if (!selfSlain) {
+            return ChapterEnding.COLDLYRATIONAL;
+        } else {
+            switch (activeOutcome) {
+                case "broken": return ChapterEnding.RESTLESSGIVEIN;
+                case "cheated": return ChapterEnding.RESTLESSFORCED;
+                default: return ChapterEnding.RESTLESSSELF;
+            }
+        }
     }
 
 
