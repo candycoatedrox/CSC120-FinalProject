@@ -28,7 +28,7 @@ public enum ChapterEnding {
     TODAMSEL(Chapter.DAMSEL, Voice.SMITTEN),
     
     // The Adversary
-    THATWHICHCANNOTDIE(Vessel.ADVERSARY, -1, 1, false),
+    THATWHICHCANNOTDIE(Vessel.ADVERSARY),
     STRIKEMEDOWN(Chapter.FURY, Voice.COLD),
     HEARNOBELL(Chapter.FURY, Voice.CONTRARIAN),
     DEADISDEAD(Chapter.FURY, Voice.BROKEN),
@@ -36,19 +36,19 @@ public enum ChapterEnding {
     FREEINGSOMEONE(Chapter.NEEDLE, Voice.SKEPTIC),
 
     // The Tower
-    OBEDIENTSERVANT(Vessel.TOWER, 1, 1, false),
+    OBEDIENTSERVANT(Vessel.TOWER),
     GODKILLER(Chapter.FURY, Voice.STUBBORN),
     APOBLADE(Chapter.APOTHEOSIS, Voice.CONTRARIAN),
     APOUNARMED(Chapter.APOTHEOSIS, Voice.PARANOID),
 
     // The Spectre
-    HITCHHIKER(Vessel.SPECTRE, 1, 1, false),
+    HITCHHIKER(Vessel.SPECTRE),
     HEARTRIPPERLEAVE(Chapter.WRAITH, Voice.PARANOID),
     HEARTRIPPER(Chapter.WRAITH, Voice.CHEATED),
     EXORCIST(Chapter.DRAGON, Voice.OPPORTUNIST),
     
     // The Nightmare
-    WORLDOFTERROR(Vessel.NIGHTMARE, 1, 1, false),
+    WORLDOFTERROR(Vessel.NIGHTMARE),
     HOUSEOFNOLEAVE(Chapter.WRAITH, Voice.COLD),
     TERMINALVELOCITY(Chapter.WRAITH, Voice.OPPORTUNIST),
     MONOLITHOFFEAR(Chapter.CLARITY),
@@ -64,17 +64,17 @@ public enum ChapterEnding {
     TOMUTUALLYASSURED(Chapter.MUTUALLYASSURED),
 
     // Mutually Assured Destruction
-    MUTUALLYASSURED(Vessel.RAZORFULL, -1, 1, true),
+    MUTUALLYASSURED(Vessel.RAZORFULL),
 
     // No Way Out
     TOEMPTYCUP(Chapter.EMPTYCUP),
 
     // The Empty Cup
-    EMPTYCUP(Vessel.RAZORHEART, -1, 1, true),
+    EMPTYCUP(Vessel.RAZORHEART),
 
     // The Beast
-    DISSOLVINGWILL(Vessel.BEAST, 1, 1, false),
-    DISSOLVINGWILLACCIDENT(Vessel.BEAST, 1, 1, false),
+    DISSOLVINGWILL(Vessel.BEAST),
+    DISSOLVINGWILLACCIDENT(Vessel.BEAST),
     FIGHT(Chapter.DEN, Voice.STUBBORN),
     FLIGHT(Chapter.DEN, Voice.SKEPTIC),
     OPOSSUM(Chapter.WILD, Voice.CONTRARIAN),
@@ -83,9 +83,9 @@ public enum ChapterEnding {
     DISSOLVED(Chapter.WILD, Voice.BROKEN),
 
     // The Witch
-    SCORPION(Vessel.WITCH, -1, -1, false),
-    FROG(Vessel.WITCH, -1, -1, false),
-    FROGLOCKED(Vessel.WITCH, -1, -1, false),
+    SCORPION(Vessel.WITCH),
+    FROG(Vessel.WITCH),
+    FROGLOCKED(Vessel.WITCH),
     KNIVESOUTMASKSOFF(Chapter.WILD, Voice.STUBBORN),
     KNIVESOUTMASKSOFFGIVEUP(Chapter.WILD, Voice.CHEATED),
     PLAYINGITSAFE(Chapter.WILD, Voice.PARANOID),
@@ -93,19 +93,19 @@ public enum ChapterEnding {
     PASTLIFEGAMBIT(Chapter.THORN, Voice.CHEATED),
     
     // The Stranger
-    ILLUSIONOFCHOICE(Vessel.STRANGER, 0, 0, true),
+    ILLUSIONOFCHOICE(Vessel.STRANGER),
 
     // The Prisoner
-    TALKINGHEADS(Vessel.PRISONERHEAD, 1, 1, false),
-    PRISONEROFMIND(Vessel.PRISONER, 1, 0, false),
+    TALKINGHEADS(Vessel.PRISONERHEAD),
+    PRISONEROFMIND(Vessel.PRISONER),
     COLDLYRATIONAL(Chapter.GREY, Voice.COLD),
     RESTLESSFORCED(Chapter.CAGE, Voice.CHEATED),
     RESTLESSSELF(Chapter.CAGE, Voice.PARANOID),
     RESTLESSGIVEIN(Chapter.CAGE, Voice.BROKEN),
 
     // The Damsel
-    ROMANTICHAZE(Vessel.DAMSEL, 1, 1, false),
-    ANDTHEYLIVEDHAPPILY(Vessel.DECONDAMSEL, -1, 2, true),
+    ROMANTICHAZE(Vessel.DAMSEL),
+    ANDTHEYLIVEDHAPPILY(Vessel.DECONDAMSEL),
     LADYKILLER(Chapter.GREY, Voice.COLD),
     CONTENTSOFOURHEARTDECON(Chapter.HAPPY, Voice.SKEPTIC),
     CONTENTSOFOURHEARTUPSTAIRS(Chapter.HAPPY, Voice.OPPORTUNIST),
@@ -132,10 +132,6 @@ public enum ChapterEnding {
     private Voice newVoice;
 
     private Vessel vessel;
-    private String playlistSong = "";
-    private int freedom = 0;
-    private int satisfaction = 0;
-    private boolean yourNewWorld;
 
     // --- CONSTRUCTORS ---
 
@@ -169,38 +165,12 @@ public enum ChapterEnding {
     /**
      * Constructor for endings where a Vessel has been claimed
      * @param v the Vessel claimed in this ending
-     * @param freedom the amount this ending alters the Shifting Mound's freedom value
-     * @param satisfaction the amount this ending alters the Shifting Mound's satisfaction value
-     * @param yourNewWorld whether this ending qualifies for the "Your New World" ending or not
      */
-    private ChapterEnding(Vessel v, int freedom, int satisfaction, boolean yourNewWorld) {
+    private ChapterEnding(Vessel v) {
         this.isFinal = true;
         this.nextChapter = Chapter.SPACESBETWEEN;
 
         this.vessel = v;
-        this.playlistSong = v.getPlaylistSong();
-        this.freedom = freedom;
-        this.satisfaction = satisfaction;
-        this.yourNewWorld = yourNewWorld;
-    }
-
-    /**
-     * Constructor for endings where a Vessel has been claimed
-     * @param v the Vessel claimed in this ending
-     * @param playlistSong the song this ending adds to the current playlist
-     * @param freedom the amount this ending alters the Shifting Mound's freedom value
-     * @param satisfaction the amount this ending alters the Shifting Mound's satisfaction value
-     * @param yourNewWorld whether this ending qualifies for the "Your New World" ending or not
-     */
-    private ChapterEnding(Vessel v, String playlistSong, int freedom, int satisfaction, boolean yourNewWorld) {
-        this.isFinal = true;
-        this.nextChapter = Chapter.SPACESBETWEEN;
-
-        this.vessel = v;
-        this.playlistSong = playlistSong;
-        this.freedom = freedom;
-        this.satisfaction = satisfaction;
-        this.yourNewWorld = yourNewWorld;
     }
 
     // --- ACCESSORS ---
@@ -235,37 +205,5 @@ public enum ChapterEnding {
      */
     public Vessel getVessel() {
         return this.vessel;
-    }
-
-    /**
-     * Accessor for playlistSong
-     * @return the song this ending adds to the current playlist
-     */
-    public String getPlaylistSong() {
-        return this.playlistSong;
-    }
-
-    /**
-     * Accessor for freedom
-     * @return the amount of freedom this ending adds to the Shifting Mound
-     */
-    public int getFreedom() {
-        return this.freedom;
-    }
-
-    /**
-     * Accessor for satisfaction
-     * @return the amount of satisfaction this ending adds to the Shifting Mound
-     */
-    public int getSatisfaction() {
-        return this.satisfaction;
-    }
-
-    /**
-     * Accessor for yourNewWorld
-     * @param yourNewWorld whether this ending qualifies for the "Your New World" ending or not
-     */
-    public boolean qualifiesYNW() {
-        return this.yourNewWorld;
     }
 }

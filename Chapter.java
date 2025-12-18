@@ -17,20 +17,20 @@ public enum Chapter {
     DAMSEL(2, "The Damsel", "Routes/Damsel/DamselShared"),
 
     // Chapter III
-    NEEDLE(3, "The Eye of the Needle", "Routes/Adversary/NeedleShared"),
-    FURY(3, "The Fury", "Routes/_Joint Chapters/Fury/FuryShared"),
-    APOTHEOSIS(3, "The Apotheosis", "Routes/Tower/ApotheosisShared"),
-    DRAGON(3, "The Princess and the Dragon", true, "Routes/Spectre/DragonShared"),
-    WRAITH(3, "The Wraith", "Routes/_Joint Chapters/Wraith/WraithShared"),
-    CLARITY(3, "The Moment of Clarity", "Routes/Nightmare/MomentOfClarity"),
+    NEEDLE(3, "The Eye of the Needle"),
+    FURY(3, "The Fury"),
+    APOTHEOSIS(3, "The Apotheosis"),
+    DRAGON(3, "The Princess and the Dragon", true),
+    WRAITH(3, "The Wraith"),
+    CLARITY(3, "The Moment of Clarity"),
     ARMSRACE(3, "The Arms Race", "Routes/Razor/Razor3Shared"),
     NOWAYOUT(3, "No Way Out", "Routes/Razor/Razor3Shared"),
-    DEN(3, "The Den", "Routes/Beast/DenShared"),
-    WILD(3, "The Wild", "Routes/_Joint Chapters/Wild/WildShared"),
-    THORN(3, "The Thorn", "Routes/Witch/ThornShared"),
-    CAGE(3, "The Cage", "Routes/Prisoner/PrisonerShared"),
-    GREY(3, "The Grey", "Routes/_Joint Chapters/Grey/GreyShared"),
-    HAPPY(3, "Epilogue", "Happily Ever After", "Routes/Damsel/HappyShared"),
+    DEN(3, "The Den"),
+    WILD(3, "The Wild"),
+    THORN(3, "The Thorn"),
+    CAGE(3, "The Cage"),
+    GREY(3, "The Grey"),
+    HAPPY(3, "Epilogue", "Happily Ever After"),
     
     // Chapter IV
     MUTUALLYASSURED(4, "Mutually Assured Destruction", "Routes/Razor/Razor4"),
@@ -53,13 +53,11 @@ public enum Chapter {
      * @param number the Chapter number
      * @param title the title of the Chapter
      * @param specialTitle whether this Chapter has a special title (and thus should not display a title card at the start of the Chapter)
-     * @param scriptDirectory the directory of the initial script for this Chapter
      */
-    private Chapter(int number, String title, boolean specialTitle, String scriptDirectory) {
+    private Chapter(int number, String title, boolean specialTitle) {
         this.specialTitle = specialTitle;
         this.number = number;
         this.title = title;
-        this.scriptFile = Script.getFromDirectory(scriptDirectory);
 
         this.prefix = "Chapter ";
         switch(number) {
@@ -88,6 +86,32 @@ public enum Chapter {
         this.number = number;
         this.title = title;
         this.scriptFile = Script.getFromDirectory(scriptDirectory);
+
+        this.prefix = "Chapter ";
+        switch(number) {
+            case 1:
+                this.prefix += "I";
+                break;
+            case 2:
+                this.prefix += "II";
+                break;
+            case 3:
+                this.prefix += "III";
+                break;
+            case 4:
+                this.prefix += "IV";
+        }
+    }
+
+    /**
+     * Constructor for a Chapter not implemented in this final (Chapter III+)
+     * @param number the Chapter number
+     * @param title the title of the Chapter
+     */
+    private Chapter(int number, String title) {
+        this.specialTitle = false;
+        this.number = number;
+        this.title = title;
 
         this.prefix = "Chapter ";
         switch(number) {

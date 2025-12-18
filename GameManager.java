@@ -7,7 +7,7 @@ public class GameManager {
     private StandardCycle currentCycle;
 
     // Settings
-    private final boolean demoMode = true; // If you set this to "false," you can play through all paths in Chapter IIs -- but if you reach a Chapter III it'll just anticlimactically send you to the end of the demo
+    private final boolean demoMode = true; // If you set this to "false," you can play through all paths in Chapter IIs -- but if you reach a Chapter III it'll just anticlimactically send you to the end of the demo, and after claiming your first vessel the game breaks down a little bit
     private final boolean trueDemoMode = false;
     private boolean dynamicWarnings = true;
     private boolean showNowPlaying = true;
@@ -28,9 +28,6 @@ public class GameManager {
 
     // Variables used in the Spaces Between
     private boolean mirrorScaredFlag = false;
-    private int moundFreedom = 0;
-    private int moundSatisfaction = 0;
-    private boolean directToMound = false;
     private boolean refuseExploreMound = false;
 
     // Global menus and options
@@ -284,30 +281,6 @@ public class GameManager {
     }
 
     /**
-     * Checks if moundFreedom is positive or equal to 0
-     * @return whether the Shifting Mound's freedom value is positive, based on the endings the player has found
-     */
-    public boolean moundFreedom() {
-        return this.moundFreedom >= 0;
-    }
-
-    /**
-     * Checks if moundSatisfaction is positive or equal to 0
-     * @return whether the Shifting Mound's satisfaction value is positive, based on the endings the player has found
-     */
-    public boolean moundSatisfaction() {
-        return this.moundSatisfaction >= 0;
-    }
-
-    /**
-     * Accessor for directToMound
-     * @return whether the player claimed a vessel from the start or aborted at least one vessel before claiming one
-     */
-    public boolean getDirectToMound() {
-        return this.directToMound;
-    }
-
-    /**
      * Accessor for refuseExploreMound
      * @return whether the player has threatened the Shifting Mound in the Spaces Between
      */
@@ -370,32 +343,12 @@ public class GameManager {
             } else {
                 this.endingsFound.add(ending);
                 this.claimedVessels.add(ending.getVessel());
-
-                this.moundFreedom += ending.getFreedom();
-                this.moundSatisfaction += ending.getSatisfaction();
                 
-                this.addToPlaylist(ending.getPlaylistSong());
-                switch (this.nClaimedVessels()) {
-                    case 1:
-                        this.addToPlaylist("The Shifting Mound Movement I");
-                        if (ending.getVessel() == Vessel.STRANGER) this.moundSatisfaction += 1;
-                        if (this.nVesselsAborted == 0) this.directToMound = true;
-                        break;
-                    case 2:
-                        this.addToPlaylist("The Shifting Mound Movement II");
-                        break;
-                    case 3:
-                        this.addToPlaylist("The Shifting Mound Movement III");
-                        break;
-                    case 4:
-                        this.addToPlaylist("The Shifting Mound Movement IV");
-                        break;
-                }
+                this.addToPlaylist(ending.getVessel().getPlaylistSong());
+                this.addToPlaylist("The Shifting Mound Movement I");
 
-                if (this.demoMode) {
-                    ending = ChapterEnding.DEMOENDING;
-                    break;
-                }
+                ending = ChapterEnding.DEMOENDING;
+                break;
             }
         }
 
@@ -428,32 +381,12 @@ public class GameManager {
             } else {
                 this.endingsFound.add(ending);
                 this.claimedVessels.add(ending.getVessel());
-
-                this.moundFreedom += ending.getFreedom();
-                this.moundSatisfaction += ending.getSatisfaction();
                 
-                this.addToPlaylist(ending.getPlaylistSong());
-                switch (this.nClaimedVessels()) {
-                    case 1:
-                        this.addToPlaylist("The Shifting Mound Movement I");
-                        if (ending.getVessel() == Vessel.STRANGER) this.moundSatisfaction += 1;
-                        if (this.nVesselsAborted == 0) this.directToMound = true;
-                        break;
-                    case 2:
-                        this.addToPlaylist("The Shifting Mound Movement II");
-                        break;
-                    case 3:
-                        this.addToPlaylist("The Shifting Mound Movement III");
-                        break;
-                    case 4:
-                        this.addToPlaylist("The Shifting Mound Movement IV");
-                        break;
-                }
+                this.addToPlaylist(ending.getVessel().getPlaylistSong());
+                this.addToPlaylist("The Shifting Mound Movement I");
 
-                if (this.demoMode) {
-                    ending = ChapterEnding.DEMOENDING;
-                    break;
-                }
+                ending = ChapterEnding.DEMOENDING;
+                break;
             }
         }
 
@@ -495,32 +428,12 @@ public class GameManager {
             } else {
                 this.endingsFound.add(ending);
                 this.claimedVessels.add(ending.getVessel());
-
-                this.moundFreedom += ending.getFreedom();
-                this.moundSatisfaction += ending.getSatisfaction();
                 
-                this.addToPlaylist(ending.getPlaylistSong());
-                switch (this.nClaimedVessels()) {
-                    case 1:
-                        this.addToPlaylist("The Shifting Mound Movement I");
-                        if (ending.getVessel() == Vessel.STRANGER) this.moundSatisfaction += 1;
-                        if (this.nVesselsAborted == 0) this.directToMound = true;
-                        break;
-                    case 2:
-                        this.addToPlaylist("The Shifting Mound Movement II");
-                        break;
-                    case 3:
-                        this.addToPlaylist("The Shifting Mound Movement III");
-                        break;
-                    case 4:
-                        this.addToPlaylist("The Shifting Mound Movement IV");
-                        break;
-                }
+                this.addToPlaylist(ending.getVessel().getPlaylistSong());
+                this.addToPlaylist("The Shifting Mound Movement I");
 
-                if (this.demoMode) {
-                    ending = ChapterEnding.DEMOENDING;
-                    break;
-                }
+                ending = ChapterEnding.DEMOENDING;
+                break;
             }
         }
 
