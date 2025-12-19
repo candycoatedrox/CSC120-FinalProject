@@ -17,7 +17,7 @@
 
 **YES** 2 pts: Selected classes(s) are **effective, efficient** at supporting the desired operations and program behavior.
 
-_____ 2 pts: Design justification includes a discussion of at least one (reasonable) **alternative design** that could have been used, and the reasons why you decided against this alternative.
+**YES** 2 pts: Design justification includes a discussion of at least one (reasonable) **alternative design** that could have been used, and the reasons why you decided against this alternative.
 
 **YES** 2 pts: The project makes effective use of **Java built-in classes** whenever they are appropriate.
 
@@ -43,6 +43,6 @@ _____ 2 pts: Design justification includes a discussion of at least one (reasona
 
       **PART** Methods avoid confusing side effects.
 
-_____ 1 pt: All required files included with submission (including completed checklist file).
+**YES** 1 pt: All required files included with submission (including completed checklist file).
 
-_____ 1 pt: `readme.md` contains your reflection on the project and responses to all prompts .
+**YES** 1 pt: `readme.md` contains your reflection on the project and responses to all prompts .

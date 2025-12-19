@@ -1,7 +1,6 @@
 # Table of Contents
 1. [Commands](#commands)
 2. [Content Warnings](#content-warnings)
-3. [\(SPOILER ALERT\) Guide](#spoiler-alert-guide)
 
 # Commands
 `HELP`, `SHOW`, and `TOGGLE` are available at any time. Other commands' availability varies.
@@ -242,7 +241,3 @@ You are **guaranteed** to encounter: death; murder; verbal abuse; gaslighting; d
   - **The Cage:** existentialism; decapitation; gore
   - **The Grey:** self-immolation; description of a bloated corpse; drowning; burning to death; body horror
   - **Happily Ever After:** derealization; existentialism; end-of-relationship; some people have experienced triggers related to emotional domestic abuse while playing this chapter
-
-# (SPOILER ALERT) Guide
-
-If your game includes challenges that must be overcome to win, also list them below.

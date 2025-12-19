@@ -443,10 +443,10 @@ public class StandardCycle extends Cycle {
 
             this.prevEnding = this.runChapter(nextChapter);
 
-            if (manager.demoMode()) {
-                if (this.prevEnding == null) {
-                    this.prevEnding = ChapterEnding.DEMOENDING;
-                } else if (!this.prevEnding.isFinal() && this.prevEnding.getNextChapter().getNumber() > 2) {
+            if (this.prevEnding == null) {
+                this.prevEnding = ChapterEnding.DEMOENDING;
+            } else if (!this.prevEnding.isFinal() && this.prevEnding.getNextChapter().getNumber() > 2) {
+                if (this.prevEnding.getNextChapter() != Chapter.ARMSRACE && this.prevEnding.getNextChapter() != Chapter.NOWAYOUT && this.prevEnding.getNextChapter() != Chapter.MUTUALLYASSURED && this.prevEnding.getNextChapter() != Chapter.EMPTYCUP) {
                     this.prevEnding = ChapterEnding.DEMOENDING;
                 }
             }
@@ -655,70 +655,12 @@ public class StandardCycle extends Cycle {
         System.out.println();
         System.out.println();
 
-        if (this.activeChapter == Chapter.CLARITY) {
-            try {
-                parser.printDivider();
-                parser.printDialogueLine("Chapter III", true);
-                parser.printDivider();
-                Thread.sleep(750);
-
-                parser.printDialogueLine(new DialogueLine("   Chapter IV      Chapter V", true), 1.5);
-                parser.printDivider();
-                Thread.sleep(700);
-                
-                parser.printDialogueLine(new DialogueLine(" Chapter VII   Chapter VI          Chapter VIII", true), 2.5);
-                parser.printDivider();
-                Thread.sleep(700);
-                
-                IOHandler.wrapPrintln("Chapter XIIChapter IX  ChapterChXVIerX Chapter XVChapterXIV   ChapterhaXIer XIIIChapter XVII");
-                parser.printDivider();
-                Thread.sleep(550);
-                
-                System.out.println("-----------------------------------");
-                System.out.println("CChXpICXaVIIaXtVapVerXhVIItXXIhapXrIVpChXXerV");
-                System.out.println("-----------------------------------");
-                System.out.println("-----------------------------------");
-                Thread.sleep(400);
-
-                
-                System.out.println("-----------------------------------");
-                System.out.println("-----------------------------------");
-                System.out.println("-----------------------------------");
-                Thread.sleep(350);
-
-                
-                System.out.println("-----------------------------------");
-                System.out.println("-----------------------------------");
-                System.out.println("-----------------------------------");
-                System.out.println("-----------------------------------");
-                Thread.sleep(200);
-
-                
-                System.out.println("-----------------------------------");
-                System.out.println("-----------------------------------");
-                System.out.println("-----------------------------------");
-                System.out.println("-----------------------------------");
-                System.out.println("-----------------------------------");
-                System.out.println("-----------------------------------");
-                Thread.sleep(2000);
-
-                
-                IOHandler.wrapPrintln("THE MOMENT OF CLARITY");
-                System.out.print("-----------------------------------");
-                parser.waitForInput();
-
-                System.out.println();
-            } catch (InterruptedException e) {
-                throw new RuntimeException("Thread interrupted");
-            }
-        } else {
-            parser.printDivider();
-            parser.printDialogueLine(this.activeChapter.getPrefix(), true);
-            parser.printDialogueLine(this.activeChapter.getTitle(), true);
-            parser.printDivider(false);
-            
-            System.out.println();
-        }
+        parser.printDivider();
+        parser.printDialogueLine(this.activeChapter.getPrefix(), true);
+        parser.printDialogueLine(this.activeChapter.getTitle(), true);
+        parser.printDivider(false);
+        
+        System.out.println();
     }
 
     // --- CHAPTERS & SCENES ---
@@ -13760,31 +13702,12 @@ public class StandardCycle extends Cycle {
         }
 
         System.out.println();
-        switch (manager.nClaimedVessels()) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-                secondaryScript.runSection("gaze" + manager.nClaimedVessels());
-                this.theSpacesBetween();
-                break;
-
-            case 4:
-                secondaryScript.runSection("gazeFinal");
-
-                this.activeMenu = new OptionsMenu(true);
-                activeMenu.add(new Option(this.manager, "ask", "\"Are you me?\""));
-                parser.promptOptionsMenu(activeMenu);
-                
-                secondaryScript.runSection("gazeFinalCont");
-
-                // Leads into Finale.finalMirror()
-                break;
-        }
+        secondaryScript.runSection("gaze0");
+        this.theSpacesBetween();
     }
 
     /**
-     * Runs the encounter with the Shifting Mound after claiming each vessel, excluding the fifth and final vessel
+     * Runs the encounter with the Shifting Mound after claiming a vessel
      */
     private void theSpacesBetween() {
         this.mainScript = new Script(this.manager, this.parser, Chapter.SPACESBETWEEN.getScriptFile());
@@ -13822,11 +13745,7 @@ public class StandardCycle extends Cycle {
         }
 
         this.currentLocation = GameLocation.HILL;
-        if (this.isFirstVessel) {
-            secondaryScript.runSection("cabinFirst");
-        } else {
-            secondaryScript.runSection("cabin");
-        }
+        secondaryScript.runSection("cabinFirst");
 
         this.canApproachHer = true;
         this.activeMenu = new OptionsMenu();
@@ -13854,17 +13773,10 @@ public class StandardCycle extends Cycle {
             }
         }
 
+        this.secondaryScript = new Script(this.manager, this.parser, "Intermission/IntermissionTalk1");
         this.canApproachHer = false;
         this.withPrincess = true;
         this.canApproachHer = false;
-        this.shiftingMoundTalk();
-    }
-
-    /**
-     * Runs the conversation with the Shifting Mound after claiming the first vessel
-     */
-    private void shiftingMoundTalk() {
-        this.secondaryScript = new Script(this.manager, this.parser, "Intermission/IntermissionTalk1");
 
         if (manager.nVesselsAborted() == 0) {
             secondaryScript.runSection();

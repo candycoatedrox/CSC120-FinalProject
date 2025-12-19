@@ -7,8 +7,8 @@ public class GameManager {
     private StandardCycle currentCycle;
 
     // Settings
-    private final boolean demoMode = true; // If you set this to "false," you can play through all paths in Chapter IIs -- but if you reach a Chapter III it'll just anticlimactically send you to the end of the demo, and after claiming your first vessel the game breaks down a little bit
-    private final boolean trueDemoMode = false;
+    private final boolean demoMode = true; // If you set this to "false," you can play through all paths in Chapter IIs -- but if you reach a Chapter III (excluding The Arms Race / No Way Out) it'll just anticlimactically send you to the end of the demo
+    private final boolean trueDemoMode = false; // If set to true, the demo ends right after meeting the Chapter II Princess, mimicking the official Slay the Princess demos
     private boolean dynamicWarnings = true;
     private boolean showNowPlaying = true;
     private boolean globalSlowPrint = true;
@@ -341,13 +341,16 @@ public class GameManager {
             } else if (ending == ChapterEnding.GOODENDING) {
                 break;
             } else {
-                this.endingsFound.add(ending);
-                this.claimedVessels.add(ending.getVessel());
-                
-                this.addToPlaylist(ending.getVessel().getPlaylistSong());
-                this.addToPlaylist("The Shifting Mound Movement I");
+                if (ending != ChapterEnding.GOODENDING) {
+                    this.endingsFound.add(ending);
+                    this.claimedVessels.add(ending.getVessel());
+                    
+                    this.addToPlaylist(ending.getVessel().getPlaylistSong());
+                    this.addToPlaylist("The Shifting Mound Movement I");
 
-                ending = ChapterEnding.DEMOENDING;
+                    ending = ChapterEnding.DEMOENDING;
+                }
+                
                 break;
             }
         }
@@ -376,16 +379,17 @@ public class GameManager {
                 break;
             } else if (ending == ChapterEnding.ABORTED) {
                 this.nVesselsAborted += 1;
-            } else if (ending == ChapterEnding.GOODENDING) {
-                break;
             } else {
-                this.endingsFound.add(ending);
-                this.claimedVessels.add(ending.getVessel());
-                
-                this.addToPlaylist(ending.getVessel().getPlaylistSong());
-                this.addToPlaylist("The Shifting Mound Movement I");
+                if (ending != ChapterEnding.GOODENDING) {
+                    this.endingsFound.add(ending);
+                    this.claimedVessels.add(ending.getVessel());
+                    
+                    this.addToPlaylist(ending.getVessel().getPlaylistSong());
+                    this.addToPlaylist("The Shifting Mound Movement I");
 
-                ending = ChapterEnding.DEMOENDING;
+                    ending = ChapterEnding.DEMOENDING;
+                }
+                
                 break;
             }
         }
@@ -423,16 +427,17 @@ public class GameManager {
                 break;
             } else if (ending == ChapterEnding.ABORTED) {
                 this.nVesselsAborted += 1;
-            } else if (ending == ChapterEnding.GOODENDING) {
-                break;
             } else {
-                this.endingsFound.add(ending);
-                this.claimedVessels.add(ending.getVessel());
-                
-                this.addToPlaylist(ending.getVessel().getPlaylistSong());
-                this.addToPlaylist("The Shifting Mound Movement I");
+                if (ending != ChapterEnding.GOODENDING) {
+                    this.endingsFound.add(ending);
+                    this.claimedVessels.add(ending.getVessel());
+                    
+                    this.addToPlaylist(ending.getVessel().getPlaylistSong());
+                    this.addToPlaylist("The Shifting Mound Movement I");
 
-                ending = ChapterEnding.DEMOENDING;
+                    ending = ChapterEnding.DEMOENDING;
+                }
+
                 break;
             }
         }
@@ -525,11 +530,11 @@ public class GameManager {
         if (ending == ChapterEnding.DEMOENDING) {
             parser.printDialogueLine("You have reached the end of the demo.");
             parser.printDialogueLine("Thank you for playing!");
-        } else {
-            this.showCredits();
-            this.showPlaylist(ending);
-        }
+            System.out.println();
+        } 
 
+        this.showCredits();
+        this.showPlaylist(ending);
         this.parser.closeInput();
     }
 
@@ -540,7 +545,7 @@ public class GameManager {
         System.out.println();
         parser.printDialogueLine("This game is based off of Slay the Princess, a game created by Tony Howard-Arias and Abby Howard, also known as Black Tabby Games.");
         parser.printDialogueLine("The original game was written and designed by Tony Howard-Arias, with art, editing, and additional writing by Abby Howard.");
-        parser.printDialogueLine("The game is available on Steam, Nintendo Switch, PS4, PS5, and Xbox, and features everything found in this remake, plus gorgeous hand-penciled art and fantastic voice acting by Jonathan Sims (as the Voices in your Head) and Nicole Goodnight (as the Princess).");
+        parser.printDialogueLine("The game is available on Steam, Nintendo Switch, PS4, PS5, and Xbox, and features everything found in this adaptation, plus gorgeous hand-penciled art and fantastic voice acting by Jonathan Sims (as the Voices in your Head) and Nicole Goodnight (as the Princess).");
     }
 
     /**
