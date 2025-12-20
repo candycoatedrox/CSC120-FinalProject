@@ -19,6 +19,22 @@ truth You are at the cabin.
 
 // Shared conversation dialogue //
 
+jumpanchor talkStart
+linebreak
+
+jumpanchor riddle
+p I'm sorry. Words are... difficult for me. They never fully weave what I wish to say. If you do not like my answers, then you need not ask me questions.
+p The vessels you choose to bring me carry far more meaning than anything words could say in the spaces between.
+
+jumpanchor requests
+p Gifts aren't what someone tells you to bring them.
+
+jumpanchor requestsSatisfy
+p My joy is in seeing what you choose. There are no wrong answers, and every perspective illuminates my shadows and shares new secrets.
+
+jumpanchor requestsDeny
+p Do not worry. There are no wrong answers, and every perspective illuminates my shadows and shares new secrets.
+
 jumpanchor attackMound
 truth Your will cuts across the entity in front of you, but nothing happens.
 p My roots burrow in an ocean beyond your sight. We cannot harm each other as we are now.

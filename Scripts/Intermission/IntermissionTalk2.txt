@@ -1,1 +1,95 @@
-linebreak
+jumpanchor aborted1
+p When I found you in The Long Quiet alone, I was terrified. What if you had decided to let me wither?
+jumpto abortedJoin
+
+jumpanchor aborted2
+p I am sorry I said that I hated you. I do not hate you. When I found you in The Long Quiet alone, I was terrified. When I found you in The Long Quiet again alone, I was hurt. I thought you had decided to leave me here to wither.
+jumpto abortedJoin
+
+jumpanchor aborted3
+p You have come back to me, and you have finally brought another fragile vessel. I hope our voiceless encounters in The Long Quiet have not cracked the foundations of our relationship. We are each other's salvation. There is no one to save us but us.
+jumpto abortedJoin
+
+jumpanchor aborted4
+p You have come back to me with another fragile vessel. I did not think you would.
+jumpto abortedJoin
+
+jumpanchor aborted5
+p You are back. It is good that you listened to my warning. Choice has been stripped from you. There are very few paths left for you to walk, but there is still a tarnished thread leading to our freedom.
+jumpanchor abortedJoin
+p But your commitment now is final. Your ability to walk the path of mutual annihilation is vanished with your return. If you still wish to obliterate me, it will have to wait until I am complete.
+
+jumpanchor start
+p Flickering lights in empty cityscapes become pockets of vitality and movement. I am more than I was before.
+p Whenever you are ready, I will wipe your slate clean once again.
+
+jumpanchor same
+p Is a child the same as an infant? I am an unbroken pattern, but every vessel gifts fresh perspectives and carves new avenues of expression. 'I' am different, but I am the same.
+
+jumpanchor change
+p Eyes close in reflection.
+p Perspectives meld together, and the breadth of my experience stretches to new corners. There are contradictions, conflicts in my nature. And there are familiarities that bind everything together.
+p It feels correct. This is what I need to be. This is the only path forward.
+
+jumpanchor want
+p With every gift you bring me, I excavate the alleys of what I am meant to be, and every exploration yields new and complicated truths. What I will be is different than what I am and what I am is different from what I was.
+p I cannot tell you what desires I will hold when I have changed.
+
+jumpanchor wantSatisfy
+p But in this moment, all I want is to know myself and to know you.
+
+jumpanchor wantDeny
+p But in this moment, all I want is to know myself.
+
+jumpanchor threat
+p There is still much to be seen. Neither of us know the depths of our being. Perhaps at the end of this, I will be the one to kill you. Or perhaps we will leave this place together, and find new horizons to discover.
+
+jumpanchor wall
+p Those paths lead to worlds you've already seen, and to perspectives I have already made my own. They are useless to us now. Inaccessible. The only paths of value are those that are yet untread.
+
+jumpanchor kind
+p Why wouldn't I be kind to you? You are the only thing I know that isn't me.
+
+jumpanchor preferences
+p My preference is for you to show me what you would like me to see. I cannot know the ways I wish to grow, for I have yet to feel them. It is you who guides me down the thin trail of perspective and memory.
+
+jumpanchor feelingsSatisfyFree
+p The vessels are shaped by memories of you, but they are drawn to the edge of The Long Quiet. To them you are a gate to something more. But they are only thoughts and perspectives. They are not me.
+jumpto feelingsSatisfyJoin
+
+jumpanchor feelingsSatisfyKept
+p The vessels are shaped by memories of you, but their impulses are drawn to the edge of The Long Quiet. To them you are a gate to something more, and any hurt you've caused them is understood as a fair price for freedom. But they are only thoughts and perspectives. They are not me.
+jumpanchor feelingsSatisfyJoin
+p The wounds they've suffered carve texture around my heart. Without them, I would be as I was before.
+p I would be alone and without sensation. I could not feel the joy of having you by my side, for I would not know your absence.
+
+jumpanchor feelingsDeny
+p There is a hurt that dwells in them, but they are not me. They are thoughts and perspectives. They are feelings that inform my being.
+p The wounds they've suffered carve texture around my heart. Without them, I would be as I was before.
+p I cannot be as I was before. There are new spaces that I must fill.
+
+jumpanchor howManySatisfy
+p If I am to be an ocean, you have nurtured me into a pond. My waters are shallow and murky, and I yearn for more perspective.
+p You will have your rest in due time, and I am sorry for the burdens I place on you.
+
+jumpanchor howManyFree
+p If I am to be an ocean, you have given me enough to build a pond. My waters are shallow and murky, and I yearn for more perspective.
+p I will transcend in due time, and there is no way forward but to contribute to my awakening.
+
+jumpanchor howManyKept
+p If I am to be an ocean, you have given me enough to build a pond. My waters are shallow and murky, and I yearn for more perspective.
+p The task of finding my vessels is your burden to carry.
+
+jumpanchor refuse
+p Then we will remain here as we are now. Barely finished, damp, cavernous.
+
+// Ending //
+
+jumpanchor endSatisfy
+p I will long for your return. But it will give me time to reflect on what I am.
+jumpanchor endJoin
+
+jumpanchor endDeny
+p I await your return, but it will give me time to reflect on what I am.
+jumpanchor endJoin
+p We will meet again. /// interrupt

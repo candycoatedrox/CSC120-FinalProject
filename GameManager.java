@@ -35,9 +35,10 @@ public class GameManager {
     private int moundFreedom = 0;
     private int moundSatisfaction = 0;
     private boolean directToMound = false;
-    private Condition askedRiddleMound = new Condition();
     private Condition threatenedMound = new Condition();
-    private Condition refuseExploreMound = new Condition();
+    private Condition canAskRiddleMound = new Condition(true);
+    private Condition askedRequestsMound = new Condition(false);
+    private Condition noRefuseExploreMound = new Condition(true);
 
     // Global menus and options
     private boolean trueExclusiveMenu = false; // Only used during show() and settings() menus
@@ -45,7 +46,6 @@ public class GameManager {
     private final OptionsMenu warningsMenu;
     private final Option intermissionAttackMound;
     private final Option intermissionAttackSelf;
-    private final Option intermissionWait;
 
     // --- CONSTRUCTOR ---
 
@@ -83,7 +83,6 @@ public class GameManager {
         this.warningsMenu = this.createWarningsMenu();
         this.intermissionAttackMound = new Option(this, "attackMound", "[Attack the entity.]");
         this.intermissionAttackSelf = new Option(this, "attackSelf", "[Destroy your body.]");
-        this.intermissionWait = new Option(this, "wait", "\"I'm not going back.\" [Wait.]");
     }
 
     /**
@@ -351,6 +350,16 @@ public class GameManager {
     }
 
     /**
+     * Increase the Shifting Mound's freedom and satisfaction values by a given amount
+     * @param freedom the number to add to the Shifting Mound's freedom value
+     * @param satisfaction the number to add to the Shifting Mound's satisfaction value
+     */
+    public void updateMoundValues(int freedom, int satisfaction) {
+        this.moundFreedom += freedom;
+        this.moundSatisfaction += satisfaction;
+    }
+
+    /**
      * Checks if moundFreedom is positive or equal to 0
      * @return whether the Shifting Mound's freedom value is positive, based on the endings the player has found
      */
@@ -375,14 +384,6 @@ public class GameManager {
     }
 
     /**
-     * Accessor for askedRiddleMound
-     * @return whether the player has asked the Shifting Mound to stop speaking in riddles in the Spaces Between
-     */
-    public Condition aAskedRiddleMound() {
-        return this.askedRiddleMound;
-    }
-
-    /**
      * Accessor for threatenedMound
      * @return whether the player has threatened the Shifting Mound in the Spaces Between
      */
@@ -391,11 +392,27 @@ public class GameManager {
     }
 
     /**
-     * Accessor for refuseExploreMound
+     * Accessor for canAskRiddleMound
+     * @return whether the player has asked the Shifting Mound to stop speaking in riddles in the Spaces Between
+     */
+    public Condition canAskRiddleMound() {
+        return this.canAskRiddleMound;
+    }
+
+    /**
+     * Accessor for askedRequestsMound
+     * @return whether the player has asked if the Shifting Mound has any preferences for which vessels they bring her
+     */
+    public Condition askedRequestsMound() {
+        return this.askedRequestsMound;
+    }
+
+    /**
+     * Accessor for noRefuseExploreMound
      * @return whether the player has threatened the Shifting Mound in the Spaces Between
      */
-    public Condition refuseExploreMound() {
-        return this.refuseExploreMound;
+    public Condition noRefuseExploreMound() {
+        return this.noRefuseExploreMound;
     }
 
     /**
@@ -412,14 +429,6 @@ public class GameManager {
      */
     public Option getIntermissionAttackSelf() {
         return this.intermissionAttackSelf;
-    }
-
-    /**
-     * Accessor for intermissionWait
-     * @return the Option for the player to wait with the Shifting Mound in the Spaces Between
-     */
-    public Option getIntermissionWait() {
-        return this.intermissionWait;
     }
 
     /**
@@ -566,15 +575,11 @@ public class GameManager {
             } else {
                 this.endingsFound.add(ending);
                 this.claimedVessels.add(ending.getVessel());
-
-                this.moundFreedom += ending.getFreedom();
-                this.moundSatisfaction += ending.getSatisfaction();
                 
                 this.addToPlaylist(ending.getPlaylistSong());
                 switch (this.nClaimedVessels()) {
                     case 1:
                         this.addToPlaylist("The Shifting Mound Movement I");
-                        if (ending.getVessel() == Vessel.STRANGER) this.moundSatisfaction += 1;
                         if (this.nVesselsAborted == 0) this.directToMound = true;
                         break;
                     case 2:

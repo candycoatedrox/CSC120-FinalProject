@@ -486,6 +486,7 @@ public class StandardCycle extends Cycle {
                 break;
 
             default:
+                manager.updateMoundValues(prevEnding.getFreedom(), prevEnding.getSatisfaction());
                 this.mirrorSequence();
                 manager.updateVoicesMet(this.voicesMet);
         }
@@ -666,9 +667,7 @@ public class StandardCycle extends Cycle {
             case WILD: return this.wild();
             case THORN: return this.thorn();
             case CAGE: return this.cage();
-            case GREY:
-                if (this.prevEnding == ChapterEnding.LADYKILLER) return this.greyBurned();
-                else return this.greyDrowned();
+            case GREY: return this.grey();
             case HAPPY: return this.happilyEverAfter();
 
             case MUTUALLYASSURED:
@@ -6414,6 +6413,21 @@ public class StandardCycle extends Cycle {
             - Stubborn + Skeptic
          */
 
+
+
+
+
+
+        // temporary templates for copy-and-pasting
+        /*
+        parser.printDialogueLine("XXXXX");
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
+
         // PLACEHOLDER
         return null;
     }
@@ -6439,6 +6453,21 @@ public class StandardCycle extends Cycle {
             case DEADISDEAD: this.source = "pathetic";
             default: this.source = "tower";
         }
+
+
+
+
+
+
+        // temporary templates for copy-and-pasting
+        /*
+        parser.printDialogueLine("XXXXX");
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
 
         // PLACEHOLDER
         return null;
@@ -7016,6 +7045,21 @@ public class StandardCycle extends Cycle {
             - Broken + Paranoid
             - Broken + Contrarian
          */
+
+
+
+
+
+
+        // temporary templates for copy-and-pasting
+        /*
+        parser.printDialogueLine("XXXXX");
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
 
         // PLACEHOLDER
         return null;
@@ -8030,6 +8074,21 @@ public class StandardCycle extends Cycle {
     private ChapterEnding princessAndDragon() {
         // "You" have Cold + Opportunist, but you do not have any of the voices at the start of the Chapter
 
+
+
+
+
+
+        // temporary templates for copy-and-pasting
+        /*
+        parser.printDialogueLine("XXXXX");
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
+
         // PLACEHOLDER
         return null;
     }
@@ -8050,10 +8109,27 @@ public class StandardCycle extends Cycle {
          */
 
         switch (this.prevEnding) {
-            case HEARTRIPPER: this.source = "spectre";
-            case HEARTRIPPERLEAVE: this.source = "spectre";
+            case HEARTRIPPER:
+            case HEARTRIPPERLEAVE:
+                this.source = "spectre";
+                break;
             default: this.source = "nightmare";
         }
+
+
+
+
+
+
+        // temporary templates for copy-and-pasting
+        /*
+        parser.printDialogueLine("XXXXX");
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
 
         // PLACEHOLDER
         return null;
@@ -8837,7 +8913,21 @@ public class StandardCycle extends Cycle {
     private ChapterEnding momentOfClarity() {
         // You have all voices
 
-        // PLACEHOLDER
+
+
+
+
+
+        // temporary templates for copy-and-pasting
+        /*
+        parser.printDialogueLine("XXXXX");
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
+
         return ChapterEnding.MOMENTOFCLARITY;
     }
 
@@ -10623,6 +10713,21 @@ public class StandardCycle extends Cycle {
             - Hunted + Skeptic
          */
 
+
+
+
+
+
+        // temporary templates for copy-and-pasting
+        /*
+        parser.printDialogueLine("XXXXX");
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
+
         // PLACEHOLDER
         return null;
     }
@@ -10650,6 +10755,21 @@ public class StandardCycle extends Cycle {
 
         if (this.hasVoice(Voice.HUNTED)) this.source = "beast";
         else this.source = "witch";
+
+
+
+
+
+
+        // temporary templates for copy-and-pasting
+        /*
+        parser.printDialogueLine("XXXXX");
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
 
         // PLACEHOLDER
         return null;
@@ -11454,6 +11574,21 @@ public class StandardCycle extends Cycle {
             - Opportunist + Cheated
          */
 
+
+
+
+
+
+        // temporary templates for copy-and-pasting
+        /*
+        parser.printDialogueLine("XXXXX");
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
+
         // PLACEHOLDER
         return null;
     }
@@ -12066,7 +12201,8 @@ public class StandardCycle extends Cycle {
                 mainScript.runSection("endReplyNotFirstVessel");
             }
         }
-            
+        
+        if (this.isFirstVessel) manager.updateMoundValues(0, 1);
         return ChapterEnding.ILLUSIONOFCHOICE;
     }
 
@@ -12945,6 +13081,21 @@ public class StandardCycle extends Cycle {
             - Skeptic + Cheated
          */
 
+
+
+
+
+
+        // temporary templates for copy-and-pasting
+        /*
+        parser.printDialogueLine("XXXXX");
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
+
         // PLACEHOLDER
         return null;
     }
@@ -12956,32 +13107,38 @@ public class StandardCycle extends Cycle {
      * Runs Chapter III: The Grey (coming from the Prisoner)
      * @return the Chapter ending reached by the player
      */
-    private ChapterEnding greyDrowned() {
+    private ChapterEnding grey() {
         /*
           You gain the Voice of the Cold
           Possible combinations:
             - Smitten + Cold
          */
 
-        
-            
-        return ChapterEnding.ANDALLTHISLONGING;
-    }
+        if (this.hasVoice(Voice.SMITTEN)) {
+            this.source = "burn";
+        } else {
+            this.source = "drown";
+        }
 
-    /**
-     * Runs Chapter III: The Grey (coming from the Damsel)
-     * @return the Chapter ending reached by the player
-     */
-    private ChapterEnding greyBurned() {
+
+
+
+
+
+        // temporary templates for copy-and-pasting
         /*
-          You gain the Voice of the Cold
-          Possible combinations:
-            - Skeptic + Cold
-         */
-
-
-
-        return ChapterEnding.BURNINGDOWNTHEHOUSE;
+        parser.printDialogueLine("XXXXX");
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
+            
+        switch (this.source) {
+            case "burn": return ChapterEnding.BURNINGDOWNTHEHOUSE;
+            default: return ChapterEnding.ANDALLTHISLONGING;
+        }
     }
 
 
@@ -13598,6 +13755,21 @@ public class StandardCycle extends Cycle {
             - Opportunist
          */
 
+
+
+
+
+
+        // temporary templates for copy-and-pasting
+        /*
+        parser.printDialogueLine("XXXXX");
+        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
+        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
+        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
+        */
+
         // PLACEHOLDER
         return null;
     }
@@ -14031,16 +14203,19 @@ public class StandardCycle extends Cycle {
 
             case 1:
                 this.canApproachHer = false;
+                mainScript.runSection("talkStart");
                 this.shiftingMoundTalk2();
                 break;
 
             case 2:
                 this.canApproachHer = false;
+                mainScript.runSection("talkStart");
                 this.shiftingMoundTalk3();
                 break;
 
             case 3:
                 this.canApproachHer = false;
+                mainScript.runSection("talkStart");
                 this.shiftingMoundTalk4();
                 break;
         }
@@ -14185,7 +14360,7 @@ public class StandardCycle extends Cycle {
         while (repeatActiveMenu) {
             switch (parser.promptOptionsMenu(activeMenu)) {
                 case "refuse":
-                    manager.refuseExploreMound();
+                    manager.noRefuseExploreMound().set(false);
                 case "kill":
                 case "howMuch":
                 case "pieces":
@@ -14240,18 +14415,180 @@ public class StandardCycle extends Cycle {
      */
     private void shiftingMoundTalk2() {
         this.secondaryScript = new Script(this.manager, this.parser, "Intermission/IntermissionTalk2");
+        boolean freed = manager.moundFreedom();
+        boolean satisfied = manager.moundSatisfaction();
 
+        if (manager.getDirectToMound() && manager.nVesselsAborted() != 0) secondaryScript.runSection("aborted" + manager.nVesselsAborted());
+        secondaryScript.runSection("start");
+        
+        Condition talked = new Condition();
+        Condition canKind = new Condition(true);
+        Condition canFeelings = new Condition(true);
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "riddle", "(Explore) \"Everything you say feels like a riddle. Can you give me a single straight answer?\"", talked, manager.canAskRiddleMound()));
+        activeMenu.add(new Option(this.manager, "same", "(Explore) \"Are you the same being as you were before? How much have you changed?\""));
+        activeMenu.add(new Option(this.manager, "change", "(Explore) \"What does it feel like to change like this?\""));
+        activeMenu.add(new Option(this.manager, "want", "(Explore) \"When this is all done, do you know what you want to do?\""));
+        activeMenu.add(new Option(this.manager, "threat", "(Explore) \"You know that at the end of this -- once you're finished -- I'm going to kill you, right?\""));
+        activeMenu.add(new Option(this.manager, "wall", "(Explore) \"When I go back, it's as if an invisible wall closes around me. Why can I not do the same things I've done before?\""));
+        activeMenu.add(new Option(this.manager, "kindA", "(Explore) \"You have been kinder to me than anyone else I've met. Thank you.\"", canKind));
+        activeMenu.add(new Option(this.manager, "kindB", "(Explore) \"You have been kinder to me than anyone else I've met. Why?\"", canKind));
+        activeMenu.add(new Option(this.manager, "requests", "(Explore) \"What do you want me to bring you next time?\""));
+        activeMenu.add(new Option(this.manager, "thoughts", "(Explore) \"Do you have any thoughts on this vessel?\""));
+        activeMenu.add(new Option(this.manager, "preferences", "(Explore) \"So you don't have any preferences on how you'd like to change or grow?\"", activeMenu.get("requests")));
+        activeMenu.add(new Option(this.manager, "feelingsA", "(Explore) \"I don't want to hurt you, but the more times I go back, the worse I fear things will be.\"", canFeelings));
+        activeMenu.add(new Option(this.manager, "feelingsB", "(Explore) \"What do you feel about me? These vessels I've been bringing you, I've hurt them.\"", canFeelings));
+        activeMenu.add(new Option(this.manager, "howMany", "(Explore) \"How many more vessels do I need to bring you?\""));
+        activeMenu.add(new Option(this.manager, "refuse", "(Explore) \"And what if I don't want to bring you any more vessels? What if I just wait here forever?\"", manager.noRefuseExploreMound()));
+        activeMenu.add(new Option(this.manager, "pretension", "(Explore) \"Enough with all of this pretension. You're not actually saying anything.\"", talked, manager.canAskRiddleMound()));
+        activeMenu.add(new Option(this.manager, "return", "\"I'm ready to go back.\""));
+        activeMenu.add(manager.getIntermissionAttackMound());
+        activeMenu.add(manager.getIntermissionAttackSelf());
 
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "same":
+                case "change":
+                case "wall":
+                case "preferences":
+                    talked.set(true);
+                    secondaryScript.runSection(activeOutcome);
+                    break;
 
-        // temporary templates for copy-and-pasting
-        /*
-        parser.printDialogueLine("XXXXX");
-        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
-        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
-        */
+                case "want":
+                    talked.set(true);
+                    secondaryScript.runSection("want");
+
+                    if (satisfied) {
+                        secondaryScript.runSection("wantSatisfy");
+                    } else {
+                        secondaryScript.runSection("wantDeny");
+                    }
+
+                    break;
+
+                case "requests":
+                    talked.set(true);
+                    mainScript.runSection("requests");
+
+                    if (satisfied) {
+                        mainScript.runSection("requestsSatisfy");
+                    } else {
+                        mainScript.runSection("requestsDeny");
+                    }
+
+                    break;
+
+                case "threat":
+                    manager.threatenedMound().set(true);
+                    break;
+
+                case "kindA":
+                case "kindB":
+                    talked.set(true);
+                    canKind.set(false);
+                    secondaryScript.runSection("kind");
+                    break;
+
+                case "thoughts":
+                    talked.set(true);
+                    this.giveVesselThoughts(prevEnding.getVessel());
+                    break;
+
+                case "feelingsA":
+                case "feelingsB":
+                    talked.set(true);
+                    canFeelings.set(false);
+                    
+                    if (satisfied) {
+                        if (freed) {
+                            secondaryScript.runSection("feelingsSatisfyFree");
+                        } else {
+                            secondaryScript.runSection("feelingsSatisfyKept");
+                        }
+                    } else {
+                        secondaryScript.runSection("feelingsDeny");
+                    }
+
+                    break;
+
+                case "howMany":
+                    talked.set(true);
+                    
+                    if (satisfied) {
+                        secondaryScript.runSection("feelingsSatisfy");
+                    } else {
+                        if (freed) {
+                            secondaryScript.runSection("feelingsFree");
+                        } else {
+                            secondaryScript.runSection("feelingsKept");
+                        }
+                    }
+
+                    break;
+
+                case "refuse":
+                    talked.set(true);
+                    manager.noRefuseExploreMound().set(false);
+
+                    secondaryScript.runSection("refuse");
+
+                    OptionsMenu subMenu = new OptionsMenu(true);
+                    subMenu.add(new Option(this.manager, "wait", true, "[Wait.]"));
+                    subMenu.add(new Option(this.manager, "no", "[You have no need to wait.]"));
+                    parser.promptOptionsMenu(subMenu);
+
+                    break;
+
+                case "riddle":
+                case "pretension":
+                    manager.canAskRiddleMound().set(false);
+                    mainScript.runSection("riddle");
+                    break;
+
+                case "return":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                case "cSlayPrincessNoBladeFail": // Override: you don't need the blade
+                    if (manager.getIntermissionAttackMound().hasBeenPicked()) {
+                        mainScript.runSection("alreadyTried");
+                        break;
+                    }
+                case "attackMound":
+                    mainScript.runSection("attackMound");
+                    break;
+
+                case "cSlaySelfNoBladeFail": // Override: you don't need the blade
+                    if (manager.getIntermissionAttackSelf().hasBeenPicked()) {
+                        mainScript.runSection("alreadyTried");
+                        break;
+                    }
+                case "attackSelf":
+                    mainScript.runSection("attackSelf");
+                    break;
+
+                default: this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        // Ending
+        if (satisfied) {
+            secondaryScript.runSection("endSatisfy");
+        } else {
+            secondaryScript.runSection("endDeny");
+        }
+
+        int waitTime = (manager.globalSlowPrint()) ? 500 : 1000;
+        try {
+            Thread.sleep(waitTime);
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Thread interrupted");
+        }
+
+        mainScript.runSection("forget");
     }
 
     /**
@@ -14259,18 +14596,200 @@ public class StandardCycle extends Cycle {
      */
     private void shiftingMoundTalk3() {
         this.secondaryScript = new Script(this.manager, this.parser, "Intermission/IntermissionTalk3");
+        boolean satisfied = manager.moundSatisfaction();
 
+        secondaryScript.runSection();
+        
+        Condition talked = new Condition();
+        InverseCondition noThreat = new InverseCondition(manager.threatenedMound());
+        Condition localCanThreat = new Condition(true);
+        InverseCondition noRequests = new InverseCondition(manager.askedRequestsMound());
+        Condition localCanRequests = new Condition(true);
+        InverseCondition localAskedRequests = new InverseCondition(localCanRequests);
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "riddle", "(Explore) \"Everything you say feels like a riddle. Can you give me a single straight answer?\"", talked, manager.canAskRiddleMound()));
+        activeMenu.add(new Option(this.manager, "noExist", "(Explore) \"You can't be a contradiction. Contradictions don't exist.\""));
+        activeMenu.add(new Option(this.manager, "how", "(Explore) \"How can you stand to be a contradiction?\""));
+        activeMenu.add(new Option(this.manager, "worse", "(Explore) \"It doesn't matter how many times I go back. At least one of us always hurts the other. Doesn't that change you? Doesn't that make you worse?\""));
+        activeMenu.add(new Option(this.manager, "vessel", "(Explore) \"What do you think of this vessel?\""));
+        activeMenu.add(new Option(this.manager, "pretension", "(Explore) \"Enough with all of this pretension. You're not actually saying anything.\"", talked, manager.canAskRiddleMound()));
+        activeMenu.add(new Option(this.manager, "threatA", "(Explore) \"I'm still planning to kill you once we're done with this.\"", manager.threatenedMound(), localCanThreat));
+        activeMenu.add(new Option(this.manager, "threatB", "(Explore) \"You know that at the end of this -- once you're finished -- I'm going to kill you, right?\"", noThreat, localCanThreat));
+        activeMenu.add(new Option(this.manager, "worlds", "(Explore) \"Do you know what happens to the worlds we leave behind?\""));
+        activeMenu.add(new Option(this.manager, "want", "(Explore) \"Have you figured out what you'll want when we're finished?\""));
+        activeMenu.add(new Option(this.manager, "requestsA", "(Explore) \"Do you still not care what I bring you next?\"", manager.askedRequestsMound(), localCanRequests));
+        activeMenu.add(new Option(this.manager, "requestsB", "(Explore) \"What do you want me to bring you next time?\"", noRequests, localCanRequests));
+        activeMenu.add(new Option(this.manager, "preferences", "(Explore) \"So you don't have any preferences on how you'd like to change or grow?\"", localAskedRequests));
+        activeMenu.add(new Option(this.manager, "howMany", "(Explore) \"How many more vessels do I need to bring you?\""));
+        activeMenu.add(new Option(this.manager, "refuse", "(Explore) \"I don't want to go back anymore. I just want to stay here. Forever if I have to.\"", manager.noRefuseExploreMound()));
+        activeMenu.add(new Option(this.manager, "return", "\"I'm ready to go back.\""));
+        activeMenu.add(manager.getIntermissionAttackMound());
+        activeMenu.add(manager.getIntermissionAttackSelf());
 
+        OptionsMenu subMenu;
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "noExist":
+                case "how":
+                case "howMany":
+                case "worlds":
+                    talked.set(true);
+                    secondaryScript.runSection(activeOutcome);
+                    break;
 
-        // temporary templates for copy-and-pasting
-        /*
-        parser.printDialogueLine("XXXXX");
-        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
-        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
-        */
+                case "worse":
+                    talked.set(true);
+                    secondaryScript.runSection("worse");
+
+                    subMenu = new OptionsMenu(true);
+                    subMenu.add(new Option(this.manager, "more", "\"If anything, it makes me like you more. I don't know what that says about me.\""));
+                    subMenu.add(new Option(this.manager, "distant", "\"No, not really. It all seems so distant as soon as I'm near you.\""));
+                    subMenu.add(new Option(this.manager, "meh", "\"I have no opinion one way or another on the matter.\""));
+                    subMenu.add(new Option(this.manager, "stop", "\"I just want it all to stop.\""));
+                    subMenu.add(new Option(this.manager, "torture", "\"Yes. You're torturing me, and I hate it. I think I hate you.\""));
+                    subMenu.add(new Option(this.manager, "silent", "[Remain silent.]"));
+
+                    this.activeOutcome = parser.promptOptionsMenu(subMenu);
+                    switch (activeOutcome) {
+                        case "torture":
+                        case "silent":
+                            if (satisfied) {
+                                secondaryScript.runSection("worseSatisfy");
+                            } else {
+                                secondaryScript.runSection("worseDeny");
+                            }
+
+                            break;
+
+                        default: secondaryScript.runSection(activeOutcome + "Worse");
+                    }
+
+                    break;
+
+                case "vessel":
+                    talked.set(true);
+                    this.giveVesselThoughts(prevEnding.getVessel());
+                    break;
+
+                case "threatB":
+                    manager.threatenedMound().set(true);
+                case "threatA":
+                    talked.set(true);
+                    localCanThreat.set(false);
+
+                    if (satisfied) {
+                        secondaryScript.runSection("threatSatisfy");
+                    } else {
+                        secondaryScript.runSection("threatDeny");
+                    }
+
+                    break;
+
+                case "want":
+                    talked.set(true);
+
+                    if (satisfied) {
+                        secondaryScript.runSection("wantSatisfy");
+                    } else {
+                        secondaryScript.runSection("wantDeny");
+                    }
+
+                    break;
+
+                case "requestsA":
+                    talked.set(true);
+                    localCanRequests.set(false);
+                    manager.askedRequestsMound().set(true);
+
+                    if (satisfied) {
+                        secondaryScript.runSection("requestsSatisfy");
+                    } else {
+                        secondaryScript.runSection("requestsDeny");
+                    }
+
+                    break;
+
+                case "requestsB":
+                    talked.set(true);
+                    localCanRequests.set(false);
+                    manager.askedRequestsMound().set(true);
+                    mainScript.runSection("requests");
+
+                    if (satisfied) {
+                        mainScript.runSection("requestsSatisfy");
+                    } else {
+                        mainScript.runSection("requestsDeny");
+                    }
+
+                    break;
+
+                case "preferences":
+                    if (satisfied) {
+                        secondaryScript.runSection("preferencesSatisfy");
+                    } else {
+                        secondaryScript.runSection("preferencesDeny");
+                    }
+
+                    break;
+
+                case "refuse":
+                    talked.set(true);
+                    manager.noRefuseExploreMound().set(false);
+
+                    secondaryScript.runSection("refuse");
+
+                    subMenu = new OptionsMenu(true);
+                    subMenu.add(new Option(this.manager, "wait", true, "[Continue to wait. Forever.]"));
+                    subMenu.add(new Option(this.manager, "no", "[There is no waiting forever.]"));
+                    parser.promptOptionsMenu(subMenu);
+
+                    break;
+
+                case "riddle":
+                case "pretension":
+                    manager.canAskRiddleMound().set(false);
+                    mainScript.runSection("riddle");
+                    break;
+
+                case "return":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                case "cSlayPrincessNoBladeFail": // Override: you don't need the blade
+                    if (manager.getIntermissionAttackMound().hasBeenPicked()) {
+                        mainScript.runSection("alreadyTried");
+                        break;
+                    }
+                case "attackMound":
+                    mainScript.runSection("attackMound");
+                    break;
+
+                case "cSlaySelfNoBladeFail": // Override: you don't need the blade
+                    if (manager.getIntermissionAttackSelf().hasBeenPicked()) {
+                        mainScript.runSection("alreadyTried");
+                        break;
+                    }
+                case "attackSelf":
+                    mainScript.runSection("attackSelf");
+                    break;
+
+                default: this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        // Ending
+        secondaryScript.runSection("end");
+
+        int waitTime = (manager.globalSlowPrint()) ? 500 : 1000;
+        try {
+            Thread.sleep(waitTime);
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Thread interrupted");
+        }
+
+        mainScript.runSection("forget");
     }
 
     /**
@@ -14278,18 +14797,150 @@ public class StandardCycle extends Cycle {
      */
     private void shiftingMoundTalk4() {
         this.secondaryScript = new Script(this.manager, this.parser, "Intermission/IntermissionTalk4");
+        Condition freed = new Condition(manager.moundFreedom());
+        InverseCondition kept = new InverseCondition(freed);
+        boolean satisfied = manager.moundSatisfaction();
 
+        if (freed.check()) {
+            secondaryScript.runSection("startFree");
+        } else {
+            secondaryScript.runSection("startKept");
+        }
+        
+        Condition talked = new Condition();
+        InverseCondition noTalk = new InverseCondition(talked);
+        InverseCondition refuseExplored = new InverseCondition(manager.noRefuseExploreMound());
+        Condition noLocalRefuse = new Condition(true);
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "riddle", "(Explore) \"Everything you say feels like a riddle. Can you give me a single straight answer?\"", talked, manager.canAskRiddleMound()));
+        activeMenu.add(new Option(this.manager, "people", "(Explore) \"Do you think there are people out there?\"", kept));
+        activeMenu.add(new Option(this.manager, "rhetorical", "(Explore) \"Is that a rhetorical question? Do you know? Do you want to tell me?\"", freed, noTalk));
+        activeMenu.add(new Option(this.manager, "trees", "(Explore) \"There's trees, and stars. And there are people, I think. At least there are supposed to be people.\"", freed));
+        activeMenu.add(new Option(this.manager, "real", "(Explore) \"Do you think that anything is real out there? Do you think that we're real?\""));
+        activeMenu.add(new Option(this.manager, "vessel", "(Explore) \"Do you have thoughts on this vessel?\""));
+        activeMenu.add(new Option(this.manager, "awaken", "(Explore) \"Do you know what's going to happen when you awaken?\""));
+        activeMenu.add(new Option(this.manager, "narrator", "(Explore) \"When you send me back, I'm not alone. There are voices that speak to me. Some of them are me, but one of them is something else. I call him The Narrator, and he wants me to kill you. Do you have a Narrator? Have the vessels had one?\""));
+        activeMenu.add(new Option(this.manager, "howMany", "(Explore) \"How many more vessels do I need to bring you?\""));
+        activeMenu.add(new Option(this.manager, "requests", "(Explore) \"If this is the last time, is there anything you would like me to bring you?\"", activeMenu.get("howMany")));
+        activeMenu.add(new Option(this.manager, "threat", "(Explore) \"You know we're going to fight when this is over. Do you really want me to bring you the last vessel?\"", activeMenu.get("howMany"), manager.threatenedMound()));
+        activeMenu.add(new Option(this.manager, "refuseA", "(Explore) \"If this is the last stage before your completion, then I'm not going back. I'm just going to stay here.\"", activeMenu.get("howMany"), refuseExplored, noLocalRefuse));
+        activeMenu.add(new Option(this.manager, "refuseB", "(Explore) \"If this is the last stage before your completion, then I'm not going back. I'm just going to stay here. Forever if I have to.\"", activeMenu.get("howMany"), manager.noRefuseExploreMound(), noLocalRefuse));
+        activeMenu.add(new Option(this.manager, "return", "\"I'm ready to go back.\""));
+        activeMenu.add(manager.getIntermissionAttackMound());
+        activeMenu.add(manager.getIntermissionAttackSelf());
 
+        OptionsMenu subMenu;
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "rhetorical":
+                case "trees":
+                case "real":
+                case "howMany":
+                case "requests":
+                    talked.set(true);
+                    secondaryScript.runSection(activeOutcome);
+                    break;
 
-        // temporary templates for copy-and-pasting
-        /*
-        parser.printDialogueLine("XXXXX");
-        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
-        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
-        */
+                case "people":
+                case "awaken":
+                case "threat":
+                    talked.set(true);
+
+                    if (satisfied) {
+                        secondaryScript.runSection(activeOutcome + "Satisfy");
+                    } else {
+                        secondaryScript.runSection(activeOutcome + "Deny");
+                    }
+
+                    break;
+
+                case "vessel":
+                    talked.set(true);
+                    this.giveVesselThoughts(prevEnding.getVessel());
+                    break;
+
+                case "narrator":
+                    talked.set(true);
+
+                    if (manager.hasClaimedAnyVessel(Vessel.WOUNDEDWILD, Vessel.NETWORKWILD, Vessel.SPECTRE, Vessel.WRAITH, Vessel.TOWER, Vessel.APOTHEOSIS)) {
+                        secondaryScript.runSection("narratorMet");
+                    } else if (freed.check()) {
+                        secondaryScript.runSection("narratorFree");
+                    } else {
+                        secondaryScript.runSection("narratorKept");
+                    }
+
+                    subMenu = new OptionsMenu(true);
+                    subMenu.add(new Option(this.manager, "fact", "(Explore) \"He does. I don't know why, but I know this for a fact.\""));
+                    subMenu.add(new Option(this.manager, "dunno", "(Explore) \"He does. I don't know what I'm going to do when I find him.\""));
+                    subMenu.add(new Option(this.manager, "answers", "(Explore) \"He does. And when I find him, you and I are finally going to have answers.\""));
+                    subMenu.add(new Option(this.manager, "kill", "(Explore) \"He does. And when I find him, I'm going to kill him.\""));
+                    subMenu.add(new Option(this.manager, "silent", "(Explore) He does. But you're going to keep that to yourself."));
+
+                    this.activeOutcome = parser.promptOptionsMenu(subMenu);
+                    switch (activeOutcome) {
+                        case "kill":
+                            if (freed.check()) {
+                                secondaryScript.runSection("killNarratorFree");
+                            } else {
+                                secondaryScript.runSection("killNarratorKept");
+                            }
+
+                            break;
+
+                        default: secondaryScript.runSection(activeOutcome + "Narrator");
+                    }
+
+                    break;
+
+                case "refuseA":
+                case "refuseB":
+                    talked.set(true);
+                    secondaryScript.runSection(activeOutcome);
+
+                    subMenu = new OptionsMenu(true);
+                    subMenu.add(new Option(this.manager, "wait", true, "[Wait forever.]"));
+                    subMenu.add(new Option(this.manager, "no", "[There is no waiting forever.]"));
+                    parser.promptOptionsMenu(subMenu);
+
+                    break;
+
+                case "riddle":
+                    manager.canAskRiddleMound().set(false);
+                    mainScript.runSection("riddle");
+                    break;
+
+                case "return":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                case "cSlayPrincessNoBladeFail": // Override: you don't need the blade
+                    if (manager.getIntermissionAttackMound().hasBeenPicked()) {
+                        mainScript.runSection("alreadyTried");
+                        break;
+                    }
+                case "attackMound":
+                    mainScript.runSection("attackMound");
+                    break;
+
+                case "cSlaySelfNoBladeFail": // Override: you don't need the blade
+                    if (manager.getIntermissionAttackSelf().hasBeenPicked()) {
+                        mainScript.runSection("alreadyTried");
+                        break;
+                    }
+                case "attackSelf":
+                    mainScript.runSection("attackSelf");
+                    break;
+
+                default: this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        // Ending
+        secondaryScript.runSection("end");
+        mainScript.runSection("forget");
     }
 
     /**

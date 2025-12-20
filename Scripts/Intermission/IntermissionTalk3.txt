@@ -1,1 +1,76 @@
-linebreak
+p I am a growing chorus of contradiction. A mass of tides ebbing and flowing all at once in more directions than my attention can bear to hold. To look at any one is to shift them all into something new, and to look away is to reshape them yet again.
+p All of me is changing, and yet the rest of me is still the same.
+
+jumpanchor noExist
+p And yet my waters flow and my streets bustle. There are no words that can describe me into non-existence. There is no logic that can bind my multitudes.
+p I am everything that you have known me to be, but I am also none of it.
+
+jumpanchor how
+p As easily as you can stand to be you. You are like me, even if you have chosen not to look at the corners of you that do not fit, even if you have chosen to ignore the brilliant contours of your soul.
+
+jumpanchor worse
+p It changes me, but it doesn't make me worse, nor does it make me care for you any less. Does it make you worse? Do you resent me?
+
+jumpanchor moreWorse
+p It says that your heart is gentle. That even in the darkness, you are guided by compassion.
+
+jumpanchor distantWorse
+p It does seem small from here. And the more we journey, the smaller each of those steps will be. But that doesn't make any of them less special.
+
+jumpanchor mehWorse
+p How strange of you to ask me, then.
+
+jumpanchor stopWorse
+p It will, in time. But you still have a ways to go before we are done. Know that I hold no malice for you.
+
+jumpanchor worseSatisfy
+p You are what brings me meaning. Know that the pain of your journey will subside in due time.
+jumpto worseJoin
+
+jumpanchor worseDeny
+p Know that I hold no malice towards you. The pain of your journey will subside in due time.
+jumpanchor worseJoin
+p But you still have a ways to go before we are done.
+
+jumpanchor threatSatisfy
+p If that remains your choice when all is said and done, then you may try. But know that I do not wish you harm, even if you attempt to destroy me.
+
+jumpanchor threatDeny
+p If that remains your choice when all is said and done, then you may try. I will regret destroying you, if that is what we come to.
+
+jumpanchor worlds
+p My perspectives are shadowed. You have seen what I have seen, just as I have seen what you have seen. The angles of my vantage do not offer me hidden truths, and my attention is turned inward, except when you are here with me.
+p Perhaps this will change when our work is done.
+
+jumpanchor wantSatisfy
+p The desires of my multitude thrive in endless competition with themselves, but none of them rise above their dance to influence me.
+p I yearn for what I have always yearned for. Our awakening. Other desires shrink in the light of knowing you and knowing me.
+
+jumpanchor wantDeny
+p The desires of my multitude thrive in endless competition with themselves, but none of them rise above their dance to influence me.
+p I yearn for what I have always yearned for. My awakening. Other desires shrink in the light of self-knowledge.
+
+jumpanchor requestsSatisfy
+p I care about your gifts, but I have no preferences to burden you with. Even if I did, I would never dare to tarnish our relationship by assuming myself above you.
+
+jumpanchor requestsDeny
+p I care about your gifts, but I have no preferences. You have your responsibilities, and I have mine.
+
+jumpanchor preferencesSatisfy
+p The tides do not dictate where they are pulled. A river does not dictate its outlets.
+p My gift to you is to let you choose your path, and my task is to treasure the gifts you bring me.
+
+jumpanchor preferencesDeny
+p The tides do not dictate where they are pulled. A river does not dictate its outlets.
+p My gift to you is to let you choose your path, and my task is to contemplate the gifts you bring me.
+
+jumpanchor howMany
+p We will know when we near our destination.
+
+jumpanchor refuse
+p If you need time, then I will wait with you.
+
+// Ending //
+
+jumpanchor end
+p I will be here when it is time for us to meet again.
