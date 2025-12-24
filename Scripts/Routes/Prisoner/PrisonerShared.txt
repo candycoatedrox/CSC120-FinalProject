@@ -220,7 +220,7 @@ jumpanchor lockedBegMenu
 n You have everything you need to deal with her and save the world. I'm sure the door will open as soon as you finish your incredibly important task.
 hero It doesn't sound like we'll be able to talk Him into letting us leave.
 skeptic Yeah, not a chance. He's single-minded about this. But don't worry, there are plenty of things that aren't in His control.
-n Oh? For instance...
+n Oh? For instance...?
 skeptic Us. Her. But mostly us. If He didn't have his limits, we wouldn't be here. Not like this.
 
 jumpanchor intentionsMenuProof
@@ -630,7 +630,7 @@ linebreak
 
 // Leads to either Chapter III: The Cage or Chapter III: The Grey with the Voice of the Cold //
 jumpanchor slainStart
-skeptic ... Fine. But if we're leaving, then we're taking the blade. I feel exposed without it.
+skeptic ... Fine. But if we're leaving, then we're taking the blade. I feel... exposed without it.
 linebreak
 n With your work done, you remove the blade from the Princess' corpse and make your way back upstairs, closing the door to the basement behind you. You can think of it as sealing yourself off from an unpleasant chapter of your life. It's all uphill from here!
 skeptic The windows. Do you see that? We used to be able to see the outside world from up here, but now it's just... empty.
@@ -706,7 +706,7 @@ jumpanchor paranoidSuicide
 jumpanchor suicideStart
 n You goddamned spiteful bastard. Are you really going to turn down immortality itself just to make me lose?
 skeptic Why should it matter if we die at this point? Haven't you already gotten what you want?
-n I... I don't have to answer that!
+n I... don't have to answer that!
 skeptic That's all we needed to hear.
 
 // Grants you the Voice of the Broken in The Cage //

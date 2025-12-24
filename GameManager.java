@@ -68,13 +68,9 @@ public class GameManager {
         }
 
         this.voicesMet = new HashMap<>();
-        for (Voice v : Voice.values()) {
+        for (Voice v : Voice.TRUEVOICES) {
             switch (v) {
-                case NARRATOR:
-                case NARRATORPRINCESS:
-                case PRINCESS:
                 case HERO: break;
-
                 default: this.voicesMet.put(v, false);
             }
         }

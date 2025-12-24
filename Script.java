@@ -8,7 +8,7 @@ public class Script {
 
     private final GameManager manager;
     private final IOHandler parser;
-    private final File scriptFile;
+    private final File source;
 
     private final ArrayList<String> lines;
     private final HashMap<String, Integer> jumpAnchors;
@@ -20,17 +20,17 @@ public class Script {
     /**
      * Constructor
      * @param parser the IOHandler to link this Script to
-     * @param scriptFile the file containing the text of this Script
+     * @param source the file containing the text of this Script
      */
-    public Script(GameManager manager, IOHandler parser, File scriptFile) {
+    public Script(GameManager manager, IOHandler parser, File source) {
         this.manager = manager;
         this.parser = parser;
-        this.scriptFile = scriptFile;
+        this.source = source;
 
         this.lines = new ArrayList<>();
         this.jumpAnchors = new HashMap<>();
         try {
-            Scanner fileReader = new Scanner(scriptFile);
+            Scanner fileReader = new Scanner(source);
             String lineContent;
             String[] args;
             String anchor;
@@ -44,7 +44,7 @@ public class Script {
                     anchor = args[1];
 
                     if (this.jumpAnchors.containsKey(anchor)) {
-                        System.out.println("[DEBUG: Duplicate jump anchor " + anchor + " in " + scriptFile.getName() + " at line " + (this.cursor + 1) + "]");
+                        System.out.println("[DEBUG: Duplicate jump anchor " + anchor + " in " + source.getName() + " at line " + (this.lines.size()) + "]");
                     } else {
                         this.jumpAnchors.put(anchor, this.lines.size() - 1);
                     }
@@ -122,6 +122,8 @@ public class Script {
             case "st":
             case "stubborn":
             case "nstub":
+            case "stubcont":
+            case "paraskep":
                 return true;
 
             default: return false;
@@ -414,7 +416,7 @@ public class Script {
                     this.printDialogueLine(lineIndex);
                 } else {
                     // Invalid line; print error message and skip to next line
-                    System.out.println("[DEBUG: Invalid line in file " + scriptFile.getName() + " at line " + (this.cursor + 1) + "]");
+                    System.out.println("[DEBUG: Invalid line in file " + source.getName() + " at line " + (this.cursor + 1) + "]");
                 }
         }
 
@@ -436,7 +438,7 @@ public class Script {
                 System.out.println();
             } else {
                 // Invalid line; print error message and skip to next line
-                System.out.println("[DEBUG: Invalid linebreak in file " + scriptFile.getName() + " at line " + (this.cursor + 1) + "]");
+                System.out.println("[DEBUG: Invalid linebreak in file " + source.getName() + " at line " + (this.cursor + 1) + "]");
             }
         }
     }
@@ -518,7 +520,7 @@ public class Script {
                 if (checkResult) parser.printDialogueLine(new PrincessDialogueLine(line, isInterrupted));
             } else {
                 // Invalid character; print error message and skip to next line
-                System.out.println("[DEBUG: Invalid character ID in file " + scriptFile.getName() + " at line " + (this.cursor + 1) + "]");
+                System.out.println("[DEBUG: Invalid character ID in file " + source.getName() + " at line " + (this.cursor + 1) + "]");
             }
         } else {
             if (!checkVoices.isEmpty() && parser.getCurrentCycle() != null) {

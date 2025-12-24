@@ -66,8 +66,7 @@ public abstract class Cycle {
     protected int nVoices() {
         int n = 0;
 
-        for (Voice v : Voice.values()) {
-            if (v == Voice.NARRATOR || v == Voice.PRINCESS) continue;
+        for (Voice v : Voice.TRUEVOICES) {
             if (this.hasVoice(v)) n += 1;
         }
 
@@ -95,10 +94,8 @@ public abstract class Cycle {
      * Removes all Voices except the Narrator from the list of active Voices
      */
     protected void clearTrueVoices() {
-        for (Voice v : Voice.values()) {
-            if (v != Voice.NARRATOR) {
-                this.currentVoices.put(v, false);
-            }
+        for (Voice v : Voice.TRUEVOICES) {
+            this.currentVoices.put(v, false);
         }
     }
 

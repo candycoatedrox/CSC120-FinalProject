@@ -593,7 +593,7 @@ public class Finale extends Cycle {
         this.activeMenu = this.createDebateMenu();
         Vessel currentVessel;
         ChapterEnding currentEnding;
-        int vesselOption;
+        String vesselOption;
 
         // Counts down, starting from *last* Vessel claimed
         for (int i = 4; i >= 0; i--) {
@@ -623,7 +623,7 @@ public class Finale extends Cycle {
                 case "vessel8":
                 case "vessel9":
                 case "vessel10":
-                    vesselOption = Integer.parseInt(activeOutcome.substring(6));
+                    vesselOption = activeOutcome.substring(6);
                     this.vesselArgumentResponse(currentVessel, vesselOption);
                     break;
 
@@ -689,7 +689,7 @@ public class Finale extends Cycle {
         }
     }
 
-    private void vesselArgumentResponse(Vessel vessel, int nArgument) {
+    private void vesselArgumentResponse(Vessel vessel, String nArgument) {
         // redirect to script jumpanchor [vessel][nArgument]
 
         String vesselID = "";

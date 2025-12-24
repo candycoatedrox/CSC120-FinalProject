@@ -310,7 +310,7 @@ truth The Narrator lets out a strangled cry.
 
 hero Uh... are you okay?
 np I'm fine. I've always been fine.
-truth The words echo both in and outside of your head as he speaks softly, as if in some sort of dreamlike trance, and in complete unison with the Princess.
+truth The words echo both in and outside of your head as he speaks softly, as if in some sort of dreamlike trance, in complete unison with the Princess.
 hero No no no, this isn't right! What do we do? We can't just let her control us like this!
 broken I've been trying to tell you this whole time. It isn't about can or can't. It isn't even about will or won't. There is only one path in front of us, and we will walk it.
 hero We'll -- we'll just refuse!
@@ -412,7 +412,7 @@ jumpanchor advance1
 n Your body is sluggish and unresponsive, actively fighting against you, but you do your best to stagger forward. One step at a time, you move towards the Princess.
 p Slitting your throat would have been a mercy. But it seems you're in need of a harsher lesson.
 p PLUNGE THAT KNIFE INTO YOUR LUNGS.
-broken I'm sorry...
+broken I'm... sorry.
 hero Don't -- /// interrupt
 n As you take another step forward, the blade digs into your ribs, slicing through flesh with ease. It somehow feels like an entirely natural thing to do, while the simple act of walking has become an arduous impossibility.
 n Then it slides back out, the wound burning as a small hiss of air escapes through the fresh orifice. Blood fills your lungs.
@@ -462,7 +462,7 @@ p It's time for us to seize my destiny.
 
 // Leads to Chapter III: The Fury with the Voice of the Stubborn //
 jumpanchor advanceSlay
-broken No!
+broken *No!*
 n Yes. Though your body trembles, struggling to defend itself in the face of the Princess' overwhelming will, you finally manage to break through, darting to her side before she can react.
 n The wind of your freedom rushes through you, and you channel it into a decisive blow, stabbing into the soft flesh of her ankle and severing the tendons in an act of unyielding defiance.
 n She falls to the floor, crashing unceremoniously to her knees.
@@ -480,10 +480,10 @@ n Your body is crushed as she pulverizes you into the floor, the ground itself b
 linebreak
 n You lie there, broken, beyond pain, unable to even see what she's done to you. But the Princess is succumbing to her own wounds, as well. She looks down upon her body in abject horror and disgust.
 p You made me use my hands! I... I can feel myself twisting into something new. Something dull, something defiled. What have you done to me?
-broken You're monsters and conspirators. I can't bear to watch this.
+broken You're monsters and conspirators. I can't *bear* to watch this.
 n The Princess has been nothing but cruel to you. You should feel liberated by her fall.
 broken But I don't feel liberated. I feel empty.
-hero Aside from the pain, I feel fine.
+hero Aside from the pain, *I* feel fine.
 n She collapses to the floor. Her glassy eyes watch, unblinking, yet somehow still full of anguish and fear, as the two of you perish together.
 hero I suppose we were never going to get a happy ending here, were we?
 n Don't let those be your final thoughts. You saved the world. That's worth something.

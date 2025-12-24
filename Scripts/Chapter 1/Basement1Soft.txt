@@ -27,7 +27,7 @@ jumpto basementStart
 
 jumpanchor jokeKill
 p Y-you must have the wrong address.
-n Great job, you've given away the element of surprise. Good luck, "hero."
+n *Great* job, you've given away the element of surprise. Good luck, "hero."
 jumpto basementStart
 
 jumpanchor silentStairs
@@ -39,7 +39,7 @@ jumpto basementStart
 jumpanchor basementStart
 linebreak
 n You walk down the stairs and lock eyes with the Princess. There's a heavy chain around her wrist, binding her to the far wall of the basement.
-hero She's beautiful. How could someone like this be a threat to anyone?
+hero She's *beautiful.* How could someone like this be a threat to anyone?
 n I am *begging* you to stay focused. There's a lot riding on you here.
 
 jumpanchor jokeKillBasement
@@ -107,7 +107,7 @@ p What I'd do doesn't really matter, right?
 jumpto sharePhilosophy
 
 jumpanchor shareTask
-p I-is that why they threw me down here? But I don't want to hurt anyone. I like the world! I think.
+p I-is that why they threw me down here? But I don't want to hurt anyone. I-I like the world! I think.
 p I don't remember much about it, to be honest. I've been down here for so long.
 hero That's... How long has she been locked away?!
 p Did they tell you *how* I'm supposed to end the world?
@@ -137,7 +137,7 @@ jumpto sharePhilosophy
 
 jumpanchor sharePhilosophy
 p At the end of the day, whatever the two of us have going on down here is about trust.
-p Whoever sent you to 'slay' me *claimed* I was a threat to the world, but they didn't tell you why.
+p Whoever sent you to 'slay' me claimed I was a threat to the world, but they didn't tell you why.
 p I don't trust that, and I don't think you do, either, or you wouldn't have come down here to talk.
 hero She has a point. We're talking like this for a reason.
 p So this shouldn't be about what I'd do if I got out of here, or me saying the right thing to convince you to save me...

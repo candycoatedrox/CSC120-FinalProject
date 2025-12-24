@@ -252,7 +252,7 @@ p No little knife this time? It's almost like... you *want* me to get you.
 jumpto startBladeCommentJoin
 
 jumpanchor startBladeCommentJoin
-n What did you do? Pull yourself together, she isn't supposed to be like this.
+n What did you do? Pull yourself together, s-she isn't supposed to be like this.
 p I wonder how many times I'll get to play with you before you break.
 
 // Basement //
@@ -522,11 +522,11 @@ hero Yes!
 para Well I thought you needed me to run the autonomic nervous system...
 hero We do, but this is *important!* Look, I'll even do it myself, just... tell us who to trust.
 hero Uhhh... brain...?
-para *Heart*...
+para *Sigh.* *Heart*...
 hero Right. Heart.
 para *Lungs*...
 hero Lungs...
-para Liver. Nerves.
+para Liver. Nerves!
 hero Okay, thanks. I've got it.
 linebreak
 hero Heart... Lungs... Liver... Nerves... Heart...
@@ -534,7 +534,7 @@ para You're *terrible* at this.
 hero I know, but I'm doing my best -- /// interrupt
 linebreak
 para Yes, it's very hard to stay focused on running things when other people are *talking* to you, *isn't it?*
-p WHAT ARE YOU DOING?!
+p What are you doing?!
 hero Heart. Lungs. Liver. Nerves. Heart...
 linebreak
 para Finally, I can talk. Uh, now what were you asking me? Running everything kind of feels like... popping in and out of consciousness. It's easy to lose track of things.
@@ -595,7 +595,7 @@ para We are NOT going back down there. Heart. Lungs...
 
 // "A World of Terror" ending; claim the Nightmare //
 jumpanchor leaveCabinEnd
-n The doorknob twists in your hand, revealing the forested path beyond the cabin. You bastard. You've actually done it. You've actually doomed everyone.
+n The doorknob twists in your hand, revealing the forested path beyond the cabin. You *bastard.* You've actually done it. You've actually doomed everyone.
 
 p It's so beautiful. I can't wait to ruin it.
 p But it's so cold, too. It's... itching against my skin.

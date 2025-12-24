@@ -18,18 +18,18 @@ public enum Chapter {
 
     // Chapter III
     NEEDLE(3, "The Eye of the Needle", "Routes/Adversary/NeedleShared"),
-    FURY(3, "The Fury", "Routes/_Joint Chapters/Fury/FuryShared"),
+    FURY(3, "The Fury", "Routes/JOINT/Fury/FuryShared"),
     APOTHEOSIS(3, "The Apotheosis", "Routes/Tower/ApotheosisShared"),
     DRAGON(3, "The Princess and the Dragon", true, "Routes/Spectre/DragonShared"),
-    WRAITH(3, "The Wraith", "Routes/_Joint Chapters/Wraith/WraithShared"),
+    WRAITH(3, "The Wraith", "Routes/JOINT/Wraith/WraithShared"),
     CLARITY(3, "The Moment of Clarity", "Routes/Nightmare/MomentOfClarity"),
     ARMSRACE(3, "The Arms Race", "Routes/Razor/Razor3Shared"),
     NOWAYOUT(3, "No Way Out", "Routes/Razor/Razor3Shared"),
     DEN(3, "The Den", "Routes/Beast/DenShared"),
-    WILD(3, "The Wild", "Routes/_Joint Chapters/Wild/WildShared"),
+    WILD(3, "The Wild", "Routes/JOINT/Wild/WildShared"),
     THORN(3, "The Thorn", "Routes/Witch/ThornShared"),
     CAGE(3, "The Cage", "Routes/Prisoner/PrisonerShared"),
-    GREY(3, "The Grey", "Routes/_Joint Chapters/Grey/GreyShared"),
+    GREY(3, "The Grey", "Routes/JOINT/Grey/GreyShared"),
     HAPPY(3, "Epilogue", "Happily Ever After", "Routes/Damsel/HappyShared"),
     
     // Chapter IV
@@ -54,7 +54,7 @@ public enum Chapter {
      * @param number the Chapter number
      * @param title the title of the Chapter
      * @param specialTitle whether this Chapter has a special title (and thus should not display a title card at the start of the Chapter)
-     * @param scriptDirectory the directory of the initial script for this Chapter
+     * @param scriptDirectory the directory of the primary script for this Chapter
      */
     private Chapter(int number, String title, boolean specialTitle, String scriptDirectory) {
         this.specialTitle = specialTitle;
@@ -82,7 +82,7 @@ public enum Chapter {
      * Constructor for a standard Chapter
      * @param number the Chapter number
      * @param title the title of the Chapter
-     * @param scriptDirectory the directory of the initial script for this Chapter
+     * @param scriptDirectory the directory of the primary script for this Chapter
      */
     private Chapter(int number, String title, String scriptDirectory) {
         this.specialTitle = false;
@@ -111,7 +111,7 @@ public enum Chapter {
      * @param realNumber the true internal Chapter number
      * @param specialPrefix the displayed prefix of the Chapter, in place of "Chapter [number]"
      * @param title the title of the Chapter
-     * @param scriptDirectory the directory of the initial script for this Chapter
+     * @param scriptDirectory the directory of the primary script for this Chapter
      */
     private Chapter(int realNumber, String specialPrefix, String title, String scriptDirectory) {
         this.number = realNumber;
@@ -124,7 +124,7 @@ public enum Chapter {
     /**
      * Constructor for a special Chapter
      * @param title the title of the Chapter
-     * @param scriptDirectory the directory of the initial script for this Chapter
+     * @param scriptDirectory the directory of the primary script for this Chapter
      */
     private Chapter(String title, String scriptDirectory) {
         this.specialTitle = true;

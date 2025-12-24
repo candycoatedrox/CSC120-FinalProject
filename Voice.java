@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public enum Voice {
     NARRATOR("The Narrator"),
     NARRATORPRINCESS("The Narrator"), // Used when the Tower possesses the Narrator
@@ -16,9 +18,13 @@ public enum Voice {
     STUBBORN("Voice of the Stubborn"),
 
     // Two voices speaking at once
-    NARRATORSTUBBORN("The Narrator and the Voice of the Stubborn");
+    NARRSTUB("The Narrator and the Voice of the Stubborn"),
+    STUBCONT("Voices of the Stubborn and Contrarian"),
+    PARASKEP("Voices of the Paranoid and Skeptic");
 
     private String dialogueTag;
+
+    public static final Voice[] TRUEVOICES = {HERO, BROKEN, CHEATED, COLD, CONTRARIAN, HUNTED, OPPORTUNIST, PARANOID, SKEPTIC, SMITTEN, STUBBORN};
 
     // --- CONSTRUCTOR ---
 
@@ -38,6 +44,14 @@ public enum Voice {
      */
     public String getDialogueTag() {
         return this.dialogueTag;
+    }
+
+    /**
+     * Checks if this Voice is a "true" Voice (not the Narrator or the Princess)
+     * @return false if this Voice is the Narrator, the Princess, or a combination of multiple Voices; true otherwise
+     */
+    public boolean isTrueVoice() {
+        return Arrays.asList(TRUEVOICES).contains(this);
     }
 
     public static Voice getVoice(String characterID) {
@@ -88,7 +102,9 @@ public enum Voice {
             case "st":
             case "stubborn": return STUBBORN;
 
-            case "nstub": return NARRATORSTUBBORN;
+            case "nstub": return NARRSTUB;
+            case "stubcont": return STUBCONT;
+            case "paraskep": return PARASKEP;
 
             default: return null;
         }

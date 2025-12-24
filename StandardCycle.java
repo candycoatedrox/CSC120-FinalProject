@@ -6,6 +6,7 @@ public class StandardCycle extends Cycle {
     // One CYCLE = from beginning of Ch1 to the end of Shifting Mound interlude
 
     private final boolean isFirstVessel;
+    private final boolean canAbort;
     private final ArrayList<Voice> voicesMet;
     private final ArrayList<Chapter> route;
     private ChapterEnding prevEnding;
@@ -49,6 +50,7 @@ public class StandardCycle extends Cycle {
         super(manager, parser);
 
         this.isFirstVessel = manager.nClaimedVessels() == 0;
+        this.canAbort = manager.nClaimedVessels() < 2;
         this.route = new ArrayList<>();
 
         this.prevEnding = ChapterEnding.NEWCYCLE;
@@ -80,14 +82,7 @@ public class StandardCycle extends Cycle {
     protected void addVoice(Voice v) {
         super.addVoice(v);
 
-        switch (v) {
-            case NARRATOR:
-            case NARRATORPRINCESS:
-            case PRINCESS:
-            case HERO: break;
-
-            default: this.voicesMet.add(v);
-        }
+        if (v.isTrueVoice() && v != Voice.HERO) this.voicesMet.add(v);
     }
 
     // --- COMMANDS ---
@@ -385,10 +380,8 @@ public class StandardCycle extends Cycle {
                 }
 
                 if (nextChapter == Chapter.CLARITY) {
-                    for (Voice v : Voice.values()) {
-                        if (v != Voice.PRINCESS) {
-                            this.addVoice(v);
-                        }
+                    for (Voice v : Voice.TRUEVOICES) {
+                        this.addVoice(v);
                     }
                 } else if (newVoice != null) {
                     this.addVoice(newVoice);
@@ -468,12 +461,8 @@ public class StandardCycle extends Cycle {
 
             this.prevEnding = this.runChapter(nextChapter);
 
-            if (manager.demoMode()) {
-                if (this.prevEnding == null) {
-                    this.prevEnding = ChapterEnding.DEMOENDING;
-                } else if (!this.prevEnding.isFinal() && this.prevEnding.getNextChapter().getNumber() > 2) {
-                    this.prevEnding = ChapterEnding.DEMOENDING;
-                }
+            if (manager.demoMode() && this.prevEnding == null) {
+                this.prevEnding = ChapterEnding.DEMOENDING;
             }
         }
 
@@ -507,7 +496,7 @@ public class StandardCycle extends Cycle {
         this.isHarsh = harsh;
         // harsh only matters if initializing Nightmare or Princess and the Dragon
 
-        // If initializing a Chapter 3, add the appropriate Chapter 2 voice
+        // If initializing a Chapter 3 (or the mirror sequence), add the appropriate Chapter 2/3 voice(s)
         switch (startFromEnding) {
             case THATWHICHCANNOTDIE:
             case STRIKEMEDOWN:
@@ -620,6 +609,220 @@ public class StandardCycle extends Cycle {
                 this.addVoice(Voice.SMITTEN);
                 this.ch2Voice = Voice.SMITTEN;
                 break;
+
+            // The Eye of the Needle
+            case FAILEDFIGHT: // assume Skeptic
+            case BLINDLEADINGBLIND: // assume Skeptic
+                this.route.add(Chapter.ADVERSARY);
+                this.route.add(Chapter.NEEDLE);
+                this.addVoice(Voice.STUBBORN);
+                this.addVoice(Voice.SKEPTIC);
+                break;
+            case FAILEDFLEE: // assume Hunted
+            case WIDEOPENFIELD:
+                this.route.add(Chapter.ADVERSARY);
+                this.route.add(Chapter.NEEDLE);
+                this.addVoice(Voice.STUBBORN);
+                this.addVoice(Voice.HUNTED);
+                break;
+
+            // The Fury
+            case QUANTUMBEAK: // Broken has been replaced with Cold by now
+                this.route.add(Chapter.TOWER);
+                this.route.add(Chapter.FURY);
+                this.addVoice(Voice.COLD);
+                this.addVoice(Voice.STUBBORN);
+                break;
+            case HINTOFFEELING:
+            case LEAVEHERBEHIND: // assume Cold
+                this.route.add(Chapter.ADVERSARY);
+                this.route.add(Chapter.FURY);
+                this.addVoice(Voice.STUBBORN);
+                this.addVoice(Voice.COLD);
+                this.currentVoices.put(Voice.HERO, false);
+                break;
+            case NEWLEAFWEATHEREDBOOK: // assume Broken
+                this.route.add(Chapter.ADVERSARY);
+                this.route.add(Chapter.FURY);
+                this.addVoice(Voice.STUBBORN);
+                this.addVoice(Voice.BROKEN);
+                this.currentVoices.put(Voice.HERO, false);
+                break;
+            case GOINGTHEDISTANCE:
+                this.route.add(Chapter.ADVERSARY);
+                this.route.add(Chapter.FURY);
+                this.addVoice(Voice.STUBBORN);
+                this.addVoice(Voice.CONTRARIAN);
+                break;
+            case IFYOUCOULDUNDERSTAND: // assume from Tower; all Voices gone by now
+                this.route.add(Chapter.TOWER);
+                this.route.add(Chapter.FURY);
+                this.clearVoices();
+
+            // The Apotheosis
+            case WINDOWTOUNKNOWN:
+            case GRACE: // assume Contrarian
+            case SOMETHINGTOREMEMBER:
+                this.route.add(Chapter.TOWER);
+                this.route.add(Chapter.APOTHEOSIS);
+                this.addVoice(Voice.BROKEN);
+                this.addVoice(Voice.CONTRARIAN);
+                break;
+            case GODDESSUNRAVELED:
+                this.route.add(Chapter.TOWER);
+                this.route.add(Chapter.APOTHEOSIS);
+                this.addVoice(Voice.BROKEN);
+                this.addVoice(Voice.PARANOID);
+                break;
+
+            // The Princess and the Dragon
+            case WHATONCEWASONE:
+            case PRINCESSANDDRAGON:
+            case OPPORTUNISTATHEART:
+                this.route.add(Chapter.SPECTRE);
+                this.route.add(Chapter.DRAGON);
+                this.addVoice(Voice.COLD);
+                this.addVoice(Voice.OPPORTUNIST);
+                break;
+
+            // The Wraith
+            case PASSENGER: // assume Opportunist
+                this.route.add(Chapter.NIGHTMARE);
+                this.route.add(Chapter.WRAITH);
+                this.addVoice(Voice.PARANOID);
+                this.addVoice(Voice.OPPORTUNIST);
+                break;
+            case EXORCISTIII: // assume Spectre-Paranoid
+                this.route.add(Chapter.SPECTRE);
+                this.route.add(Chapter.WRAITH);
+                this.addVoice(Voice.COLD);
+                this.addVoice(Voice.PARANOID);
+                break;
+
+            // The Moment of Clarity
+            case MOMENTOFCLARITY:
+                this.route.add(Chapter.NIGHTMARE);
+                this.route.add(Chapter.CLARITY);
+                for (Voice v : Voice.TRUEVOICES) {
+                    this.addVoice(v);
+                }
+                break;
+
+            // Mutually Assured Destruction / The Empty Cup
+            case MUTUALLYASSURED:
+                this.route.add(Chapter.RAZOR);
+                this.route.add(Chapter.ARMSRACE);
+                this.route.add(Chapter.MUTUALLYASSURED);
+                for (Voice v : Voice.TRUEVOICES) {
+                    if (v != Voice.HERO) this.voicesMet.add(v);
+                }
+                break;
+            case EMPTYCUP:
+                this.route.add(Chapter.RAZOR);
+                this.route.add(Chapter.NOWAYOUT);
+                this.route.add(Chapter.EMPTYCUP);
+                for (Voice v : Voice.TRUEVOICES) {
+                    if (v != Voice.HERO) this.voicesMet.add(v);
+                }
+                break;
+
+            // The Den
+            case UNANSWEREDQUESTIONS: // assume Stubborn
+            case HEROICSTRIKE:
+            case INSTINCT:
+                this.route.add(Chapter.BEAST);
+                this.route.add(Chapter.DEN);
+                this.addVoice(Voice.HUNTED);
+                this.addVoice(Voice.STUBBORN);
+                break;
+            case HUNGERPANGS: // assume Skeptic
+            case COUPDEGRACE:
+            case LIONANDMOUSE:
+                this.route.add(Chapter.BEAST);
+                this.route.add(Chapter.DEN);
+                this.addVoice(Voice.HUNTED);
+                this.addVoice(Voice.SKEPTIC);
+                break;
+
+            // The Wild
+            case GLIMPSEOFSOMETHING: // assume Beast-Broken
+                this.route.add(Chapter.BEAST);
+                this.route.add(Chapter.WILD);
+                this.addVoice(Voice.HUNTED);
+                this.addVoice(Voice.BROKEN);
+                break;
+            case WOUNDSAVE:
+            case WOUNDSLAY: // assume Witch-Cheated
+                this.route.add(Chapter.WITCH);
+                this.route.add(Chapter.WILD);
+                this.addVoice(Voice.OPPORTUNIST);
+                this.addVoice(Voice.CHEATED);
+                break;
+
+            // The Thorn
+            case TRUSTISSUES:
+            case ABANDONMENT:
+            case NEWLEAFCHEATED: // assume Cheated
+                this.route.add(Chapter.WITCH);
+                this.route.add(Chapter.THORN);
+                this.addVoice(Voice.OPPORTUNIST);
+                this.addVoice(Voice.CHEATED);
+                break;
+            case NEWLEAFSMITTEN:
+                this.route.add(Chapter.WITCH);
+                this.route.add(Chapter.THORN);
+                this.addVoice(Voice.OPPORTUNIST);
+                this.addVoice(Voice.SMITTEN);
+                break;
+
+            // The Cage
+            case NOEXIT:
+            case FREEWILL: // assume Cheated
+                this.route.add(Chapter.PRISONER);
+                this.route.add(Chapter.CAGE);
+                this.addVoice(Voice.SKEPTIC);
+                this.addVoice(Voice.CHEATED);
+                break;
+            case RIDDLEOFSTEEL:
+                this.route.add(Chapter.PRISONER);
+                this.route.add(Chapter.CAGE);
+                this.addVoice(Voice.SKEPTIC);
+                this.addVoice(Voice.PARANOID);
+                break;
+            case ALLEGORYOFCAGE: // assume Broken
+                this.route.add(Chapter.PRISONER);
+                this.route.add(Chapter.CAGE);
+                this.addVoice(Voice.SKEPTIC);
+                this.addVoice(Voice.BROKEN);
+                break;
+
+            // The Grey
+            case BURNINGDOWNTHEHOUSE:
+                this.route.add(Chapter.DAMSEL);
+                this.route.add(Chapter.GREY);
+                this.addVoice(Voice.SMITTEN);
+                this.addVoice(Voice.COLD);
+                break;
+            case ANDALLTHISLONGING:
+                this.route.add(Chapter.PRISONER);
+                this.route.add(Chapter.GREY);
+                this.addVoice(Voice.SKEPTIC);
+                this.addVoice(Voice.COLD);
+                break;
+
+            // Happily Ever After
+            case IMEANTIT:
+            case LEFTCABIN: // assume Skeptic
+                this.route.add(Chapter.DAMSEL);
+                this.route.add(Chapter.HAPPY);
+                this.addVoice(Voice.SKEPTIC);
+                break;
+            case FINALLYOVER:
+            case DONTLETITGOOUT: // assume Opportunist
+                this.route.add(Chapter.DAMSEL);
+                this.route.add(Chapter.HAPPY);
+                this.addVoice(Voice.OPPORTUNIST);
+                break;
         }
 
         return this.runCycle();
@@ -641,37 +844,61 @@ public class StandardCycle extends Cycle {
             this.displayTitleCard();
         }
 
-        switch (c) {
-            case CH1: return this.heroAndPrincess();
+        if (manager.demoMode()) {
+            switch (c) {
+                case CH1: return this.heroAndPrincess();
 
-            case ADVERSARY: return this.adversary();
-            case TOWER: return this.tower();
-            case SPECTRE: return this.spectre();
-            case NIGHTMARE: return this.nightmare();
-            case RAZOR: return this.razor();
-            case BEAST: return this.beast();
-            case WITCH: return this.witch();
-            case STRANGER: return this.stranger();
-            case PRISONER: return this.prisoner();
-            case DAMSEL: return this.damsel();
+                case ADVERSARY: return this.adversary();
+                case TOWER: return this.tower();
+                case SPECTRE: return this.spectre();
+                case NIGHTMARE: return this.nightmare();
+                case RAZOR: return this.razor();
+                case BEAST: return this.beast();
+                case WITCH: return this.witch();
+                case STRANGER: return this.stranger();
+                case PRISONER: return this.prisoner();
+                case DAMSEL: return this.damsel();
 
-            case NEEDLE: return this.eyeOfNeedle();
-            case FURY: return this.fury();
-            case APOTHEOSIS: return this.apotheosis();
-            case DRAGON: return this.princessAndDragon();
-            case WRAITH: return this.wraith();
-            case CLARITY: return this.momentOfClarity();
-            case ARMSRACE:
-            case NOWAYOUT: return this.razor3Intro();
-            case DEN: return this.den();
-            case WILD: return this.wild();
-            case THORN: return this.thorn();
-            case CAGE: return this.cage();
-            case GREY: return this.grey();
-            case HAPPY: return this.happilyEverAfter();
+                case ARMSRACE:
+                case NOWAYOUT: return this.razor3Intro();
+                case MUTUALLYASSURED:
+                case EMPTYCUP: return this.razor4();
 
-            case MUTUALLYASSURED:
-            case EMPTYCUP: return this.razor4();
+                default: return ChapterEnding.DEMOENDING;
+            }
+        } else {
+            switch (c) {
+                case CH1: return this.heroAndPrincess();
+
+                case ADVERSARY: return this.adversary();
+                case TOWER: return this.tower();
+                case SPECTRE: return this.spectre();
+                case NIGHTMARE: return this.nightmare();
+                case RAZOR: return this.razor();
+                case BEAST: return this.beast();
+                case WITCH: return this.witch();
+                case STRANGER: return this.stranger();
+                case PRISONER: return this.prisoner();
+                case DAMSEL: return this.damsel();
+
+                case NEEDLE: return this.eyeOfNeedle();
+                case FURY: return this.fury();
+                case APOTHEOSIS: return this.apotheosis();
+                case DRAGON: return this.princessAndDragon();
+                case WRAITH: return this.wraith();
+                case CLARITY: return this.momentOfClarity();
+                case ARMSRACE:
+                case NOWAYOUT: return this.razor3Intro();
+                case DEN: return this.den();
+                case WILD: return this.wild();
+                case THORN: return this.thorn();
+                case CAGE: return this.cage();
+                case GREY: return this.grey();
+                case HAPPY: return this.happilyEverAfter();
+
+                case MUTUALLYASSURED:
+                case EMPTYCUP: return this.razor4();
+            }
         }
 
         throw new RuntimeException("Cannot run an invalid chapter");
@@ -6448,10 +6675,21 @@ public class StandardCycle extends Cycle {
          */
 
         switch (this.prevEnding) {
-            case STRIKEMEDOWN: this.source = "pacifism";
-            case HEARNOBELL: this.source = "unarmed";
-            case DEADISDEAD: this.source = "pathetic";
-            default: this.source = "tower";
+            case STRIKEMEDOWN:
+                this.secondaryScript = new Script(this.manager, this.parser, "Routes/JOINT/Fury/FuryAdversary");
+                this.source = "pacifism";
+
+            case HEARNOBELL:
+                this.secondaryScript = new Script(this.manager, this.parser, "Routes/JOINT/Fury/FuryAdversary");
+                this.source = "unarmed";
+
+            case DEADISDEAD:
+                this.secondaryScript = new Script(this.manager, this.parser, "Routes/JOINT/Fury/FuryAdversary");
+                this.source = "pathetic";
+
+            default:
+                this.secondaryScript = new Script(this.manager, this.parser, "Routes/JOINT/Fury/FuryTower");
+                this.source = "tower";
         }
 
 
@@ -6673,12 +6911,12 @@ public class StandardCycle extends Cycle {
             }
 
             this.activeMenu = new OptionsMenu(true);
-            activeMenu.add(new Option(this.manager, "cantRefuse", "(Explore) I don't think I can refuse her. Sorry.", new NumCondition(resistCount, 0, 0)));
+            activeMenu.add(new Option(this.manager, "cantRefuse", "(Explore) I don't think I can refuse her. Sorry.", new NumCondition(resistCount, 0)));
             activeMenu.add(new Option(this.manager, "noStutter", "(Explore) \"N-no. I w-won't t-tell you.\"", new OrCondition(new NumCondition(resistCount, 1, 0), new NumCondition(submitCount, 1, 0))));
             activeMenu.add(new Option(this.manager, "shareMotive", "\"You're supposed to end the world.\""));
             activeMenu.add(new Option(this.manager, "noForce", manager.demoMode(), "\"I said NO!\"", 0, activeMenu.get("shareMotive"), tookBlade, new NumCondition(resistCount, 1, 2)));
-            activeMenu.add(new Option(this.manager, "no", manager.demoMode(), "\"No.\"", 0, new NumCondition(submitCount, 0, 0)));
-            activeMenu.add(new Option(this.manager, "silent", new ConditionList(manager.demoMode(), new NumCondition(submitCount, 0, 0)), "[Remain silent.]", 0));
+            activeMenu.add(new Option(this.manager, "no", manager.demoMode(), "\"No.\"", 0, new NumCondition(submitCount, 0)));
+            activeMenu.add(new Option(this.manager, "silent", new ConditionList(manager.demoMode(), new NumCondition(submitCount, 0)), "[Remain silent.]", 0));
 
             this.repeatActiveMenu = true;
             while (repeatActiveMenu) {
@@ -6899,7 +7137,7 @@ public class StandardCycle extends Cycle {
 
         NumCondition resisted = new NumCondition(resistCount, 1, 2);
         NumCondition submitted = new NumCondition(submitCount, 1, 0);
-        NumCondition noSubmit = new NumCondition(submitCount, 0, 0);
+        NumCondition noSubmit = new NumCondition(submitCount, 0);
         
         this.activeMenu = new OptionsMenu();
         activeMenu.add(new Option(this.manager, "self", "[Slay yourself.]", 0));
@@ -8497,6 +8735,7 @@ public class StandardCycle extends Cycle {
                         break;
                     }
 
+                    ch2Specific.put("runAttempt", false);
                     mainScript.runSection("remainBlade");
                     return ChapterEnding.MONOLITHOFFEAR;
 
@@ -8506,6 +8745,7 @@ public class StandardCycle extends Cycle {
                         break;
                     }
 
+                    ch2Specific.put("runAttempt", false);
                     mainScript.runSection("remainJoin");
                     return ChapterEnding.MONOLITHOFFEAR;
 
@@ -8524,6 +8764,7 @@ public class StandardCycle extends Cycle {
                         break;
                     }
 
+                    ch2Specific.put("runAttempt", true);
                     mainScript.runSection("runAttempt");
                     return ChapterEnding.MONOLITHOFFEAR;
 
@@ -8913,20 +9154,185 @@ public class StandardCycle extends Cycle {
     private ChapterEnding momentOfClarity() {
         // You have all voices
 
+        mainScript.runSection();
 
+        boolean nothingAttempt = false;
+        Condition talked = new Condition();
+        InverseCondition noTalk = new InverseCondition(talked);
+        Condition askedHowMany = new Condition();
+        InverseCondition noHowMany = new InverseCondition(askedHowMany);
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "wrong", "(Explore) I think they're all... wrong."));
+        activeMenu.add(new Option(this.manager, "howManyA", "(Explore) That's a good question. How many times have you all been here?", noHowMany, noTalk));
+        activeMenu.add(new Option(this.manager, "howManyB", "(Explore) Getting back to His earlier question, how many times have you all been here?", noHowMany, talked));
+        activeMenu.add(new Option(this.manager, "decider", "(Explore) But that doesn't make sense. I only remember being here twice before this, and some of you don't seem to remember being here at all. Was I here those other times? Did someone else make the decisions?", askedHowMany));
+        activeMenu.add(new Option(this.manager, "notMe", "(Explore) If I don't remember what I did, then it couldn't have been me that did it.", activeMenu.get("decider")));
+        activeMenu.add(new Option(this.manager, "dontGo", "(Explore) What if we don't go to the cabin?"));
+        activeMenu.add(new Option(this.manager, "sense", "(Explore) Can you make sense of them?"));
+        activeMenu.add(new Option(this.manager, "disjointed", "(Explore) I feel so disjointed. I don't know if I can pull this off. I don't know if I can slay her."));
+        activeMenu.add(new Option(this.manager, "proceed", "[Proceed to the cabin.]"));
+        activeMenu.add(new Option(this.manager, "nothing", "The only way out is to do nothing. So nothing I will do. [Stay where you are.]"));
 
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "wrong":
+                case "dontGo":
+                case "sense":
+                case "disjointed":
+                    talked.set(true);
+                case "decider":
+                case "notMe":
+                    mainScript.runSection(activeOutcome);
+                    break;
 
+                case "howManyA":
+                case "howManyB":
+                    talked.set(true);
+                    askedHowMany.set(true);
+                    mainScript.runSection("howMany");
+                    break;
 
+                case "cGoHill":
+                case "proceed":
+                    this.repeatActiveMenu = false;
+                    break;
 
-        // temporary templates for copy-and-pasting
-        /*
-        parser.printDialogueLine("XXXXX");
-        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
-        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
-        */
+                case "nothing":
+                    nothingAttempt = true;
+                    mainScript.runSection("nothing");
+
+                    this.activeMenu = new OptionsMenu();
+                    activeMenu.add(new Option(this.manager, "proceed", "[Proceed to the cabin.]"));
+                    activeMenu.add(new Option(this.manager, "nothing", "[Continue to do nothing.]", 0));
+
+                    while (repeatActiveMenu) {
+                        this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+                        switch (activeOutcome) {
+                            case "cGoCabin":
+                            case "proceed":
+                                this.repeatActiveMenu = false;
+                                break;
+
+                            case "nothing":
+                                if (!this.canAbort) {
+                                    activeMenu.setGreyedOut("nothing", true);
+                                    parser.printDialogueLine(CANTSTRAY);
+                                    break;
+                                }
+
+                                mainScript.runSection();
+                                this.abortVessel(true);
+                                return ChapterEnding.ABORTED;
+
+                            default: this.giveDefaultFailResponse(activeOutcome);
+                        }
+                    }
+
+                    break;
+
+                default: this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        mainScript.runSection("hillApproach");
+
+        this.currentLocation = GameLocation.HILL;
+        this.mirrorPresent = true;
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "explore", "(Explore) And what's wrong with giving them space? What if it helps them? What if they need to be heard?"));
+        activeMenu.add(new Option(this.manager, "approach", "[Approach the mirror.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu)) {
+                case "explore":
+                    mainScript.runSection("hillExplore");
+                    break;
+
+                case "cGoCabin":
+                case "cApproachMirror":
+                case "approach":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default: super.giveDefaultFailResponse();
+            }
+        }
+
+        this.currentLocation = GameLocation.MIRROR;
+        mainScript.runSection("cabinApproach");
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "proceed", "[Proceed.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu, true)) {
+                case "cProceed":
+                case "proceed":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default: super.giveDefaultFailResponse();
+            }
+        }
+
+        this.currentLocation = GameLocation.CABIN;
+        this.mirrorPresent = false;
+        this.withBlade = true;
+
+        if (nothingAttempt) {
+            mainScript.runSection("proceedNothingAttempt");
+        } else {
+            mainScript.runSection("proceedNoNothing");
+        }
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "takeA", "[Take the blade.]"));
+        activeMenu.add(new Option(this.manager, "falseA", true, "[It's the only way forward.]"));
+        activeMenu.add(new Option(this.manager, "falseB", true, "[You've already tried everything else.]"));
+        activeMenu.add(new Option(this.manager, "falseC", true, "[Don't you remember?]"));
+        activeMenu.add(new Option(this.manager, "takeB", "[You have to take the blade.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu, "You've already tried everything else.")) {
+                case "cTake":
+                case "takeA":
+                case "takeB":
+                    this.repeatActiveMenu = false;
+            }
+        }
+
+        this.withBlade = false;
+        mainScript.runSection("takeBlade");
+
+        if (ch2Specific.get("runAttempt")) {
+            mainScript.runSection("emergeRun");
+        } else {
+            mainScript.runSection("emergeOther");
+        }
+
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "falseA", true, "[You're just an object.]"));
+        activeMenu.add(new Option(this.manager, "falseB", true, "[A tool.]"));
+        activeMenu.add(new Option(this.manager, "falseC", true, "[You once were something else, a long time ago.]"));
+        activeMenu.add(new Option(this.manager, "falseD", true, "[But was that something you, or is it just a dull and jaded memory?]"));
+        activeMenu.add(new Option(this.manager, "falseE", true, "[There is no other ending here.]"));
+        activeMenu.add(new Option(this.manager, "take", "[Just take her hand, and set her free.]"));
+
+        parser.promptOptionsMenu(activeMenu, "There is no other ending here.");
+        mainScript.runSection();
+        this.quietCreep();
+        mainScript.runSection();
+
+        if (this.isFirstVessel) {
+            mainScript.runSection("endFirstVessel");
+        } else {
+            mainScript.runSection("endNotFirstVessel");
+        }
 
         return ChapterEnding.MOMENTOFCLARITY;
     }
@@ -10478,8 +10884,8 @@ public class StandardCycle extends Cycle {
 
         boolean incrementFlag;
         GlobalInt beastHP = new GlobalInt(4);
-        NumCondition maxHP = new NumCondition(beastHP, 0, 4);
-        NumCondition canSlay = new NumCondition(beastHP, 0, 0);
+        NumCondition maxHP = new NumCondition(beastHP, 4);
+        NumCondition canSlay = new NumCondition(beastHP, 0);
         InverseCondition cantSlay = new InverseCondition(canSlay);
         Condition noThreat = new Condition(true);
         Condition notFirstTurn = new Condition();
@@ -11817,9 +12223,9 @@ public class StandardCycle extends Cycle {
         if (manager.trueDemoMode()) return ChapterEnding.DEMOENDING;
 
         GlobalInt schismCount = new GlobalInt(1);
-        NumCondition singleSchism = new NumCondition(schismCount, 0, 1);
+        NumCondition singleSchism = new NumCondition(schismCount, 1);
         NumCondition multiSchism = new NumCondition(schismCount, 1, 1);
-        NumCondition notMaxSchisms = new NumCondition(schismCount, 0, 5);
+        NumCondition notMaxSchisms = new NumCondition(schismCount, 5);
         String firstSchism = "";
 
         HashMap<String, Boolean> schismsPresent = new HashMap<>();
@@ -13115,8 +13521,10 @@ public class StandardCycle extends Cycle {
          */
 
         if (this.hasVoice(Voice.SMITTEN)) {
+            this.secondaryScript = new Script(this.manager, this.parser, "Routes/JOINT/Grey/BurnedGrey");
             this.source = "burn";
         } else {
+            this.secondaryScript = new Script(this.manager, this.parser, "Routes/JOINT/Grey/DrownedGrey");
             this.source = "drown";
         }
 

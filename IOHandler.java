@@ -137,6 +137,20 @@ public class IOHandler {
     /**
      * Prints an OptionsMenu, then allows the player to choose an Option from the menu or enter a command (if the OptionsMenu is not exclusive)
      * @param options the OptionsMenu to offer to the player
+     * @param proceedOverride whether to override default behavior and treat "proceed" as its own unique command
+     * @return the ID of the chosen Option or the outcome of the entered command
+     */
+    public String promptOptionsMenu(OptionsMenu options, boolean proceedOverride) {
+        Cycle cycle = manager.getCurrentCycle();
+        
+        System.out.println();
+        wrapPrintln(options);
+        return this.parseOptionChoice(cycle, options, new DialogueLine(), true);
+    }
+    
+    /**
+     * Prints an OptionsMenu, then allows the player to choose an Option from the menu or enter a command (if the OptionsMenu is not exclusive)
+     * @param options the OptionsMenu to offer to the player
      * @param exclusiveOverride a DialogueLine to print instead of the default line if the OptionsMenu is exclusive
      * @return the ID of the chosen Option or the outcome of the entered command
      */
@@ -145,7 +159,7 @@ public class IOHandler {
         
         System.out.println();
         wrapPrintln(options);
-        return this.parseOptionChoice(cycle, options, exclusiveOverride);
+        return this.parseOptionChoice(cycle, options, exclusiveOverride, false);
     }
 
     /**
@@ -164,7 +178,7 @@ public class IOHandler {
      * @return the ID of the chosen Option or the outcome of the entered command
      */
     public String promptOptionsMenu(OptionsMenu options) {
-        return this.promptOptionsMenu(options, new DialogueLine());
+        return this.promptOptionsMenu(options, "");
     }
 
     /**
@@ -172,9 +186,10 @@ public class IOHandler {
      * @param cycle the current active Cycle, if there is one
      * @param options the OptionsMenu to offer to the player
      * @param exclusiveOverride a DialogueLine to print instead of the default line if the OptionsMenu is exclusive
+     * @param proceedOverride whether to override default behavior and treat "proceed" as its own unique command
      * @return the ID of the chosen Option or the outcome of the entered command
      */
-    private String parseOptionChoice(Cycle cycle, OptionsMenu options, DialogueLine exclusiveOverride) {
+    private String parseOptionChoice(Cycle cycle, OptionsMenu options, DialogueLine exclusiveOverride, boolean proceedOverride) {
         boolean isOption = true;
         int choiceN = -1;
         String outcome;
@@ -200,7 +215,7 @@ public class IOHandler {
                     this.printDialogueLine(NINVALIDOPTIONLINE);
                 }
 
-                return this.parseOptionChoice(cycle, options, exclusiveOverride);
+                return this.parseOptionChoice(cycle, options, exclusiveOverride, proceedOverride);
             }
         } else {
             boolean isTrueExclusive = manager.trueExclusiveMenu();
@@ -208,7 +223,7 @@ public class IOHandler {
             if (options.isExclusive() || isTrueExclusive) {
                 if (isTrueExclusive) {
                     try {
-                        outcome = this.parseCommand(cycle, in);
+                        outcome = this.parseCommand(cycle, in, false);
                     } catch (Exception e) {
                         outcome = "cFail";
                     }
@@ -232,11 +247,11 @@ public class IOHandler {
                     }
                 }
 
-                return this.parseOptionChoice(cycle, options, exclusiveOverride);
+                return this.parseOptionChoice(cycle, options, exclusiveOverride, proceedOverride);
             } else {
                 try {
-                    outcome = this.parseCommand(cycle, in);
-                    return (outcome.equals("cMeta")) ? this.parseOptionChoice(cycle, options, exclusiveOverride) : outcome;
+                    outcome = this.parseCommand(cycle, in, false);
+                    return (outcome.equals("cMeta")) ? this.parseOptionChoice(cycle, options, exclusiveOverride, proceedOverride) : outcome;
                 } catch (Exception e) {
                     if (cycle == null) {
                         this.printDialogueLine("[That is not a valid command.]", true);
@@ -247,7 +262,7 @@ public class IOHandler {
                     }
 
                     // Invalid command; re-input, do not show options again
-                    return this.parseOptionChoice(cycle, options, exclusiveOverride);
+                    return this.parseOptionChoice(cycle, options, exclusiveOverride, proceedOverride);
                 }
             }
         }
@@ -300,10 +315,11 @@ public class IOHandler {
      * Parses a given String as a command and returns the outcome
      * @param cycle the current active Cycle, if there is one
      * @param playerInput the player's input
+     * @param proceedOverride whether to override default behavior and treat "proceed" as its own unique command
      * @return a String representing the outcome of the player's command: "cMeta" if the command is a meta command (HELP, SHOW, or TOGGLE) or the ID-String of the command's "outcome" (accounting for whether the command is currently accessible)
      * @throws Exception if the prefix or arguments of playerInput are invalid
      */
-    private String parseCommand(Cycle cycle, String playerInput) throws Exception {
+    private String parseCommand(Cycle cycle, String playerInput, boolean proceedOverride) throws Exception {
         String[] split = playerInput.split(" ", 2);
         String prefix = split[0];
 
@@ -353,7 +369,11 @@ public class IOHandler {
                 commandOutcome += cycle.leave(argument);
                 break;
             case PROCEED:
-                commandOutcome += cycle.proceed(argument);
+                if (proceedOverride) {
+                    commandOutcome += "Proceed";
+                } else {
+                    commandOutcome += cycle.proceed(argument);
+                }
                 break;
             case TURN:
                 commandOutcome += cycle.turn(argument);
@@ -390,6 +410,8 @@ public class IOHandler {
            - cEnterFail
            - cLeaveFail
 
+           - cProceed (only if proceedOverride)
+
            - cApproachMirror
            - cApproachAtMirrorFail (you're already at the mirror)
            - cApproachMirrorFail
@@ -424,6 +446,8 @@ public class IOHandler {
             case "cGoCabin":
             case "cGoStairs":
             case "cGoBasement":
+
+            case "cProceed":
 
             case "cApproachMirror":
             case "cApproachHer":
@@ -473,7 +497,7 @@ public class IOHandler {
      * @throws Exception if the prefix or arguments of playerInput are invalid
      */
     private String parseCommand(String playerInput) throws Exception {
-        return this.parseCommand(manager.getCurrentCycle(), playerInput);
+        return this.parseCommand(manager.getCurrentCycle(), playerInput, false);
     }
 
     // --- YES/NO HANDLING ---
@@ -521,12 +545,14 @@ public class IOHandler {
         System.out.print("\n");
         String in = this.getInput();
 
-        if (in.equals("y") || in.equals("yes")) {
-            return true;
-        } else if (in.equals("n") || in.equals("no")) {
-            return false;
-        } else {
-            return this.promptYesNo("Please answer \"yes\" or \"no\".", slowPrint);
+        switch (in) {
+            case "y":
+            case "yes": return true;
+
+            case "n":
+            case "no": return false;
+
+            default: return this.promptYesNo("Please answer \"yes\" or \"no\".", slowPrint);
         }
     }
 
