@@ -55,9 +55,9 @@ public class NumCondition extends AbstractCondition {
     @Override
     public boolean check() {
         switch (this.condition) {
-            case -1: return this.dynamicValue.check() < this.targetValue;
-            case 1: return this.dynamicValue.check() > this.targetValue;
-            default: return this.dynamicValue.check() == this.targetValue;
+            case -1: return this.dynamicValue.lessThan(this.targetValue);
+            case 1: return this.dynamicValue.greaterThan(this.targetValue);
+            default: return this.dynamicValue.equals(this.targetValue);
         }
     }
 
@@ -68,6 +68,8 @@ public class NumCondition extends AbstractCondition {
     public void set(int newValue) {
         this.dynamicValue.set(newValue);
     }
+
+    // --- BASIC MATH ---
 
     /**
      * Add an int to the dynamicValue of this condition
@@ -97,6 +99,22 @@ public class NumCondition extends AbstractCondition {
      */
     public void decrement() {
         this.dynamicValue.decrement();
+    }
+
+    /**
+     * Multiply the dynamicValue of this condition by an int
+     * @param n the integer to multiply by the dynamicValue of this condition
+     */
+    public void multiply(int n) {
+        this.dynamicValue.multiply(n);
+    }
+
+    /**
+     * Divide the dynamicValue of this condition by an int
+     * @param n the integer to divide the dynamicValue of this condition by
+     */
+    public void divideBy(int n) {
+        this.dynamicValue.divideBy(n);
     }
 
 }

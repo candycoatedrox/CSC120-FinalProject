@@ -12,7 +12,7 @@ public class StandardCycle extends Cycle {
     private ChapterEnding prevEnding;
     
     // Utility variables for checking command availability & default responses
-    private boolean canTryAbort = true;
+    private Condition cantTryAbort = new Condition();
 
     // Variables that are used in a lot of chapters
     private Voice ch2Voice;
@@ -26,7 +26,8 @@ public class StandardCycle extends Cycle {
     private boolean skipHillDialogue = false; // Used in Chapter 1 and all Chapter 2s; if you backed out of Stranger / aborting the Chapter
 
     // Variables that persist between chapters
-    private HashMap<String, Boolean> ch2Specific; // Used to store Chapter-specific variables that carry over from Chapter 2 to Chapter 3
+    private HashMap<String, Boolean> ch2SpecificA; // Used to store Chapter-specific variables that carry over from Chapter 2 to Chapter 3
+    private HashMap<String, String> ch2SpecificB;
     private boolean mirrorComment = false; // Used in all Chapter 2s and 3s
     private boolean touchedMirror = false; // Used in all Chapter 2s and 3s
     private boolean knowsDestiny = false; // Used in Chapter 1, Adversary, Tower, Fury
@@ -59,7 +60,8 @@ public class StandardCycle extends Cycle {
         this.cantUnique3 = new Condition(manager.demoMode());
 
         this.voicesMet = new ArrayList<>();
-        this.ch2Specific = new HashMap<>();
+        this.ch2SpecificA = new HashMap<>();
+        this.ch2SpecificB = new HashMap<>();
 
         this.currentVoices = new HashMap<>();
         for (Voice v : Voice.values()) {
@@ -346,11 +348,12 @@ public class StandardCycle extends Cycle {
      */
     private void quietCreep() {
         System.out.println();
-        if (this.isFirstVessel) {
+        if (this.isFirstVessel && manager.nVesselsAborted() == 0) {
             parser.printDialogueLine("A textured nothingness begins to creep into the edges of your vision.");
         } else {
             parser.printDialogueLine("A textured nothingness begins to creep into the edges of your vision. Somehow, it feels familiar.");
         }
+        System.out.println();
     }
 
     // --- CYCLE MANAGEMENT ---
@@ -1020,7 +1023,7 @@ public class StandardCycle extends Cycle {
         activeMenu.add(new Option(this.manager, "thanks", cantCabin, "Oh, okay. Thanks for telling me what to do."));
         activeMenu.add(new Option(this.manager, "sweet", cantCabin, "Sweet! I've always wanted to off a monarch. Viva la revolución!"));
         activeMenu.add(new Option(this.manager, "silent", cantCabin, "[Silently continue to the cabin.]"));
-        activeMenu.add(new Option(this.manager, "leave", "[Turn around and leave.]", Chapter.STRANGER));
+        activeMenu.add(new Option(this.manager, "leave", this.cantTryAbort, "[Turn around and leave.]", 0, Chapter.STRANGER));
 
         this.repeatActiveMenu = true;
         while (this.repeatActiveMenu) {
@@ -1029,7 +1032,7 @@ public class StandardCycle extends Cycle {
             switch (this.activeOutcome) {
                 case "question1":
                 case "refuse":
-                    canReluctant.set(true);
+                    canReluctant.set();
                     mainScript.runSection(activeOutcome);
                     break;
 
@@ -1049,7 +1052,7 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "prize":
-                    askPrize.set(true);
+                    askPrize.set();
                     mainScript.runSection("prize");
                     break;
 
@@ -1089,16 +1092,13 @@ public class StandardCycle extends Cycle {
                         break;
                     }
                 case "leave":
-                    switch (this.ch1AttemptStranger(cantCabin)) {
-                        case 0:
-                            return ChapterEnding.TOSTRANGER;
-                        case 2:
-                            this.skipHillDialogue = true;
-                        case 1:
-                            this.currentLocation = GameLocation.HILL;
-                            this.repeatActiveMenu = false;
-                            canStranger = false;
-                            break;
+                    if (this.ch1AttemptStranger(cantCabin)) {
+                        return ChapterEnding.TOSTRANGER;
+                    } else {
+                        this.currentLocation = GameLocation.HILL;
+                        this.repeatActiveMenu = false;
+                        canStranger = false;
+                        break;
                     }
 
                 default:
@@ -1131,15 +1131,13 @@ public class StandardCycle extends Cycle {
                         break;
                     }
 
-                    switch (this.ch1AttemptStranger(cantCabin)) {
-                        case 0:
-                            return ChapterEnding.TOSTRANGER;
-                        case 1:
-                        case 2:
-                            this.currentLocation = GameLocation.HILL;
-                            this.repeatActiveMenu = false;
-                            canStranger = false;
-                            break;
+                    if (this.ch1AttemptStranger(cantCabin)) {
+                        return ChapterEnding.TOSTRANGER;
+                    } else {
+                        this.currentLocation = GameLocation.HILL;
+                        this.repeatActiveMenu = false;
+                        canStranger = false;
+                        break;
                     }
                     
                 default:
@@ -1184,6 +1182,7 @@ public class StandardCycle extends Cycle {
                     }
                 case "enter":
                     this.repeatActiveMenu = false;
+                    this.cantTryAbort.set(false);
                     this.withBlade = false;
                     manager.addToPlaylist("The World Ender");
                     return (this.isHarsh) ? this.ch1BasementHarsh(askPrize) : this.ch1BasementSoft();
@@ -1197,15 +1196,13 @@ public class StandardCycle extends Cycle {
                         break;
                     }
 
-                    switch (this.ch1AttemptStranger(cantCabin)) {
-                        case 0:
-                            return ChapterEnding.TOSTRANGER;
-                        case 1:
-                        case 2:
-                            this.currentLocation = GameLocation.CABIN;
-                            this.repeatActiveMenu = false;
-                            canStranger = false;
-                            break;
+                    if (this.ch1AttemptStranger(cantCabin)) {
+                        return ChapterEnding.TOSTRANGER;
+                    } else {
+                        this.currentLocation = GameLocation.CABIN;
+                        this.repeatActiveMenu = false;
+                        canStranger = false;
+                        break;
                     }
                     
                 default:
@@ -1219,10 +1216,11 @@ public class StandardCycle extends Cycle {
     /**
      * The player attempts to leave and not go to the cabin (leads to Chapter II: The Stranger)
      * @param cantCabin whether the player can go to the cabin or the routes are blocked
-     * @return 0 if the player commits to the Stranger; 1 if the player returns to the cabin at the first menu; 2 otherwise
+     * @return true if the player commits to the Stranger; false if the player returns to the cabin
      */
-    private int ch1AttemptStranger(AbstractCondition cantCabin) {
+    private boolean ch1AttemptStranger(AbstractCondition cantCabin) {
         this.secondaryScript = new Script(this.manager, this.parser, "Chapter 1/StrangerAttempt");
+        this.cantTryAbort.set();
         secondaryScript.runSection();
 
         OptionsMenu leaveMenu = new OptionsMenu();
@@ -1244,7 +1242,7 @@ public class StandardCycle extends Cycle {
                 case "ugh":
                 case "maybe":
                     secondaryScript.runSection(outcome);
-                    return 1;
+                    return false;
 
                 case "lie":
                     repeatMenu = false;
@@ -1281,12 +1279,14 @@ public class StandardCycle extends Cycle {
             outcome = parser.promptOptionsMenu(leaveMenu);
             switch (outcome) {
                 case "cGoCabin":
+                    this.skipHillDialogue = true;
                     secondaryScript.runSection("cabinSilent");
-                    return 2;
+                    return false;
 
                 case "cabin":
+                    this.skipHillDialogue = true;
                     secondaryScript.runSection("cabin");
-                    return 2;
+                    return false;
 
                 case "cGoPath":
                 case "commit":
@@ -1320,8 +1320,9 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "cGoCabin":
+                    this.skipHillDialogue = true;
                     secondaryScript.runSection("cabin2");
-                    return 2;
+                    return false;
 
                 default:
                     this.giveDefaultFailResponse(outcome);
@@ -1340,8 +1341,10 @@ public class StandardCycle extends Cycle {
             switch (outcome) {
                 case "cGoHill":
                 case "cabin":
+                    this.skipHillDialogue = true;
                     secondaryScript.runSection("cabin3");
-                    return 2;
+                    return false;
+
                 case "cGoLeave":
                 case "commit":
                     if (manager.confirmContentWarnings(Chapter.STRANGER)) repeatMenu = false;
@@ -1353,7 +1356,7 @@ public class StandardCycle extends Cycle {
         }
 
         secondaryScript.runSection("strangerCommit");
-        return 0;
+        return true;
     }
 
     /**
@@ -1408,7 +1411,7 @@ public class StandardCycle extends Cycle {
                     break;
                 case "jokeKill":
                     this.repeatActiveMenu = false;
-                    jokeKill.set(true);
+                    jokeKill.set();
                     secondaryScript.runSection("jokeKill");
                     break;
                 case "cGoBasement":
@@ -1702,7 +1705,7 @@ public class StandardCycle extends Cycle {
      */
     private boolean ch1ShareTaskSoft(boolean joinLate, Condition sharedTask, boolean canFree) {
         this.knowsDestiny = true;
-        sharedTask.set(true);
+        sharedTask.set();
 
         if (!joinLate) secondaryScript.runSection("shareTask");
 
@@ -3003,7 +3006,7 @@ public class StandardCycle extends Cycle {
      */
     private int ch1ShareTaskHarsh(Condition sharedTask, Condition cantSlay, boolean steeled, boolean isArmed, boolean canFree) {
         this.knowsDestiny = true;
-        sharedTask.set(true);
+        sharedTask.set();
 
         if (steeled) {
             secondaryScript.runSection("shareTaskSteeled");
@@ -3301,8 +3304,8 @@ public class StandardCycle extends Cycle {
                     } else if (this.isFirstVessel) {
                         return ChapterEnding.GOODENDING;
                     } else {
-                        manager.goodEndingAttempted().set(true);
-                        localGoodEndingAttempt.set(true);
+                        manager.goodEndingAttempted().set();
+                        localGoodEndingAttempt.set();
 
                         System.out.println();
                         parser.printDialogueLine(CANTSTRAY);
@@ -3317,8 +3320,8 @@ public class StandardCycle extends Cycle {
                     } else if (this.isFirstVessel) {
                         return ChapterEnding.GOODENDING;
                     } else {
-                        manager.goodEndingAttempted().set(true);
-                        localGoodEndingAttempt.set(true);
+                        manager.goodEndingAttempted().set();
+                        localGoodEndingAttempt.set();
 
                         System.out.println();
                         parser.printDialogueLine(CANTSTRAY);
@@ -3332,8 +3335,8 @@ public class StandardCycle extends Cycle {
                     if (this.isFirstVessel) {
                         return ChapterEnding.GOODENDING;
                     } else {
-                        manager.goodEndingAttempted().set(true);
-                        localGoodEndingAttempt.set(true);
+                        manager.goodEndingAttempted().set();
+                        localGoodEndingAttempt.set();
 
                         System.out.println();
                         parser.printDialogueLine(CANTSTRAY);
@@ -3917,7 +3920,7 @@ public class StandardCycle extends Cycle {
         activeMenu.add(new Option(this.manager, "defy", "(Explore) I'm with them. I'm going to find a way to save her from that cabin.", activeMenu.get("assume"), this.activeChapter == Chapter.DAMSEL));
         activeMenu.add(new Option(this.manager, "princess", "(Explore) Let's talk about this Princess...", activeMenu.get("assume")));
         activeMenu.add(new Option(this.manager, "proceed", "[Proceed to the cabin.]"));
-        activeMenu.add(new Option(this.manager, "abort", "[Turn around and leave.]", 0));
+        activeMenu.add(new Option(this.manager, "abort", this.cantTryAbort, "[Turn around and leave.]", 0));
 
         Condition pessimismComment = new Condition();
         boolean shareDied = false;
@@ -3928,7 +3931,7 @@ public class StandardCycle extends Cycle {
             switch (activeOutcome) {
                 case "dejaVu":
                     this.sharedLoop = true;
-                    shared.set(true);
+                    shared.set();
                     canAssume.set(false);
                     if (this.ch2Voice == Voice.BROKEN) shareDied = true;
 
@@ -3950,14 +3953,14 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "dejaVu2":
-                    canAssume.set(true);
+                    canAssume.set();
                     
                     secondaryScript.runSection("dejaVu2");
                     break;
 
                 case "happened":
                     this.sharedLoop = true;
-                    shared.set(true);
+                    shared.set();
                     if (this.ch2Voice == Voice.BROKEN) shareDied = true;
                     
                     secondaryScript.runSection("happened");
@@ -3979,7 +3982,7 @@ public class StandardCycle extends Cycle {
 
                 case "no":
                     this.sharedLoop = true;
-                    shared.set(true);
+                    shared.set();
                     if (this.ch2Voice == Voice.BROKEN) shareDied = true;
                     
                     secondaryScript.runSection("no");
@@ -4001,7 +4004,7 @@ public class StandardCycle extends Cycle {
 
                 case "died":
                     this.sharedLoop = true;
-                    shared.set(true);
+                    shared.set();
                     shareDied = true;
                     
                     secondaryScript.runSection("died");
@@ -4025,7 +4028,7 @@ public class StandardCycle extends Cycle {
 
                 case "killedSelf":
                     this.sharedLoop = true;
-                    shared.set(true);
+                    shared.set();
                     shareDied = true;
                     
                     secondaryScript.runSection("killedSelf");
@@ -4034,7 +4037,7 @@ public class StandardCycle extends Cycle {
 
                 case "alreadyKilled":
                     this.sharedLoop = true;
-                    shared.set(true);
+                    shared.set();
                     
                     secondaryScript.runSection("alreadyKilled");
                     mainScript.runSection();
@@ -4042,7 +4045,7 @@ public class StandardCycle extends Cycle {
 
                 case "trapped":
                     this.sharedLoop = true;
-                    shared.set(true);
+                    shared.set();
                     
                     secondaryScript.runSection("trapped");
                     mainScript.runSection();
@@ -4050,7 +4053,7 @@ public class StandardCycle extends Cycle {
 
                 case "killMe":
                     this.sharedLoop = true;
-                    shared.set(true);
+                    shared.set();
                     shareDied = true;
                     
                     secondaryScript.runSection("killMe");
@@ -4072,7 +4075,7 @@ public class StandardCycle extends Cycle {
 
                 case "slewHer":
                     this.sharedLoop = true;
-                    shared.set(true);
+                    shared.set();
                     
                     secondaryScript.runSection("slewHer");
                     mainScript.runSection();
@@ -4093,7 +4096,7 @@ public class StandardCycle extends Cycle {
 
                 case "wise":
                     this.sharedLoop = true;
-                    shared.set(true);
+                    shared.set();
                     
                     secondaryScript.runSection("wise");
                     mainScript.runSection();
@@ -4118,7 +4121,7 @@ public class StandardCycle extends Cycle {
                                 case 0: return false;
 
                                 case 1:
-                                    this.canTryAbort = false;
+                                    this.cantTryAbort.set();
                                     activeMenu.setGreyedOut("abort", true);
                                     break;
 
@@ -4139,7 +4142,7 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "cGoLeave":
-                    if (!this.canTryAbort) {
+                    if (this.cantTryAbort.check()) {
                         parser.printDialogueLine(CANTSTRAY);
                         break;
                     }
@@ -4148,7 +4151,7 @@ public class StandardCycle extends Cycle {
                         case 0: return false;
 
                         case 1:
-                            this.canTryAbort = false;
+                            this.cantTryAbort.set();
                             activeMenu.setGreyedOut("abort", true);
                             break;
 
@@ -4224,7 +4227,7 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "cGoLeave":
-                    if (!this.canTryAbort) {
+                    if (this.cantTryAbort.check()) {
                         parser.printDialogueLine(CANTSTRAY);
                         break;
                     }
@@ -4233,7 +4236,7 @@ public class StandardCycle extends Cycle {
                         case 0: return false;
 
                         case 1:
-                            this.canTryAbort = false;
+                            this.cantTryAbort.set();
                             break;
 
                         case 3:
@@ -4465,7 +4468,7 @@ public class StandardCycle extends Cycle {
                     } else if (this.activeChapter == Chapter.DAMSEL) {
                         mainScript.runSection("princessHowDanger");
                     } else if (this.activeChapter == Chapter.TOWER && !pessimismComment.check()) {
-                        pessimismComment.set(true);
+                        pessimismComment.set();
                         mainScript.runSection("princessHowDangerPessimist");
                     } else if (this.activeChapter == Chapter.PRISONER) {
                         mainScript.runSection("princessHowDanger");
@@ -4496,7 +4499,7 @@ public class StandardCycle extends Cycle {
                     if (this.activeChapter == Chapter.ADVERSARY && askCount == 2) {
                         mainScript.runSection("princessImpatient");
                     } else if (this.activeChapter == Chapter.TOWER && !pessimismComment.check()) {
-                        pessimismComment.set(true);
+                        pessimismComment.set();
                         mainScript.runSection("princessQuotePessimist");
                     }
 
@@ -4614,7 +4617,7 @@ public class StandardCycle extends Cycle {
                     return 1;
 
                 case "cGoLeave":
-                    if (!this.canTryAbort) {
+                    if (this.cantTryAbort.check()) {
                         parser.printDialogueLine(CANTSTRAY);
                         break;
                     }
@@ -4642,6 +4645,7 @@ public class StandardCycle extends Cycle {
      * @return 0 if the player commits to aborting the vessel; 1 if the player cannot attempt to abort the vessel; 2 if the player returns to the cabin at the first menu; 3 otherwise
      */
     private int ch2AttemptAbortVessel() {
+        this.cantTryAbort.set();
         if (manager.nClaimedVessels() >= 2) {
             parser.printDialogueLine(CANTSTRAY);
             return 1;
@@ -5022,6 +5026,7 @@ public class StandardCycle extends Cycle {
             }
         }
 
+        // Enter the basement
         if (!this.hasBlade) mainScript.runSection("stairsNoBlade");
 
         this.currentLocation = GameLocation.BASEMENT;
@@ -5090,8 +5095,8 @@ public class StandardCycle extends Cycle {
 
             switch (activeOutcome) {
                 case "proof":
-                    narratorProof.set(true);
-                    talked.set(true);
+                    narratorProof.set();
+                    talked.set();
 
                     if (this.sharedLoopInsist) {
                         mainScript.runSection("proofDistantMenuInsist");
@@ -5103,7 +5108,7 @@ public class StandardCycle extends Cycle {
                     
                 case "different":
                     differentComment = true;
-                    talked.set(true);
+                    talked.set();
 
                     if (this.hasBlade) {
                         mainScript.runSection("differentDistantMenuBlade");
@@ -5115,7 +5120,7 @@ public class StandardCycle extends Cycle {
                     break;
                     
                 case "memory":
-                    talked.set(true);
+                    talked.set();
 
                     if (this.hasBlade) {
                         mainScript.runSection("memoryDistantMenuBlade");
@@ -5129,8 +5134,8 @@ public class StandardCycle extends Cycle {
                     break;
                     
                 case "chat":
-                    talked.set(true);
-                    scaredComment.set(true);
+                    talked.set();
+                    scaredComment.set();
 
                     if (this.droppedBlade1) {
                         mainScript.runSection("chatDistantMenuAgain");
@@ -5143,12 +5148,12 @@ public class StandardCycle extends Cycle {
                     break;
                     
                 case "scared":
-                    closerComment.set(true);
+                    closerComment.set();
                     mainScript.runSection("scaredDistantMenu");
                     break;
                     
                 case "freeOffer":
-                    talked.set(true);
+                    talked.set();
                     mainScript.runSection("freeOfferDistantMenu");
 
                     subMenu = new OptionsMenu(true);
@@ -5182,14 +5187,14 @@ public class StandardCycle extends Cycle {
                     break;
                     
                 case "unpack":
-                    talked.set(true);
+                    talked.set();
                     mainScript.runSection("unpackDistantMenu");
                     this.adversaryNarratorProof(narratorProof);
                     break;
                     
                 case "undecided":
-                    talked.set(true);
-                    closerComment.set(true);
+                    talked.set();
+                    closerComment.set();
 
                     if (this.droppedBlade1) {
                         mainScript.runSection("undecidedDistantMenuTalkAgain");
@@ -5200,7 +5205,7 @@ public class StandardCycle extends Cycle {
                     break;
                     
                 case "banter":
-                    talked.set(true);
+                    talked.set();
                     mainScript.runSection("banterDistantMenu");
                     break;
                     
@@ -5223,11 +5228,11 @@ public class StandardCycle extends Cycle {
                 case "unarmedAttackA":
                 case "unarmedAttackB":
                     if (manager.hasVisited(Chapter.FURY)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.FURY)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
                     
@@ -5248,11 +5253,11 @@ public class StandardCycle extends Cycle {
                 case "leaveYap":
                 case "leaveSilent":
                     if (manager.hasVisited(Chapter.FURY)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.FURY)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
                     
@@ -5315,8 +5320,8 @@ public class StandardCycle extends Cycle {
                     
                 case "freeAskA":
                 case "freeAskB":
-                    adversaryFree.set(true);
-                    freeOffer.set(true);
+                    adversaryFree.set();
+                    freeOffer.set();
                     noAskFree.set(false);
                     mainScript.runSection(activeOutcome + "CloseMenu");
 
@@ -5372,7 +5377,7 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "why":
-                    whyOrPurpose.set(true);
+                    whyOrPurpose.set();
                     mainScript.runSection("whyCloseMenu");
 
                     subMenu = new OptionsMenu(true);
@@ -5392,7 +5397,7 @@ public class StandardCycle extends Cycle {
 
                         case "reason":
                         case "want":
-                            purposeAsk.set(true);
+                            purposeAsk.set();
                             mainScript.runSection(activeOutcome + "WhyHere");
 
                             if (this.hasBlade) {
@@ -5407,8 +5412,8 @@ public class StandardCycle extends Cycle {
                     
                 case "reason":
                 case "cared":
-                    purposeAsk.set(true);
-                    whyOrPurpose.set(true);
+                    purposeAsk.set();
+                    whyOrPurpose.set();
                     mainScript.runSection(activeOutcome + "CloseMenu");
 
                     if (this.hasBlade) {
@@ -5431,11 +5436,11 @@ public class StandardCycle extends Cycle {
                 case "refuse":
                 case "silent":
                     if (manager.hasVisited(Chapter.FURY)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.FURY)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
                     
@@ -5451,11 +5456,11 @@ public class StandardCycle extends Cycle {
                     }
                 case "leave":
                     if (manager.hasVisited(Chapter.FURY)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.FURY)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
 
@@ -5475,7 +5480,7 @@ public class StandardCycle extends Cycle {
     private void adversaryNarratorProof(Condition narratorProof) {
         if (narratorProof.check()) return;
 
-        narratorProof.set(true);
+        narratorProof.set();
         if (this.sharedLoop) {
             mainScript.runSection("narratorProofSharedLoop");
         } else {
@@ -5522,7 +5527,7 @@ public class StandardCycle extends Cycle {
                     }
                 case "unlodge":
                     if (!manager.confirmContentWarnings(Chapter.NEEDLE)) {
-                        this.cantUnique3.set(true);
+                        this.cantUnique3.set();
                         break;
                     }
 
@@ -5590,7 +5595,7 @@ public class StandardCycle extends Cycle {
                     }
                 case "unlodge":
                     if (!manager.confirmContentWarnings(Chapter.NEEDLE)) {
-                        this.cantUnique3.set(true);
+                        this.cantUnique3.set();
                         break;
                     }
 
@@ -5621,7 +5626,7 @@ public class StandardCycle extends Cycle {
             this.activeOutcome = parser.promptOptionsMenu(activeMenu);
             switch (activeOutcome) {
                 case "proof":
-                    narratorProof.set(true);
+                    narratorProof.set();
 
                     if (this.sharedLoopInsist) {
                         mainScript.runSection("proofDistantMenuInsist");
@@ -5714,11 +5719,11 @@ public class StandardCycle extends Cycle {
 
                 case "refuse":
                     if (manager.hasVisited(Chapter.FURY)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.FURY)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
 
@@ -5969,11 +5974,11 @@ public class StandardCycle extends Cycle {
 
                 case "stay":
                     if (manager.hasVisited(Chapter.FURY)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.FURY)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
                     
@@ -5990,11 +5995,11 @@ public class StandardCycle extends Cycle {
                     }
                 case "leave":
                     if (manager.hasVisited(Chapter.FURY)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.FURY)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
                     
@@ -6054,7 +6059,7 @@ public class StandardCycle extends Cycle {
         mainScript.runSection("fightStart");
 
         if (!adversaryFree.check()) {
-            adversaryFree.set(true);
+            adversaryFree.set();
             mainScript.runSection("fightBreakChains");
         }
 
@@ -6096,11 +6101,11 @@ public class StandardCycle extends Cycle {
                     }
                 case "run":
                     if (manager.hasVisited(Chapter.FURY)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.FURY)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
                     
@@ -6210,7 +6215,7 @@ public class StandardCycle extends Cycle {
      */
     private ChapterEnding adversaryPacifism(boolean tookBladeStart, boolean fromFight, Condition adversaryFree, Condition narratorProof, AbstractCondition noFreeOffer) {
         if (!adversaryFree.check()) {
-            adversaryFree.set(true);
+            adversaryFree.set();
             mainScript.runSection("reufseBreakChains");
 
             if (this.hasBlade) {
@@ -6453,7 +6458,7 @@ public class StandardCycle extends Cycle {
      */
     private ChapterEnding adversaryFlee(boolean wounded, Condition adversaryFree, Condition narratorProof, AbstractCondition noFreeOffer) {
         boolean brokeFree = !adversaryFree.check();
-        adversaryFree.set(true);
+        adversaryFree.set();
         this.activeMenu = new OptionsMenu();
 
         if (brokeFree) {
@@ -6787,6 +6792,7 @@ public class StandardCycle extends Cycle {
             }
         }
 
+        // Enter the basement
         if (!this.hasBlade) {
             submitCount.increment();
             mainScript.runSection("stairsNoBlade");
@@ -6869,7 +6875,7 @@ public class StandardCycle extends Cycle {
 
         switch (parser.promptOptionsMenu(activeMenu)) {
             case "no":
-                if (resistCount.check() == 2) {
+                if (resistCount.equals(2)) {
                     resistCount.increment();
                     mainScript.runSection("kneelResistAgain");
                 } else {
@@ -6953,7 +6959,7 @@ public class StandardCycle extends Cycle {
                         this.repeatActiveMenu = false;
                         this.knowsDestiny = true;
 
-                        if (submitCount.check() == 0) {
+                        if (submitCount.equals(0)) {
                             if (!manager.confirmContentWarnings("forced self-mutilation, forced suicide", true)) break;
 
                             mainScript.runSection("motiveSilentNoSubmit");
@@ -7399,7 +7405,7 @@ public class StandardCycle extends Cycle {
                 case "slay":
                     this.repeatActiveMenu = false;
                     this.isHarsh = true;
-                    isHostile.set(true);
+                    isHostile.set();
                     mainScript.runSection("softSlay");
                     break;
 
@@ -7407,7 +7413,7 @@ public class StandardCycle extends Cycle {
                 case "grab":
                     this.repeatActiveMenu = false;
                     this.isHarsh = true;
-                    isHostile.set(true);
+                    isHostile.set();
                     mainScript.runSection("softGrab");
                     break;
 
@@ -7509,7 +7515,7 @@ public class StandardCycle extends Cycle {
 
             switch (activeOutcome) {
                 case "confirmLoop":
-                    narratorUnconfirmed.set(true);
+                    narratorUnconfirmed.set();
                     mainScript.runSection("confirmLoopMenu");
 
                     if (this.hasBlade) {
@@ -7535,13 +7541,13 @@ public class StandardCycle extends Cycle {
                     break;
                     
                 case "supposed":
-                    homeComment.set(true);
+                    homeComment.set();
                     mainScript.runSection("supposedMenu");
                     break;
                     
                 case "help":
                     noBonesAsk.set(false);
-                    possessionAsk.set(true);
+                    possessionAsk.set();
                     mainScript.runSection("helpMenu");
 
                     switch (this.spectrePossessAsk(noWorldEndExplore, narratorUnconfirmed, shareDied, false)) {
@@ -7580,7 +7586,7 @@ public class StandardCycle extends Cycle {
                     if (homeComment.check()) {
                         mainScript.runSection("grovelNoHomeComment");
                     } else {
-                        homeComment.set(true);
+                        homeComment.set();
                         mainScript.runSection("grovelHomeComment");
                     }
                     
@@ -7606,7 +7612,7 @@ public class StandardCycle extends Cycle {
                     break;
                     
                 case "trick":
-                    homeComment.set(true);
+                    homeComment.set();
 
                     if (!narratorUnconfirmed.check()) {
                         mainScript.runSection("trickMenuConfirmed");
@@ -7635,7 +7641,7 @@ public class StandardCycle extends Cycle {
                     if (possessionAsk.check()) {
                         mainScript.runSection("alsoDeadMenuAlreadyAsked");
                     } else if (!this.isHarsh) {
-                        homeComment.set(true);
+                        homeComment.set();
                         mainScript.runSection("alsoDeadMenuPossessAsk");
                     }
 
@@ -7664,7 +7670,7 @@ public class StandardCycle extends Cycle {
                     mainScript.runSection("wallsMenu");
 
                     if (noPossessionAsk.check()) {
-                        possessionAsk.set(true);
+                        possessionAsk.set();
 
                         switch (this.spectrePossessAsk(noWorldEndExplore, narratorUnconfirmed, shareDied, true)) {
                             case 1:
@@ -7679,7 +7685,7 @@ public class StandardCycle extends Cycle {
                     
                 case "thoughts":
                     if (this.isHarsh) {
-                        thoughtsHarsh.set(true);
+                        thoughtsHarsh.set();
                         mainScript.runSection("thoughtsMenuHarsh");
                     } else {
                         mainScript.runSection("thoughtsMenuSoft");
@@ -7703,12 +7709,12 @@ public class StandardCycle extends Cycle {
                     break;
                     
                 case "wantA":
-                    possessionAsk.set(true);
+                    possessionAsk.set();
 
                     if (homeComment.check()) {
                         mainScript.runSection("wantANoHomeComment");
                     } else {
-                        homeComment.set(true);
+                        homeComment.set();
                         mainScript.runSection("wantAHomeComment");
                     }
 
@@ -7723,8 +7729,8 @@ public class StandardCycle extends Cycle {
                     break;
                     
                 case "wantB":
-                    homeComment.set(true);
-                    possessionAsk.set(true);
+                    homeComment.set();
+                    possessionAsk.set();
                     mainScript.runSection("wantBMenu");
 
                     switch (this.spectrePossessAsk(noWorldEndExplore, narratorUnconfirmed, shareDied, true)) {
@@ -7738,7 +7744,7 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "wantHarsh":
-                    possessionAsk.set(true);
+                    possessionAsk.set();
                     mainScript.runSection("wantHarshMenu");
 
                     switch (this.spectrePossessAsk(noWorldEndExplore, narratorUnconfirmed, shareDied, true)) {
@@ -7756,12 +7762,12 @@ public class StandardCycle extends Cycle {
                     
                 case "refuse":
                     if (manager.hasVisited(Chapter.WRAITH)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         parser.printDialogueLine(WORNPATHHERO);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.WRAITH)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
 
@@ -7775,12 +7781,12 @@ public class StandardCycle extends Cycle {
 
                 case "smashBones":
                     if (manager.hasVisited(Chapter.WRAITH)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         parser.printDialogueLine(WORNPATHHERO);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.WRAITH)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
 
@@ -7794,12 +7800,12 @@ public class StandardCycle extends Cycle {
 
                 case "slayHarsh":
                     if (manager.hasVisited(Chapter.WRAITH)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         parser.printDialogueLine(WORNPATHHERO);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.WRAITH)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
 
@@ -7808,12 +7814,12 @@ public class StandardCycle extends Cycle {
 
                 case "grabHarsh":
                     if (manager.hasVisited(Chapter.WRAITH)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         parser.printDialogueLine(WORNPATHHERO);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.WRAITH)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
 
@@ -7828,12 +7834,12 @@ public class StandardCycle extends Cycle {
                 case "leaveSoft":
                 case "leaveHarsh":
                     if (manager.hasVisited(Chapter.WRAITH)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         parser.printDialogueLine(WORNPATHHERO);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.WRAITH)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
 
@@ -7842,12 +7848,12 @@ public class StandardCycle extends Cycle {
                     
                 case "retrieve":
                     if (manager.hasVisited(Chapter.WRAITH)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         parser.printDialogueLine(WORNPATHHERO);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.WRAITH)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
 
@@ -7856,13 +7862,13 @@ public class StandardCycle extends Cycle {
 
                 case "slaySoft":
                     this.isHarsh = true;
-                    isHostile.set(true);
+                    isHostile.set();
                     mainScript.runSection("softSlay");
                     break;
 
                 case "grabSoft":
                     this.isHarsh = true;
-                    isHostile.set(true);
+                    isHostile.set();
                     mainScript.runSection("softGrab");
                     break;
 
@@ -8078,12 +8084,12 @@ public class StandardCycle extends Cycle {
 
                 case "refuse":
                     if (manager.hasVisited(Chapter.WRAITH)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         parser.printDialogueLine(WORNPATHHERO);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.WRAITH)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
 
@@ -8197,7 +8203,7 @@ public class StandardCycle extends Cycle {
                     }
                 case "slay":
                     if (!manager.confirmContentWarnings(Chapter.DRAGON, "suicide")) {
-                        this.cantUnique3.set(true);
+                        this.cantUnique3.set();
                         break;
                     }
 
@@ -8214,7 +8220,7 @@ public class StandardCycle extends Cycle {
             }
         }
 
-        this.currentLocation = GameLocation.BASEMENT;
+        this.currentLocation = GameLocation.CABIN;
         if (!this.hasBlade) this.withBlade = true;
         boolean tookBladeStart = this.hasBlade;
         mainScript.runSection("possessUpstairs");
@@ -8243,7 +8249,7 @@ public class StandardCycle extends Cycle {
                     }
                 case "slay":
                     if (!manager.confirmContentWarnings(Chapter.DRAGON, "suicide")) {
-                        this.cantUnique3.set(true);
+                        this.cantUnique3.set();
                         break;
                     }
 
@@ -8442,6 +8448,7 @@ public class StandardCycle extends Cycle {
             }
         }
         
+        // Enter the basement
         if (!this.hasBlade) {
             if (this.isHarsh) {
                 mainScript.runSection("stairsNoBladeSoft");
@@ -8679,12 +8686,12 @@ public class StandardCycle extends Cycle {
 
                 case "want":
                 case "afterDied":
-                    whyNeed.set(true);
+                    whyNeed.set();
                     mainScript.runSection("whyNeedMenu");
                     break;
 
                 case "shareTask":
-                    sharedTask.set(true);
+                    sharedTask.set();
                     if (this.knowsDestiny) mainScript.runSection("shareTaskAlready");
                     mainScript.runSection("shareTaskMenu");
                     break;
@@ -8713,7 +8720,7 @@ public class StandardCycle extends Cycle {
                     if (this.hasBlade) {
                         mainScript.runSection("threatMenuBlade");
                     } else {
-                        threatened.set(true);
+                        threatened.set();
                         mainScript.runSection("threatMenuNoBlade");
                     }
 
@@ -8723,7 +8730,7 @@ public class StandardCycle extends Cycle {
                     if (whyNeed.check()) {
                         mainScript.runSection("friendsMenuOther");
                     } else {
-                        whyNeed.set(true);
+                        whyNeed.set();
                         mainScript.runSection("friendsMenuWhyNeed");
                     }
                 
@@ -8735,7 +8742,7 @@ public class StandardCycle extends Cycle {
                         break;
                     }
 
-                    ch2Specific.put("runAttempt", false);
+                    ch2SpecificA.put("runAttempt", false);
                     mainScript.runSection("remainBlade");
                     return ChapterEnding.MONOLITHOFFEAR;
 
@@ -8745,7 +8752,7 @@ public class StandardCycle extends Cycle {
                         break;
                     }
 
-                    ch2Specific.put("runAttempt", false);
+                    ch2SpecificA.put("runAttempt", false);
                     mainScript.runSection("remainJoin");
                     return ChapterEnding.MONOLITHOFFEAR;
 
@@ -8764,7 +8771,7 @@ public class StandardCycle extends Cycle {
                         break;
                     }
 
-                    ch2Specific.put("runAttempt", true);
+                    ch2SpecificA.put("runAttempt", true);
                     mainScript.runSection("runAttempt");
                     return ChapterEnding.MONOLITHOFFEAR;
 
@@ -8775,12 +8782,12 @@ public class StandardCycle extends Cycle {
                     }
                 case "slay":
                     if (manager.hasVisited(Chapter.WRAITH)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         parser.printDialogueLine(WORNPATHHERO);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.WRAITH, "suicide", false)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
 
@@ -8861,11 +8868,11 @@ public class StandardCycle extends Cycle {
                         }
                     case "slay":
                         if (manager.hasVisited(Chapter.WRAITH)) {
-                            this.cantJoint3.set(true);
+                            this.cantJoint3.set();
                             parser.printDialogueLine(WORNPATH);
                             break;
                         } else if (!manager.confirmContentWarnings(Chapter.WRAITH, "suicide", false)) {
-                            this.cantJoint3.set(true);
+                            this.cantJoint3.set();
                             break;
                         }
 
@@ -8896,11 +8903,11 @@ public class StandardCycle extends Cycle {
                         }
                     case "slay":
                         if (manager.hasVisited(Chapter.WRAITH)) {
-                            this.cantJoint3.set(true);
+                            this.cantJoint3.set();
                             parser.printDialogueLine(WORNPATH);
                             break;
                         } else if (!manager.confirmContentWarnings(Chapter.WRAITH, "suicide", false)) {
-                            this.cantJoint3.set(true);
+                            this.cantJoint3.set();
                             break;
                         }
 
@@ -9061,7 +9068,7 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "biology":
-                    biologyComment.set(true);
+                    biologyComment.set();
                     mainScript.runSection("biologySlain");
 
                     if (bladeGone) {
@@ -9171,7 +9178,7 @@ public class StandardCycle extends Cycle {
         activeMenu.add(new Option(this.manager, "sense", "(Explore) Can you make sense of them?"));
         activeMenu.add(new Option(this.manager, "disjointed", "(Explore) I feel so disjointed. I don't know if I can pull this off. I don't know if I can slay her."));
         activeMenu.add(new Option(this.manager, "proceed", "[Proceed to the cabin.]"));
-        activeMenu.add(new Option(this.manager, "nothing", "The only way out is to do nothing. So nothing I will do. [Stay where you are.]"));
+        activeMenu.add(new Option(this.manager, "nothing", this.cantTryAbort, "The only way out is to do nothing. So nothing I will do. [Stay where you are.]", 0));
 
         this.repeatActiveMenu = true;
         while (repeatActiveMenu) {
@@ -9181,7 +9188,7 @@ public class StandardCycle extends Cycle {
                 case "dontGo":
                 case "sense":
                 case "disjointed":
-                    talked.set(true);
+                    talked.set();
                 case "decider":
                 case "notMe":
                     mainScript.runSection(activeOutcome);
@@ -9189,8 +9196,8 @@ public class StandardCycle extends Cycle {
 
                 case "howManyA":
                 case "howManyB":
-                    talked.set(true);
-                    askedHowMany.set(true);
+                    talked.set();
+                    askedHowMany.set();
                     mainScript.runSection("howMany");
                     break;
 
@@ -9236,6 +9243,7 @@ public class StandardCycle extends Cycle {
             }
         }
 
+        // Proceed to the cabin
         mainScript.runSection("hillApproach");
 
         this.currentLocation = GameLocation.HILL;
@@ -9261,6 +9269,7 @@ public class StandardCycle extends Cycle {
             }
         }
 
+        // Approach the mirror
         this.currentLocation = GameLocation.MIRROR;
         mainScript.runSection("cabinApproach");
 
@@ -9279,6 +9288,7 @@ public class StandardCycle extends Cycle {
             }
         }
 
+        // Enter "the cabin"
         this.currentLocation = GameLocation.CABIN;
         this.mirrorPresent = false;
         this.withBlade = true;
@@ -9306,10 +9316,11 @@ public class StandardCycle extends Cycle {
             }
         }
 
+        // Take the blade
         this.withBlade = false;
         mainScript.runSection("takeBlade");
 
-        if (ch2Specific.get("runAttempt")) {
+        if (ch2SpecificA.get("runAttempt")) {
             mainScript.runSection("emergeRun");
         } else {
             mainScript.runSection("emergeOther");
@@ -9333,6 +9344,8 @@ public class StandardCycle extends Cycle {
         } else {
             mainScript.runSection("endNotFirstVessel");
         }
+
+        mainScript.runSection("mirrorStart");
 
         return ChapterEnding.MOMENTOFCLARITY;
     }
@@ -9411,6 +9424,7 @@ public class StandardCycle extends Cycle {
             }
         }
 
+        // Enter the basement
         if (!this.hasBlade) mainScript.runSection("stairsNoBlade");
 
         this.currentLocation = GameLocation.BASEMENT;
@@ -10287,10 +10301,6 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "cSlaySelfFail":
-                    if (!this.hasBlade) {
-                        this.giveDefaultFailResponse(activeOutcome);
-                        break;
-                    }
                 case "cSlayPrincessFail":
                 case "noFightOptions":
                     mainScript.runSection("failedSlayAttempt");
@@ -10536,6 +10546,7 @@ public class StandardCycle extends Cycle {
             }
         }
 
+        // Enter the basement
         if (!this.hasBlade) mainScript.runSection("stairsNoBlade");
 
         this.currentLocation = GameLocation.BASEMENT;
@@ -10647,19 +10658,19 @@ public class StandardCycle extends Cycle {
 
         for (int phase = 2; phase < 5; phase++) {
             this.canSlayPrincess = false;
-            canTryFlee.set(true);
+            canTryFlee.set();
 
             switch (phase) {
                 case 2:
-                    stairsGuarded.set(true);
+                    stairsGuarded.set();
                     activeMenu.setDisplay("dodge", "[Stay. Alive.]");
                     activeMenu.setCondition("explore", true);
                     parentMenu.setCondition("tired", true);
                     break;
 
                 case 3:
-                    canTryFlee.set(true);
-                    stairsGuarded.set(true);
+                    canTryFlee.set();
+                    stairsGuarded.set();
                     activeMenu.setDisplay("dodge", "[Again...]");
                     activeMenu.setCondition("flee", false);
                     stallLimit = 1;
@@ -10794,7 +10805,7 @@ public class StandardCycle extends Cycle {
 
                 case "playDead":
                     if (manager.hasVisited(Chapter.WILD)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         parser.printDialogueLine(WORNPATHHERO);
                         break;
@@ -10805,7 +10816,7 @@ public class StandardCycle extends Cycle {
 
                 case "freeze":
                     if (manager.hasVisited(Chapter.WILD)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         parser.printDialogueLine(WORNPATHHERO);
                         break;
@@ -10834,7 +10845,7 @@ public class StandardCycle extends Cycle {
      * @param cantWildMenu the options menu to show to the player
      */
     private void beastCantBeEaten(OptionsMenu cantWildMenu) {
-        this.cantJoint3.set(true);
+        this.cantJoint3.set();
         parser.printDialogueLine(WORNPATH);
         parser.promptOptionsMenu(cantWildMenu, new DialogueLine("[You have no other option.]"));
         parser.printDialogueLine(WORNPATHHERO);
@@ -10930,8 +10941,8 @@ public class StandardCycle extends Cycle {
                     if (turnCount == 2) {
                         if (!manager.confirmContentWarnings(Chapter.WILD)) {
                             incrementFlag = false;
-                            this.cantJoint3.set(true);
-                            forceDissolved.set(true);
+                            this.cantJoint3.set();
+                            forceDissolved.set();
                             this.canSlayPrincess = false;
                             this.canSlaySelf = false;
                             break;
@@ -10947,8 +10958,8 @@ public class StandardCycle extends Cycle {
                     if (turnCount == 2) {
                         if (!manager.confirmContentWarnings(Chapter.WILD)) {
                             incrementFlag = false;
-                            this.cantJoint3.set(true);
-                            forceDissolved.set(true);
+                            this.cantJoint3.set();
+                            forceDissolved.set();
                             this.canSlayPrincess = false;
                             this.canSlaySelf = false;
                             break;
@@ -10968,7 +10979,7 @@ public class StandardCycle extends Cycle {
                 case "dig":
                     beastHP.subtract(2);
 
-                    if (beastHP.check() == 2) {
+                    if (beastHP.equals(2)) {
                         mainScript.runSection("eatenClaw1");
                     } else {
                         mainScript.runSection("eatenClaw2");
@@ -11006,8 +11017,8 @@ public class StandardCycle extends Cycle {
                 case "slay":
                     if (!manager.confirmContentWarnings(Chapter.WILD)) {
                         incrementFlag = false;
-                        this.cantJoint3.set(true);
-                        forceDissolved.set(true);
+                        this.cantJoint3.set();
+                        forceDissolved.set();
                         this.canSlayPrincess = false;
                         this.canSlaySelf = false;
                         break;
@@ -11024,8 +11035,8 @@ public class StandardCycle extends Cycle {
                 case "suicide":
                     if (!manager.confirmContentWarnings(Chapter.WILD)) {
                         incrementFlag = false;
-                        this.cantJoint3.set(true);
-                        forceDissolved.set(true);
+                        this.cantJoint3.set();
+                        forceDissolved.set();
                         this.canSlayPrincess = false;
                         this.canSlaySelf = false;
                         break;
@@ -11041,8 +11052,8 @@ public class StandardCycle extends Cycle {
                 case "wait":
                     if (!manager.confirmContentWarnings(Chapter.WILD)) {
                         incrementFlag = false;
-                        this.cantJoint3.set(true);
-                        forceDissolved.set(true);
+                        this.cantJoint3.set();
+                        forceDissolved.set();
                         this.canSlayPrincess = false;
                         this.canSlaySelf = false;
                         break;
@@ -11080,13 +11091,13 @@ public class StandardCycle extends Cycle {
             if (incrementFlag) {
                 switch (turnCount) {
                     case 0:
-                        notFirstTurn.set(true);
+                        notFirstTurn.set();
                         mainScript.runSection("eatenTurn0");
                         if (maxHP.check()) mainScript.runSection("eatenTurn0NoAttack");
                         break;
 
                     case 1:
-                        if (manager.demoMode()) forceDissolved.set(true);
+                        if (manager.demoMode()) forceDissolved.set();
                         mainScript.runSection("eatenTurn1");
                         break;
                 }
@@ -11261,6 +11272,7 @@ public class StandardCycle extends Cycle {
             }
         }
 
+        // Enter the basement
         if (!this.hasBlade) {
             if (this.sharedLoopInsist) {
                 mainScript.runSection("stairsNoBladeSharedLoop");
@@ -11370,9 +11382,9 @@ public class StandardCycle extends Cycle {
             this.activeOutcome = parser.promptOptionsMenu(activeMenu);
             switch (activeOutcome) {
                 case "mistake":
-                    leaveMentioned.set(true);
+                    leaveMentioned.set();
                 case "sorry":
-                    apologized.set(true);
+                    apologized.set();
                     mainScript.runSection(activeOutcome + "Menu");
                     break;
                     
@@ -11382,7 +11394,7 @@ public class StandardCycle extends Cycle {
                     break;
                     
                 case "locked":
-                    leaveMentioned.set(true);
+                    leaveMentioned.set();
                     activeMenu.setCondition("sorry", false);
                 case "scared":
                 case "goodWill":
@@ -11405,12 +11417,12 @@ public class StandardCycle extends Cycle {
                 case "messy":
                 case "impasse":
                 case "free":
-                    leaveMentioned.set(true);
+                    leaveMentioned.set();
                     mainScript.runSection(activeOutcome + "Menu");
                     break;
                     
                 case "getOutB":
-                    witchFree.set(true);
+                    witchFree.set();
                     mainScript.runSection("getOutBMenu");
 
                     if (!heartComment) {
@@ -11424,7 +11436,7 @@ public class StandardCycle extends Cycle {
                 case "getOutA":
                 case "cutA":
                 case "cutB":
-                    witchFree.set(true);
+                    witchFree.set();
                     mainScript.runSection("cutMenu");
 
                     if (!heartComment) {
@@ -11452,11 +11464,11 @@ public class StandardCycle extends Cycle {
                     }
                 case "leave":
                     if (manager.hasVisited(Chapter.WILD)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.WILD)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         break;
                     }
@@ -11465,11 +11477,11 @@ public class StandardCycle extends Cycle {
                     
                 case "slayYap":
                     if (manager.hasVisited(Chapter.WILD)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.WILD)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         break;
                     }
@@ -11483,11 +11495,11 @@ public class StandardCycle extends Cycle {
                     }
                 case "slaySilent":
                     if (manager.hasVisited(Chapter.WILD)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.WILD)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         parser.printDialogueLine(WORNPATH);
                         break;
                     }
@@ -11792,7 +11804,7 @@ public class StandardCycle extends Cycle {
                 return true;
 
             case "nevermind":
-                this.cantUnique3.set(true);
+                this.cantUnique3.set();
                 mainScript.runSection("offerBackOut");
                 return false;
         }
@@ -12029,7 +12041,7 @@ public class StandardCycle extends Cycle {
         activeMenu.add(new Option(this.manager, "lie", "(Lie) Yep. Okay. Heading to the cabin now where I'm definitely going to slay that Princess."));
         activeMenu.add(new Option(this.manager, "cabin", "Yeah, yeah. I get it. I'm going to the cabin."));
         activeMenu.add(new Option(this.manager, "proceed", "[Silently proceed to the cabin.]", noShare));
-        activeMenu.add(new Option(this.manager, "abort", "\"If I can't run away from the cabin, then I'm just staying here in the woods. Forever.\" [Stay in the woods. Forever.]", 0, manager.nClaimedVessels() >= 1));
+        activeMenu.add(new Option(this.manager, "abort", this.cantTryAbort, "\"If I can't run away from the cabin, then I'm just staying here in the woods. Forever.\" [Stay in the woods. Forever.]", 0, !this.isFirstVessel));
 
         this.repeatActiveMenu = true;
         while (repeatActiveMenu) {
@@ -12041,7 +12053,7 @@ public class StandardCycle extends Cycle {
                 case "wise":
                 case "died":
                     this.sharedLoop = true;
-                    shared.set(true);
+                    shared.set();
                     
                     secondaryScript.runSection(activeOutcome);
                     mainScript.runSection("shareLoop");
@@ -12049,7 +12061,7 @@ public class StandardCycle extends Cycle {
 
                 case "notKidding":
                     this.sharedLoop = true;
-                    shared.set(true);
+                    shared.set();
 
                     mainScript.runSection("notKidding");
                     break;
@@ -12059,7 +12071,7 @@ public class StandardCycle extends Cycle {
                     
                     if (!this.sharedLoop) {
                         this.sharedLoop = true;
-                        shared.set(true);
+                        shared.set();
 
                         mainScript.runSection();
                     }
@@ -12085,7 +12097,7 @@ public class StandardCycle extends Cycle {
 
                 case "abort":
                     if (manager.nClaimedVessels() >= 2) {
-                        this.canTryAbort = false;
+                        this.cantTryAbort.set();
                         activeMenu.setGreyedOut("abort", true);
                         parser.printDialogueLine(CANTSTRAY);
                         break;
@@ -12130,6 +12142,8 @@ public class StandardCycle extends Cycle {
         this.knowsBlade = true;
         this.withBlade = true;
 
+        String endChoiceText = "\"I'm getting you out of here.\" [Try and free her.]\n  (NUM) \"I don't know what you are, but I can't trust you. I can't trust anyone here.\" [Leave her in the basement.]\n  (NUM) [Retrieve the blade.]";
+
         mainScript.runSection("cabinIntro");
 
         Condition canAskMirror = new Condition(true);
@@ -12161,7 +12175,8 @@ public class StandardCycle extends Cycle {
                     this.hasBlade = true;
                     this.withBlade = false;
                     this.canThrowBlade = true;
-                    canThrow.set(true);
+                    canThrow.set();
+                    endChoiceText = "I'm getting you out of here.\" [Try and free her.]\n  (NUM) \"I don't know what you are, but I can't trust you. I can't trust anyone here.\" [Leave her in the basement.]\n  (NUM) [Slay the Princess.]";
                     mainScript.runSection("takeBlade");
 
                     OptionsMenu subMenu = new OptionsMenu(true);
@@ -12188,6 +12203,7 @@ public class StandardCycle extends Cycle {
                     this.canThrowBlade = false;
                     this.threwBlade = true;
                     canThrow.set(false);
+                    endChoiceText = "I'm getting you out of here.\" [Try and free her.]\n  (NUM) \"I don't know what you are, but I can't trust you. I can't trust anyone here.\" [Leave her in the basement.]\n  (NUM) [Regretfully think about that time you threw the blade out the window.]";
                     mainScript.runSection("throwBlade");
 
                     if (this.sharedLoop) {
@@ -12289,15 +12305,6 @@ public class StandardCycle extends Cycle {
             case "gentle":
                 mainScript.runSection("basementStartGentle");
                 break;
-        }
-
-        String endChoiceText = "\"I'm getting you out of here.\" [Try and free her.]\n  (NUM) \"I don't know what you are, but I can't trust you. I can't trust anyone here.\" [Leave her in the basement.]\n  (NUM) ";
-        if (this.threwBlade) {
-            endChoiceText += "[Regretfully think about that time you threw the blade out the window.]";
-        } else if (!this.hasBlade) {
-            endChoiceText += "[Retrieve the blade.]";
-        } else {
-            endChoiceText += "[Slay the Princess.]";
         }
 
         String setNewSchism = "";
@@ -12501,7 +12508,7 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "threatShare":
-                    sharedTask.set(true);
+                    sharedTask.set();
                     mainScript.runSection(firstSchism + "ThreatShare");
 
                     // New schism: attempt monster, then attempt emo
@@ -12561,7 +12568,7 @@ public class StandardCycle extends Cycle {
 
                 case "cGoStairs":
                 case "cSlayPrincess":
-                    if (schismCount.check() == 1) {
+                    if (schismCount.equals(1)) {
                         super.giveDefaultFailResponse();
                         break;
                     }
@@ -12743,6 +12750,7 @@ public class StandardCycle extends Cycle {
             }
         }
 
+        // Enter the basement
         if (!this.hasBlade) {
             if (this.sharedLoopInsist) {
                 mainScript.runSection("stairsNoBladeSharedLoop");
@@ -12815,7 +12823,7 @@ public class StandardCycle extends Cycle {
                         break;
                     }
                 case "leave":
-                    locked.set(true);
+                    locked.set();
                     if (this.sharedLoopInsist) mainScript.runSection("doorLockSharedLoop");
                     mainScript.runSection("doorLock");
                     mainScript.runSection("doorLockCommentStart");
@@ -12833,11 +12841,11 @@ public class StandardCycle extends Cycle {
                 case "slay":
                     if (manager.hasVisited(Chapter.GREY)) {
                         parser.printDialogueLine(WORNPATH);
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         activeMenu.setGreyedOut("slay", true);
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.GREY, ChapterEnding.COLDLYRATIONAL)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         activeMenu.setGreyedOut("slay", true);
                         break;
                     }
@@ -12930,14 +12938,14 @@ public class StandardCycle extends Cycle {
 
                 case "lockedBeg":
                 case "otherChain":
-                    talked.set(true);
+                    talked.set();
                     mainScript.runSection(activeOutcome + "Menu");
                     break;
 
                 case "intentionsA":
                 case "intentionsB":
-                    talked.set(true);
-                    askedIntentions.set(true);
+                    talked.set();
+                    askedIntentions.set();
                     
                     if (narratorProof.check()) {
                         mainScript.runSection("intentionsMenuProof");
@@ -12948,13 +12956,13 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "memory":
-                    talked.set(true);
+                    talked.set();
                     mainScript.runSection("memoryMenu");
                     this.prisonerNarratorProof(narratorProof);
                     break;
 
                 case "afterDied":
-                    talked.set(true);
+                    talked.set();
                     if (narratorNoProof.check()) mainScript.runSection("afterDiedMenuNoProof");
                     mainScript.runSection("afterDiedMenu");
                     this.prisonerNarratorProof(narratorProof);
@@ -12962,14 +12970,14 @@ public class StandardCycle extends Cycle {
 
                 case "head":
                 case "whatDo":
-                    talked.set(true);
-                    whatDo.set(true);
+                    talked.set();
+                    whatDo.set();
                     mainScript.runSection(activeOutcome + "Menu");
                     break;
 
                 case "noGiveA":
                 case "noGiveC":
-                    noGiveExplore.set(true);
+                    noGiveExplore.set();
 
                     if (narratorProof.check()) {
                         mainScript.runSection("noGiveJoinProof");
@@ -12981,7 +12989,7 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "noGiveB":
-                    noGiveExplore.set(true);
+                    noGiveExplore.set();
 
                     if (narratorProof.check()) {
                         mainScript.runSection("noGiveBMenuProof");
@@ -12998,12 +13006,12 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "threaten":
-                    immovable.set(true);
+                    immovable.set();
                     mainScript.runSection("threatenMenu");
                     break;
 
                 case "negotiate":
-                    immovable.set(true);
+                    immovable.set();
                     
                     if (locked.check()) {
                         mainScript.runSection("negotiateMenuLocked");
@@ -13039,10 +13047,10 @@ public class StandardCycle extends Cycle {
                 case "slayB":
                     if (manager.hasVisited(Chapter.GREY)) {
                         parser.printDialogueLine(WORNPATH);
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.GREY, ChapterEnding.COLDLYRATIONAL)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
 
@@ -13057,10 +13065,10 @@ public class StandardCycle extends Cycle {
                 case "slayC":
                     if (manager.hasVisited(Chapter.GREY)) {
                         parser.printDialogueLine(WORNPATH);
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.GREY, ChapterEnding.COLDLYRATIONAL)) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
 
@@ -13068,7 +13076,7 @@ public class StandardCycle extends Cycle {
                     return this.prisonerStrangled(true, narratorProof);
 
                 case "leaveA":
-                    locked.set(true);
+                    locked.set();
                     mainScript.runSection("leaveAttemptA");
                     if (this.sharedLoopInsist || narratorProof.check()) mainScript.runSection("doorLockSharedLoop");
                     mainScript.runSection("doorLock");
@@ -13081,7 +13089,7 @@ public class StandardCycle extends Cycle {
                         break;
                     }
                 case "leaveB":
-                    locked.set(true);
+                    locked.set();
                     mainScript.runSection("leaveAttemptB");
                     if (this.sharedLoopInsist || narratorProof.check()) mainScript.runSection("doorLockSharedLoop");
                     mainScript.runSection("doorLock");
@@ -13100,7 +13108,7 @@ public class StandardCycle extends Cycle {
     private void prisonerNarratorProof(Condition narratorProof) {
         if (narratorProof.check()) return;
 
-        narratorProof.set(true);
+        narratorProof.set();
         if (this.sharedLoopInsist) {
             mainScript.runSection("narratorProofSharedLoopInsist");
             mainScript.runSection("narratorProofContInsist");
@@ -13231,11 +13239,11 @@ public class StandardCycle extends Cycle {
                     if (manager.hasVisited(Chapter.GREY)) {
                         parser.printDialogueLine(WORNPATH);
                         parser.printDialogueLine(WORNPATHHERO);
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     } else if (!attack) {
                         if (!manager.confirmContentWarnings(Chapter.GREY, ChapterEnding.COLDLYRATIONAL)) {
-                            this.cantJoint3.set(true);
+                            this.cantJoint3.set();
                             break;
                         }
                     }
@@ -13292,7 +13300,7 @@ public class StandardCycle extends Cycle {
                     }
                 case "leave":
                     if (!manager.confirmContentWarnings(Chapter.CAGE, "suicide")) {
-                        this.cantUnique3.set(true);
+                        this.cantUnique3.set();
                         break;
                     }
 
@@ -13381,14 +13389,14 @@ public class StandardCycle extends Cycle {
         activeMenu.add(new Option(this.manager, "acceptA", "I don't want to die again. I didn't like dying last time. I'm going to accept my reward now.", activeMenu.get("suggest")));
         activeMenu.add(new Option(this.manager, "acceptB", "I dunno, I'm pretty happy. I'm going to accept my reward now.", noHappyExplore));
         activeMenu.add(new Option(this.manager, "acceptC", "Well, you might not be happy, but I am. I'm going to accept my reward now.", happyExplored));
-        activeMenu.add(new Option(this.manager, "suicide", "[Slay yourself.]", activeMenu.get("suggest")));
+        activeMenu.add(new Option(this.manager, "paranoid", "[Slay yourself.]", activeMenu.get("suggest")));
 
         this.repeatActiveMenu = true;
         while (repeatActiveMenu) {
             this.activeOutcome = parser.promptOptionsMenu(activeMenu);
             switch (activeOutcome) {
                 case "happy":
-                    happyExplored.set(true);
+                    happyExplored.set();
                     mainScript.runSection("happySlain");
                     break;
 
@@ -13401,11 +13409,55 @@ public class StandardCycle extends Cycle {
                 case "acceptA":
                 case "acceptB":
                 case "acceptC":
-                    this.repeatActiveMenu = false;
+                    mainScript.runSection("slainAccept");
+
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException("Thread interrupted");
+                    }
+
+                    mainScript.runSection();
+
+                    if (suggestion) {
+                        mainScript.runSection("suggestSlain2");
+                    } else {
+                        mainScript.runSection("suggestSlain");
+                    }
+
+                    // Option names here correspond to which Voice you gain in The Cage
+                    this.canSlaySelf = true;
+                    this.activeMenu = new OptionsMenu();
+                    activeMenu.add(new Option(this.manager, "noWay", "(Explore) Is there really no other way? Because I don't want to use the blade on myself."));
+                    activeMenu.add(new Option(this.manager, "happy2", "(Explore) But I liked being happy! Are you really going to take it away from me?"));
+                    activeMenu.add(new Option(this.manager, "broken", "[Give the blade to the Voice of the Skeptic.]", activeMenu.get("noWay")));
+                    activeMenu.add(new Option(this.manager, "paranoid", "[Slay yourself.]"));
+                    activeMenu.add(new Option(this.manager, "cheated", "Sorry, but we're not doing that."));
+
+                    while (repeatActiveMenu) {
+                        this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+                        switch (activeOutcome) {
+                            case "noWay":
+                            case "happy2":
+                                mainScript.runSection(activeOutcome + "Slain");
+                                break;
+
+                            case "broken":
+                            case "paranoid":
+                            case "cheated":
+                                this.repeatActiveMenu = false;
+                                mainScript.runSection(activeOutcome + "Suicide");
+                                mainScript.runSection(activeOutcome + "SuicideCont");
+                                break;
+
+                            default: super.giveDefaultFailResponse();
+                        }
+                    }
                     break;
                     
                 case "cSlaySelf":
-                case "suicide":
+                case "paranoid":
+                    this.repeatActiveMenu = false;
                     mainScript.runSection("suicideStart");
                     mainScript.runSection("paranoidSuicideCont");
                     break;
@@ -13413,54 +13465,9 @@ public class StandardCycle extends Cycle {
                 default: super.giveDefaultFailResponse();
             }
         }
-
-        // Attempt to accept your reward
-        mainScript.runSection("slainAccept");
-
-        try {
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            throw new RuntimeException("Thread interrupted");
-        }
-
-        mainScript.runSection();
-
-        if (suggestion) {
-            mainScript.runSection("suggestSlain2");
-        } else {
-            mainScript.runSection("suggestSlain");
-        }
-
-        // Option names here correspond to which Voice you gain in The Cage
-        this.canSlaySelf = true;
-        this.activeMenu = new OptionsMenu();
-        activeMenu.add(new Option(this.manager, "noWay", "(Explore) Is there really no other way? Because I don't want to use the blade on myself."));
-        activeMenu.add(new Option(this.manager, "happy2", "(Explore) But I liked being happy! Are you really going to take it away from me?"));
-        activeMenu.add(new Option(this.manager, "broken", "[Give the blade to the Voice of the Skeptic.]", activeMenu.get("noWay")));
-        activeMenu.add(new Option(this.manager, "paranoid", "[Slay yourself.]"));
-        activeMenu.add(new Option(this.manager, "cheated", "Sorry, but we're not doing that."));
-
-        this.repeatActiveMenu = true;
-        while (repeatActiveMenu) {
-            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
-            switch (activeOutcome) {
-                case "noWay":
-                case "happy2":
-                    mainScript.runSection(activeOutcome + "Slain");
-                    break;
-
-                case "broken":
-                case "paranoid":
-                case "cheated":
-                    this.repeatActiveMenu = false;
-                    mainScript.runSection(activeOutcome + "Suicide");
-                    mainScript.runSection(activeOutcome + "SuicideCont");
-                    break;
-
-                default: super.giveDefaultFailResponse();
-            }
-        }
         
+        ch2SpecificB.put("slayOrigin", activeOutcome);
+
         if (!selfSlain) {
             return ChapterEnding.COLDLYRATIONAL;
         } else {
@@ -13517,35 +13524,350 @@ public class StandardCycle extends Cycle {
         /*
           You gain the Voice of the Cold
           Possible combinations:
-            - Smitten + Cold
+            - Skeptic + Cold (from Prisoner)
+            - Smitten + Cold (from Damsel)
          */
 
+        boolean heartStopped = false;
         if (this.hasVoice(Voice.SMITTEN)) {
-            this.secondaryScript = new Script(this.manager, this.parser, "Routes/JOINT/Grey/BurnedGrey");
-            this.source = "burn";
+            this.source = "burned";
         } else {
-            this.secondaryScript = new Script(this.manager, this.parser, "Routes/JOINT/Grey/DrownedGrey");
-            this.source = "drown";
+            this.source = "drowned";
+            if (ch2SpecificB.get("slayOrigin").equals("cheated")) heartStopped = true;
         }
 
+        mainScript.runSection(this.source + "Start");
 
+        if (source.equals("drowned")) {
+            if (this.sharedLoopInsist) {
+                mainScript.runSection("drownedStart2Insist");
+            } else {
+                mainScript.runSection("drownedStart2NoInsist");
+            }
 
+            if (heartStopped) {
+                mainScript.runSection("drownedStart2Stopped");
+            } else {
+                mainScript.runSection("drownedStart2Suicide");
+            }
+        } else {
+            mainScript.runSection("burnedStart2");
+        }
 
+        Condition noDifferentAsk = new Condition(true);
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "rain", "(Explore) It's raining. It wasn't raining last time. Or the time before that. The whole path is different.", source.equals("drowned"), noDifferentAsk));
+        activeMenu.add(new Option(this.manager, "different", "(Explore) We haven't talked enough about how different this place is. It wasn't different last time.", noDifferentAsk));
+        activeMenu.add(new Option(this.manager, "noCabin", "(Explore) What happens if we don't go to the cabin?"));
+        activeMenu.add(new Option(this.manager, "charge", "(Explore) I'm the one in charge here, and if we slay her again, you are not going to make us kill ourself. Is that clear?", source.equals("burned")));
+        activeMenu.add(new Option(this.manager, "noWant", "(Explore) I'll have you know that I didn't want to kill myself last time.", heartStopped));
+        activeMenu.add(new Option(this.manager, "proceed", "Whatever happens next, it seems like all our answers are in the cabin. We might as well see this through. [Proceed to the cabin.]"));
+        activeMenu.add(new Option(this.manager, "abort", this.cantTryAbort, "I'm done with this. Bye! [Turn around and leave.]", 0));
 
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "rain":
+                    mainScript.runSection("rainPath");
+                case "different":
+                    noDifferentAsk.set(false);
+                    mainScript.runSection(this.source + "DifferentPath");
+                    break;
 
-        // temporary templates for copy-and-pasting
-        /*
-        parser.printDialogueLine("XXXXX");
-        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
-        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
-        */
+                case "noCabin":
+                    mainScript.runSection("noCabinPath");
+                    break;
+                    
+                case "charge":
+                case "noWant":
+                    mainScript.runSection(activeOutcome + "Path");
+
+                case "cGoHill":
+                case "proceed":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                case "cGoLeave":
+                    if (this.cantTryAbort.check()) {
+                        parser.printDialogueLine("You have already tried that.");
+                    }
+                case "abort":
+                    if (manager.nClaimedVessels() >= 2) {
+                        this.cantTryAbort.set();
+                        parser.printDialogueLine(CANTSTRAY);
+                        break;
+                    }
+
+                    mainScript.runSection(this.source + "Abort");
+                    this.quietCreep();
+                    mainScript.runSection("abortJoin");
+                    mainScript.runSection(this.source + "Abort2");
+                    this.abortVessel(true);
+                    return ChapterEnding.ABORTED;
+
+                default: this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        // Continue to the cabin
+        this.currentLocation = GameLocation.HILL;
+        mainScript.runSection(this.source + "Hill");
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "proceed", "[Proceed into the cabin.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu)) {
+                case "cGoCabin":
+                case "proceed":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default: this.giveDefaultFailResponse();
+            }
+        }
+
+        // Enter the cabin
+        this.currentLocation = GameLocation.CABIN;
+        this.mirrorPresent = true;
+        mainScript.runSection(this.source + "Cabin");
+        
+        if (this.mirrorComment || this.touchedMirror) {
+            mainScript.runSection("prevMirror");
+        } else {
+            mainScript.runSection("noPrevMirror");
+        }
+        
+        mainScript.runSection(this.source + "CabinCont");
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "explore", "(Explore) But there is no door."));
+        activeMenu.add(new Option(this.manager, "approach", "[Approach the mirror.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu)) {
+                case "explore":
+                    if (source.equals("drowned")) {
+                        if (this.touchedMirror) {
+                            mainScript.runSection("drownedAskMirrorTouched");
+                        } else if (this.mirrorComment) {
+                            mainScript.runSection("drownedAskMirrorCommented");
+                        } else {
+                            mainScript.runSection("drownedAskMirrorFirst");
+                        }
+                    } else {
+                        mainScript.runSection("burnedAskMirror");
+                    }
+
+                    break;
+
+                case "cApproachMirror":
+                case "cGoStairs":
+                case "approach":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default: super.giveDefaultFailResponse();
+            }
+        }
+
+        // Approach the mirror
+        if (this.touchedMirror) {
+            mainScript.runSection("mirrorPrevTouched");
+        } else {
+            mainScript.runSection("mirrorPrevNoTouch");
+        }
+
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "wipe", "[Wipe the mirror clean.]"));
+        parser.promptOptionsMenu(activeMenu);
+        mainScript.runSection("wipeMirror");
+
+        this.mirrorPresent = false;
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "enter", "[Enter the basement.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu)) {
+                case "cGoStairs":
+                case "enter":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default: this.giveDefaultFailResponse();
+            }
+        }
+
+        this.currentLocation = GameLocation.STAIRS;
+        mainScript.runSection(this.source + "StairsStart");
+
+        Condition noStairsExplore = new Condition(true);
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "sorry", "(Explore) \"I'm sorry about last time! Are we good?\"", noStairsExplore));
+        activeMenu.add(new Option(this.manager, "anyone", "(Explore) \"Is anyone there?\"", noStairsExplore));
+        activeMenu.add(new Option(this.manager, "talk", "(Explore) \"I think we have a lot to talk about.\"", noStairsExplore));
+        activeMenu.add(new Option(this.manager, "weapon", "(Explore) \"I don't have a weapon. There wasn't anything upstairs for me when I got here.\"", noStairsExplore));
+        activeMenu.add(new Option(this.manager, "proceed", "[Proceed down the stairs.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+            switch (activeOutcome) {
+                case "sorry":
+                case "anyone":
+                case "talk":
+                    noStairsExplore.set(false);
+                    mainScript.runSection("stairsExploreA");
+                    break;
+
+                case "weapon":
+                    noStairsExplore.set(false);
+                    mainScript.runSection("stairsExploreB");
+                    break;
+
+                case "cGoBasement":
+                case "proceed":
+                    this.repeatActiveMenu = false;
+                    break;
+
+                default: this.giveDefaultFailResponse(activeOutcome);
+            }
+        }
+
+        // Continue down the stairs
+        this.withBlade = true;
+        this.withPrincess = true;
+        mainScript.runSection(this.source + "BasementStart");
+        mainScript.runSection(this.source + "BasementStart2");
+
+        GlobalInt deathTimer = new GlobalInt();
+        boolean incrementFlag;
+        NumCondition timer0 = new NumCondition(deathTimer, 0);
+        InverseCondition timerIncremented = timer0.getInverse();
+        Condition burnedTogetherComment = new Condition();
+        boolean burnedGrudgeComment;
+        this.activeMenu = new OptionsMenu();
+
+        if (source.equals("drowned")) {
+            burnedGrudgeComment = true;
+            activeMenu.add(new Option(this.manager, "Why", "(Explore) \"Why did you close the door?\"", timer0));
+            activeMenu.add(new Option(this.manager, "Kill", "(Explore) \"Let me out! Are you trying to kill me?\""));
+            activeMenu.add(new Option(this.manager, "Die", "(Explore) \"I'm going to drown!\"", timerIncremented));
+            activeMenu.add(new Option(this.manager, "Wrong", "(Explore) \"What's wrong with you? I don't want this!\""));
+            activeMenu.add(new Option(this.manager, "Even", "(Explore) \"I only killed you after you killed me first! We're even now! We don't need to do this again.\""));
+            activeMenu.add(new Option(this.manager, "Beg", "(Explore) \"Please! I'm begging you! I'll do anything, just don't let me drown!\""));
+            activeMenu.add(new Option(this.manager, "Sorry", "(Explore) \"Is this about last time? I'm sorry! Now can you let me out?\""));
+        } else {
+            burnedGrudgeComment = false;
+            activeMenu.add(new Option(this.manager, "Why", "(Explore) \"Why did you close the door?\""));
+            activeMenu.add(new Option(this.manager, "Kill", "(Explore) \"Let me out! Are you trying to kill me?\""));
+            activeMenu.add(new Option(this.manager, "Die", "(Explore) \"I'm going to burn!\""));
+            activeMenu.add(new Option(this.manager, "Wrong", "(Explore) \"What's wrong with you? I don't want this!\"", burnedTogetherComment));
+            activeMenu.add(new Option(this.manager, "Beg", "(Explore) \"Please! I'm begging you! I'll do anything, just don't let me burn!\""));
+            activeMenu.add(new Option(this.manager, "Sorry", "(Explore) \"Are you mad at me for killing you? I'm sorry!\""));
+        }
+        activeMenu.add(new Option(this.manager, "Blade", "[Rush for the blade.]"));
+        activeMenu.add(new Option(this.manager, "Door", "[Rush to the door.]"));
+
+        while (deathTimer.lessThan(3)) {
+            incrementFlag = true;
+
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu);
+
+            // Redirect to rush options
+            if (activeOutcome.equals("cTake")) {
+                this.activeOutcome = "Blade";
+            } else if (activeOutcome.equals("cGoStairs")) {
+                this.activeOutcome = "Door";
+            }
+
+            switch (activeOutcome) {
+                case "Why":
+                    if (source.equals("burned")) {
+                        burnedTogetherComment.set(true);
+                        mainScript.runSection("burnedWhy");
+                    }
+
+                    break;
+
+                case "Kill":
+                    if (source.equals("burned")) {
+                        mainScript.runSection("burnedKill");
+
+                        if (!burnedTogetherComment.check()) {
+                            burnedTogetherComment.set(true);
+                            mainScript.runSection("burnedTogetherComment");
+                        }
+                    } else if (deathTimer.equals(1)) {
+                        mainScript.runSection("drownedKill");
+                    }
+
+                    break;
+
+                case "Die":
+                    if (source.equals("burned") || deathTimer.equals(1)) {
+                        mainScript.runSection(source + "Die");
+                    }
+
+                    break;
+
+                case "Wrong":
+                case "Even":
+                case "Beg":
+                case "Sorry":
+                    if (source.equals("burned") || deathTimer.equals(1)) {
+                        mainScript.runSection(source + activeOutcome);
+                        
+                        if (!burnedGrudgeComment) {
+                            burnedGrudgeComment = true;
+                            mainScript.runSection("burnedGrudgeComment");
+                        }
+                    }
+
+                    break;
+
+                case "Blade":
+                case "Door":
+                    incrementFlag = false;
+                    deathTimer.set(3); // Fast-forward
+
+                    if (source.equals("drowned")) {
+                        mainScript.runSection("drownedRush");
+                    } else {
+                        mainScript.runSection("burned" + activeOutcome);
+                    }
+
+                    break;
+
+                default:
+                    incrementFlag = false;
+                    this.giveDefaultFailResponse(activeOutcome);
+            }
+
+            if (incrementFlag) {
+                deathTimer.increment();
+                mainScript.runSection(this.source + "Timer" + deathTimer);
+            }
+        }
+
+        // Run out of time
+        mainScript.runSection(this.source + "End");
+        this.quietCreep();
+        mainScript.runSection();
+
+        if (this.isFirstVessel) {
+            mainScript.runSection(this.source + "EndFirstVessel");
+        } else {
+            mainScript.runSection(this.source + "EndNotFirstVessel");
+        }
             
         switch (this.source) {
-            case "burn": return ChapterEnding.BURNINGDOWNTHEHOUSE;
-            default: return ChapterEnding.ANDALLTHISLONGING;
+            case "drowned": return ChapterEnding.ANDALLTHISLONGING;
+            default: return ChapterEnding.BURNINGDOWNTHEHOUSE;
         }
     }
 
@@ -13705,14 +14027,15 @@ public class StandardCycle extends Cycle {
                     if (manager.hasVisited(Chapter.GREY)) {
                         parser.printDialogueLine(WORNPATH);
                         parser.printDialogueLine(WORNPATHHERO);
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.GREY, ChapterEnding.LADYKILLER, "forced suicide")) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
 
                     mainScript.runSection("conversationSlay");
+                    ch2SpecificB.put("slayOrigin", "damsel");
                     this.damselSlay();
                     return ChapterEnding.LADYKILLER;
 
@@ -13832,7 +14155,7 @@ public class StandardCycle extends Cycle {
             switch (activeOutcome) {
                 case "stay":
                     if (!manager.confirmContentWarnings(Chapter.HAPPY, "forced self-mutilation; forced suicide")) {
-                        this.cantUnique3.set(true);
+                        this.cantUnique3.set();
                         break;
                     }
 
@@ -13860,10 +14183,10 @@ public class StandardCycle extends Cycle {
                     mainScript.runSection("endWorldDecon");
 
                     if (endWorldResponse.isEmpty()) {
-                        if (depersonCount.check() == 0) {
+                        if (depersonCount.equals(0)) {
                             mainScript.runSection("endWorldNoDeperson");
                         } else {
-                            parrotComment.set(true);
+                            parrotComment.set();
                             mainScript.runSection("endWorldDeperson");
                         }
 
@@ -13882,7 +14205,7 @@ public class StandardCycle extends Cycle {
                             case "save":
                                 if (this.hasBlade) mainScript.runSection("saveEndWorldDeconBlade");
 
-                                if (depersonCount.check() == 0) {
+                                if (depersonCount.equals(0)) {
                                     depersonCount.increment();
                                     this.damselDepersonTruthComment(depersonCount);
                                 }
@@ -13893,7 +14216,7 @@ public class StandardCycle extends Cycle {
                             default:
                                 mainScript.runSection(endWorldResponse + "EndWorldDecon");
 
-                                if (depersonCount.check() == 0) {
+                                if (depersonCount.equals(0)) {
                                     depersonCount.increment();
                                     this.damselDepersonTruthComment(depersonCount);
                                 }
@@ -13912,7 +14235,7 @@ public class StandardCycle extends Cycle {
                 case "leaveA":
                 case "leaveB":
                 case "leaveC":
-                    if (depersonCount.check() > 1) {
+                    if (depersonCount.greaterThan(1)) {
                         mainScript.runSection("leaveStartDeconB");
                     } else {
                         mainScript.runSection("leaveStartDeconA");
@@ -13929,14 +14252,15 @@ public class StandardCycle extends Cycle {
                     if (manager.hasVisited(Chapter.GREY)) {
                         parser.printDialogueLine(WORNPATH);
                         parser.printDialogueLine(WORNPATHHERO);
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     } else if (!manager.confirmContentWarnings(Chapter.GREY, ChapterEnding.LADYKILLER, "forced suicide")) {
-                        this.cantJoint3.set(true);
+                        this.cantJoint3.set();
                         break;
                     }
 
                     mainScript.runSection("deconSlay");
+                    ch2SpecificB.put("slayOrigin", "damsel");
                     this.damselSlay();
                     return ChapterEnding.LADYKILLER;
 
@@ -13957,7 +14281,7 @@ public class StandardCycle extends Cycle {
 
         mainScript.runSection("depersonTruth" + depersonCount);
 
-        if (depersonCount.check() == 1) {
+        if (depersonCount.equals(1)) {
             this.quietCreep();
         } else {
             mainScript.runSection("quietCont");
@@ -14029,15 +14353,16 @@ public class StandardCycle extends Cycle {
                             parser.printDialogueLine(WORNPATHHERO);
 
                             this.withBlade = false;
-                            this.cantJoint3.set(true);
+                            this.cantJoint3.set();
                             break;
                         } else if (!manager.confirmContentWarnings(Chapter.GREY, ChapterEnding.LADYKILLER, "forced suicide")) {
                             this.withBlade = false;
-                            this.cantJoint3.set(true);
+                            this.cantJoint3.set();
                             break;
                         }
 
                         this.repeatActiveMenu = false;
+                        ch2SpecificB.put("slayOrigin", "damsel");
                         mainScript.runSection("cabinSlay");
                         this.damselSlay();
                         return ChapterEnding.LADYKILLER;
@@ -14081,7 +14406,7 @@ public class StandardCycle extends Cycle {
 
                         case "nonchalance":
                             if (!manager.confirmContentWarnings(Chapter.HAPPY, "forced self-mutilation, forced suicide")) {
-                                this.cantUnique3.set(true);
+                                this.cantUnique3.set();
                                 break;
                             }
 
@@ -14096,7 +14421,7 @@ public class StandardCycle extends Cycle {
                         case "trust":
                         case "silent":
                             if (!manager.confirmContentWarnings(Chapter.HAPPY, "forced self-mutilation, forced suicide")) {
-                                this.cantUnique3.set(true);
+                                this.cantUnique3.set();
                             }
 
                             mainScript.runSection("stayStartUpstairs");
@@ -14861,12 +15186,12 @@ public class StandardCycle extends Cycle {
                 case "change":
                 case "wall":
                 case "preferences":
-                    talked.set(true);
+                    talked.set();
                     secondaryScript.runSection(activeOutcome);
                     break;
 
                 case "want":
-                    talked.set(true);
+                    talked.set();
                     secondaryScript.runSection("want");
 
                     if (satisfied) {
@@ -14878,7 +15203,7 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "requests":
-                    talked.set(true);
+                    talked.set();
                     mainScript.runSection("requests");
 
                     if (satisfied) {
@@ -14890,24 +15215,24 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "threat":
-                    manager.threatenedMound().set(true);
+                    manager.threatenedMound().set();
                     break;
 
                 case "kindA":
                 case "kindB":
-                    talked.set(true);
+                    talked.set();
                     canKind.set(false);
                     secondaryScript.runSection("kind");
                     break;
 
                 case "thoughts":
-                    talked.set(true);
+                    talked.set();
                     this.giveVesselThoughts(prevEnding.getVessel());
                     break;
 
                 case "feelingsA":
                 case "feelingsB":
-                    talked.set(true);
+                    talked.set();
                     canFeelings.set(false);
                     
                     if (satisfied) {
@@ -14923,7 +15248,7 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "howMany":
-                    talked.set(true);
+                    talked.set();
                     
                     if (satisfied) {
                         secondaryScript.runSection("feelingsSatisfy");
@@ -14938,7 +15263,7 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "refuse":
-                    talked.set(true);
+                    talked.set();
                     manager.noRefuseExploreMound().set(false);
 
                     secondaryScript.runSection("refuse");
@@ -15043,12 +15368,12 @@ public class StandardCycle extends Cycle {
                 case "how":
                 case "howMany":
                 case "worlds":
-                    talked.set(true);
+                    talked.set();
                     secondaryScript.runSection(activeOutcome);
                     break;
 
                 case "worse":
-                    talked.set(true);
+                    talked.set();
                     secondaryScript.runSection("worse");
 
                     subMenu = new OptionsMenu(true);
@@ -15077,14 +15402,14 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "vessel":
-                    talked.set(true);
+                    talked.set();
                     this.giveVesselThoughts(prevEnding.getVessel());
                     break;
 
                 case "threatB":
-                    manager.threatenedMound().set(true);
+                    manager.threatenedMound().set();
                 case "threatA":
-                    talked.set(true);
+                    talked.set();
                     localCanThreat.set(false);
 
                     if (satisfied) {
@@ -15096,7 +15421,7 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "want":
-                    talked.set(true);
+                    talked.set();
 
                     if (satisfied) {
                         secondaryScript.runSection("wantSatisfy");
@@ -15107,9 +15432,9 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "requestsA":
-                    talked.set(true);
+                    talked.set();
                     localCanRequests.set(false);
-                    manager.askedRequestsMound().set(true);
+                    manager.askedRequestsMound().set();
 
                     if (satisfied) {
                         secondaryScript.runSection("requestsSatisfy");
@@ -15120,9 +15445,9 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "requestsB":
-                    talked.set(true);
+                    talked.set();
                     localCanRequests.set(false);
-                    manager.askedRequestsMound().set(true);
+                    manager.askedRequestsMound().set();
                     mainScript.runSection("requests");
 
                     if (satisfied) {
@@ -15143,7 +15468,7 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "refuse":
-                    talked.set(true);
+                    talked.set();
                     manager.noRefuseExploreMound().set(false);
 
                     secondaryScript.runSection("refuse");
@@ -15247,14 +15572,14 @@ public class StandardCycle extends Cycle {
                 case "real":
                 case "howMany":
                 case "requests":
-                    talked.set(true);
+                    talked.set();
                     secondaryScript.runSection(activeOutcome);
                     break;
 
                 case "people":
                 case "awaken":
                 case "threat":
-                    talked.set(true);
+                    talked.set();
 
                     if (satisfied) {
                         secondaryScript.runSection(activeOutcome + "Satisfy");
@@ -15265,12 +15590,12 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case "vessel":
-                    talked.set(true);
+                    talked.set();
                     this.giveVesselThoughts(prevEnding.getVessel());
                     break;
 
                 case "narrator":
-                    talked.set(true);
+                    talked.set();
 
                     if (manager.hasClaimedAnyVessel(Vessel.WOUNDEDWILD, Vessel.NETWORKWILD, Vessel.SPECTRE, Vessel.WRAITH, Vessel.TOWER, Vessel.APOTHEOSIS)) {
                         secondaryScript.runSection("narratorMet");
@@ -15305,7 +15630,7 @@ public class StandardCycle extends Cycle {
 
                 case "refuseA":
                 case "refuseB":
-                    talked.set(true);
+                    talked.set();
                     secondaryScript.runSection(activeOutcome);
 
                     subMenu = new OptionsMenu(true);

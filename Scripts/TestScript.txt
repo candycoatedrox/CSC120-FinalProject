@@ -11,3 +11,21 @@ n Nuh uh -- /// interrupt
 contra Yuh huh!
 
 n Don't you dare!
+
+jumpanchor checkTest
+linebreak
+hero Are you sure about that?
+    contra I sure am! /// checkvoice
+        broken I'm not... /// checkvoice-contra
+        contra Oh, don't be a spoilsport. /// checkvoice
+        stubborn Everyone shut up. Let's get moving already! /// checkvoice-contra-stubborn
+    broken No... /// checknovoice-contra
+        stubborn Oh, shut up. Let's get moving already! /// checkvoice checknovoice-contra
+
+jumpanchor extTest
+np Testing.
+heroext Testing!
+dragon Who knows who I am? Muahaha...
+coldext Opportunist.
+oppoext Oh, you just hate fun.
+pint Um... hello?

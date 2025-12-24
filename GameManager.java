@@ -1356,6 +1356,21 @@ public class GameManager {
     public static void main(String[] args) {
         GameManager manager = new GameManager();
         manager.debugRunGame();
+        
+        /*
+        IOHandler parserStatic = manager.parser;
+        Script script = new Script(manager, parserStatic, "TestScript");
+
+        manager.currentCycle = new StandardCycle(manager, parserStatic);
+
+        script.runSection("checkTest");
+        manager.currentCycle.addVoice(Voice.CONTRARIAN);
+        script.runSection("checkTest");
+        manager.currentCycle.addVoice(Voice.STUBBORN);
+        script.runSection("checkTest");
+        manager.currentCycle.removeVoice(Voice.CONTRARIAN);
+        script.runSection("checkTest");
+        */
     }
 
 }

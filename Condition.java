@@ -39,11 +39,10 @@ public class Condition extends  AbstractCondition {
     }
 
     /**
-     * Returns the inverse of this condition
-     * @return the inverse of this condition
+     * Default manipulator for value (sets this Condition to true)
      */
-    public InverseCondition getInverse() {
-        return new InverseCondition(this);
+    public void set() {
+        this.value = true;
     }
 
     /*

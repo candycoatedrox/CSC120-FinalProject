@@ -19,7 +19,7 @@ public class GlobalInt {
         this(0);
     }
 
-    // --- ACCESSORS & MANIPULATORS
+    // --- ACCESSORS & MANIPULATORS ---
 
     /**
      * Accessor for value
@@ -35,6 +35,107 @@ public class GlobalInt {
      */
     public void set(int newValue) {
         this.value = newValue;
+    }
+
+    // --- BASIC MATH ---
+
+    /**
+     * Checks whether the value of this GlobalInt is equal to a given int
+     * @param n the int to check against
+     * @return true if the value of this GlobalInt is equal to n; false otherwise
+     */
+    public boolean equals(int n) {
+        return this.value == n;
+    }
+
+    /**
+     * Checks whether the value of this GlobalInt is equal to a given int
+     * @param n the int to check against
+     * @return true if the value of this GlobalInt is equal to n; false otherwise
+     */
+    public boolean equals(double n) {
+        return this.value == n;
+    }
+
+    /**
+     * Checks whether the value of this GlobalInt is equal to a given float
+     * @param n the float to check against
+     * @return true if the value of this GlobalInt is equal to n; false otherwise
+     */
+    public boolean equals(float n) {
+        return this.value == n;
+    }
+
+    /**
+     * Checks whether the value of this GlobalInt is equal to a given byte
+     * @param n the byte to check against
+     * @return true if the value of this GlobalInt is equal to n; false otherwise
+     */
+    public boolean equals(byte n) {
+        return this.value == n;
+    }
+
+    /**
+     * Checks whether the value of this GlobalInt is equal to a given long
+     * @param n the long to check against
+     * @return true if the value of this GlobalInt is equal to n; false otherwise
+     */
+    public boolean equals(long n) {
+        return this.value == n;
+    }
+
+    /**
+     * Checks whether the value of this GlobalInt is equal to a given short
+     * @param n the short to check against
+     * @return true if the value of this GlobalInt is equal to n; false otherwise
+     */
+    public boolean equals(short n) {
+        return this.value == n;
+    }
+
+    /**
+     * Checks whether the value of this GlobalInt is equal to a given int
+     * @param n the int to check against
+     * @return true if the value of this GlobalInt is equal to n; false otherwise
+     */
+    public boolean equals(Number n) {
+        return this.value == n.longValue();
+    }
+
+    /**
+     * Checks whether the value of this GlobalInt is greater than a given int
+     * @param n the int to check against
+     * @return true if the value of this GlobalInt is greater than n; false otherwise
+     */
+    public boolean greaterThan(int n) {
+        return this.value > n;
+    }
+
+    /**
+     * Checks whether the value of this GlobalInt is greater than or equal to a given int
+     * @param n the int to check against
+     * @return true if the value of this GlobalInt is greater than or equal to n; false otherwise
+     */
+    public boolean greaterOrEquals(int n) {
+        return this.value >= n;
+    }
+
+    /**
+     * Checks whether the value of this GlobalInt is less than a given int
+     * @param n the int to check against
+     * @return true if the value of this GlobalInt is less than n; false otherwise
+     */
+    public boolean lessThan(int n) {
+        return this.value < n;
+    }
+
+    /**
+     * Checks whether the value of this GlobalInt is less than or equal to a given int
+     * @param n the int to check against
+     * @return true if the value of this GlobalInt is less than or equal to n; false otherwise
+     */
+    public boolean lessOrEquals(int n) {
+        return this.value <= n;
     }
 
     /**
@@ -66,6 +167,24 @@ public class GlobalInt {
     public void decrement() {
         this.value -= 1;
     }
+
+    /**
+     * Multiply this GlobalInt by an int
+     * @param n the integer to multiply by this GlobalInt
+     */
+    public void multiply(int n) {
+        this.value *= n;
+    }
+
+    /**
+     * Divide this GlobalInt by an int
+     * @param n the integer to divide this GlobalInt by
+     */
+    public void divideBy(int n) {
+        this.value /= n;
+    }
+
+    // --- MISC ---
 
     /**
      * Returns a String representation of this AbstractCondition

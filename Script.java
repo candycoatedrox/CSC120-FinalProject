@@ -121,6 +121,16 @@ public class Script {
             case "smitten":
             case "st":
             case "stubborn":
+            case "dragon":
+            case "uext":
+            case "unknownext":
+            case "hext":
+            case "heroext":
+            case "cext":
+            case "coldext":
+            case "oext":
+            case "oppoext":
+            case "opportunistext":
             case "nstub":
             case "stubcont":
             case "paraskep":
@@ -480,7 +490,7 @@ public class Script {
      */
     private void printDialogueLine(String characterID, String arguments) {
         boolean isInterrupted = false;
-        ArrayList<Voice> checkVoices = new ArrayList<>();
+        HashMap<Voice, Boolean> voiceChecks = new HashMap<>();
 
         String[] args = arguments.split(" /// ");
         String line = args[0];
@@ -494,10 +504,17 @@ public class Script {
                     String[] checkIDs = m.split("-");
                     if (checkIDs.length > 1) {
                         for (String id : checkIDs) {
-                            if (Voice.getVoice(id) != null) checkVoices.add(Voice.getVoice(id));
+                            if (Voice.getVoice(id) != null) voiceChecks.put(Voice.getVoice(id), true);
                         }
                     } else {
-                        if (Voice.getVoice(characterID) != null) checkVoices.add(Voice.getVoice(characterID));
+                        if (Voice.getVoice(characterID) != null) voiceChecks.put(Voice.getVoice(characterID).checkVoice(), true);
+                    }
+                } else if (m.startsWith("checknovoice")){
+                    String[] checkIDs = m.split("-");
+                    if (checkIDs.length > 1) {
+                        for (String id : checkIDs) {
+                            if (Voice.getVoice(id) != null) voiceChecks.put(Voice.getVoice(id), false);
+                        }
                     }
                 }
             }
@@ -506,9 +523,9 @@ public class Script {
         boolean checkResult = true;
         Voice v = Voice.getVoice(characterID);
         if (v == null) {
-            if (!checkVoices.isEmpty() && parser.getCurrentCycle() != null) {
-                for (Voice checkVoice : checkVoices) {
-                    if (!parser.getCurrentCycle().hasVoice(checkVoice)) {
+            if (parser.getCurrentCycle() != null && !voiceChecks.isEmpty()) {
+                for (Voice checkVoice : voiceChecks.keySet()) {
+                    if (parser.getCurrentCycle().hasVoice(checkVoice) != voiceChecks.get(checkVoice)) {
                         checkResult = false;
                     }
                 }
@@ -523,9 +540,9 @@ public class Script {
                 System.out.println("[DEBUG: Invalid character ID in file " + source.getName() + " at line " + (this.cursor + 1) + "]");
             }
         } else {
-            if (!checkVoices.isEmpty() && parser.getCurrentCycle() != null) {
-                for (Voice checkVoice : checkVoices) {
-                    if (!parser.getCurrentCycle().hasVoice(checkVoice)) {
+            if (parser.getCurrentCycle() != null && !voiceChecks.isEmpty()) {
+                for (Voice checkVoice : voiceChecks.keySet()) {
+                    if (parser.getCurrentCycle().hasVoice(checkVoice) != voiceChecks.get(checkVoice)) {
                         checkResult = false;
                     }
                 }
@@ -569,7 +586,7 @@ public class Script {
         File testFile = new File("Scripts", "TestScript.txt");
         System.out.println(testFile.getPath());
         
-        Script script = new Script(parser, getFromDirectory("TestScript"));
+        Script script = new Script(manager, parser, "TestScript");
         for (String a : script.jumpAnchors.keySet()) {
             System.out.println(a + ", " + script.jumpAnchors.get(a));
         }
@@ -616,6 +633,11 @@ Different functions a script can perform:
           - checkvoice-[id]
                 Checks whether the player has the voice specified by the ID before printing.
                 (Multiple voices can be specified, as long as they are separated with hyphens.)
+                (This modifier can be combined with additional checks from checknovoice.)
+          - checknovoice-[id]
+                Checks whether the player does NOT have the voice specified by the ID before printing.
+                (Multiple voices can be specified, as long as they are separated with hyphens.)
+                (This modifier can be combined with additional checks from checkvoice.)
           - interrupt
                 The line is interrupted.
 */

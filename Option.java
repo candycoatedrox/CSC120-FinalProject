@@ -743,6 +743,32 @@ public class Option {
      * Constructor
      * @param manager the GameManager to link this Option to
      * @param id the shorthand ID of the Option
+     * @param greyedOut whether the Option is initially greyed out or not
+     * @param display the text displayed to the player for the Option
+     * @param maxTimesPicked the maximum number of times the Option can be picked; a value of 0 means there is no maximum
+     * @param leadsToChapter the Chapter that the Option leads to
+     */
+    public Option(GameManager manager, String id, boolean greyedOut, String display, int maxTimesPicked, Chapter leadsToChapter) {
+        this(manager, id, display, maxTimesPicked, greyedOut, null, leadsToChapter, true);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
+     * @param greyCondition a Condition that must be met for the Option to be greyed out
+     * @param display the text displayed to the player for the Option
+     * @param maxTimesPicked the maximum number of times the Option can be picked; a value of 0 means there is no maximum
+     * @param leadsToChapter the Chapter that the Option leads to
+     */
+    public Option(GameManager manager, String id, AbstractCondition greyCondition, String display, int maxTimesPicked, Chapter leadsToChapter) {
+        this(manager, id, display, maxTimesPicked, greyCondition, null, leadsToChapter, true);
+    }
+
+    /**
+     * Constructor
+     * @param manager the GameManager to link this Option to
+     * @param id the shorthand ID of the Option
      * @param display the text displayed to the player for the Option
      * @param maxTimesPicked the maximum number of times the Option can be picked; a value of 0 means there is no maximum
      * @param leadsToChapter the Chapter that the Option leads to

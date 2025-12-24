@@ -69,7 +69,7 @@ public class VoiceDialogueLine extends DialogueLine {
      */
     @Override
     public String toString() {
-        if (this.speaker == Voice.NARRATORPRINCESS) {
+        if (this.speaker.isExternal()) {
             return this.speaker.getDialogueTag() + ": \"" + this.line + "\"";
         } else {
             return this.speaker.getDialogueTag() + ": " + this.line;

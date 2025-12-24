@@ -82,9 +82,8 @@ cheated She isn't one to talk and we shouldn't be either.
     stubborn I agree. Talking is boring. We should just get back to fighting her! /// checkvoice
         cheated That's not helpful. We already tried that one, didn't we? /// checkvoice-stubborn
     broken He's right. I don't think we can talk this out. I think she wants to kill us. /// checkvoice
-        cheated Exactly. I think she established that at some point between stabbing us to death and directly telling us, just now, that she was going to kill us. /// checkvoice-broken
     para Exactly. She wants us dead, you know! /// checkvoice
-        cheated Exactly. I think she established that at some point between stabbing us to death and directly telling us, just now, that she was going to kill us. /// checkvoice-para
+        cheated Exactly. I think she established that at some point between stabbing us to death and directly telling us, just now, that she was going to kill us. /// checknovoice-stubborn
 
 jumpanchor oppoStabbing
 p Nope! But I don't need anyone to tell me that. I know I'm good at what I do! The best, I think.
@@ -109,7 +108,7 @@ n A blade flashes through the air, and she skewers you.
 
 jumpanchor oppoNoStubborn
     broken I'm going to be quiet for a bit now. Let me know when we die again. /// checkvoice
-    para I don't like the way she said that." /// checkvoice
+    para I don't like the way she said that. /// checkvoice
 n You dodge and parry and dodge and parry in an endless repeating pattern, but you can only keep it up so long before making a mistake. The pattern breaks for just long enough.
 n She skewers you.
 
@@ -140,9 +139,8 @@ hunted I'd rather not.
         cheated I can't say I mind, either. If it weren't for all the cheating, I'd say she's pretty cute. /// checkvoice-stubborn
         stubborn Can we flirt by fighting her, though? /// checkvoice
     broken It's not like she wants us, anyway. /// checkvoice
-        cheated I'm fine with it. Let's see where this goes. /// checkvoice-broken
     para Maybe it'll work! Maybe it'll throw her off. I know I'd be thrown off if she started flirting with us. /// checkvoice
-        cheated I'm fine with it. Let's see where this goes. /// checkvoice-para
+        cheated I'm fine with it. Let's see where this goes. /// checknovoice-stubborn
 
 jumpanchor smittenTheLook
 hero *The Look?*
