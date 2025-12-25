@@ -602,12 +602,13 @@ p That was a good one. More!
 
 jumpanchor directFinalStart
 n You and the Princess exchange dozens of devastating blows. Sometimes you manage to strike first, and sometimes she tears through you before you have a chance to act, but more often than not, each of you fells the other in the same moment.
-
+quietcreep
 n And then you get up and do it again, and again, and again, and again, and again, and again, and again...
 linebreak
 hero We're all still here. This is all going to be okay, isn't it?
 linebreak
 hero Isn't it...?
+claim noAnswer
 
 jumpanchor noAnswerFirstVessel
 truth But He doesn't answer the voice. He's gone.
@@ -626,10 +627,6 @@ hero It's the end of the world, isn't it? It's the end of everything.
 stubborn Far from it. We're still here, and she's still here too.
 truth The Princess stumbles, and her body slumps.
 p I feel so... tired.
-
-linebreak
-truth Something reaches out and folds her into its myriad arms.
-linebreak
 
 jumpanchor directFinalEndNotFirstVessel
 truth You do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.

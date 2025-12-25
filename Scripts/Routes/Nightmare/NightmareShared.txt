@@ -596,14 +596,12 @@ para We are NOT going back down there. Heart. Lungs...
 // "A World of Terror" ending; claim the Nightmare //
 jumpanchor leaveCabinEnd
 n The doorknob twists in your hand, revealing the forested path beyond the cabin. You *bastard.* You've actually done it. You've actually doomed everyone.
-
+quietcreep
 p It's so beautiful. I can't wait to ruin it.
 p But it's so cold, too. It's... itching against my skin.
 truth The Princess, exhausted, slumps to the ground.
 p Why is it so cold?
-linebreak
-truth Something reaches out and folds her into its myriad arms.
-linebreak
+claim leaveEnd
 
 jumpanchor leaveEndFirstVessel
 truth You do not have an opportunity to respond. Something has taken her away, and it's left something else in her stead.

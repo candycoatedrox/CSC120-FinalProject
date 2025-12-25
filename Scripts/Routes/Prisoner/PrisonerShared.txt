@@ -427,14 +427,12 @@ hero She hasn't starved.
 skeptic I guess she hasn't.
 n Even more silent time passes as you watch roots push themselves through the increasingly porous walls of the basement. Dirt seeps inside, flowing across the stone floor like a liquid, covering the ground and threatening to swallow you both. Time continues to pass. And pass. And pass.
 n Until suddenly, there are no walls. And then...
-
+quietcreep
 hero ... And?
 skeptic I think He's gone.
 p Would you look at that? We made it out of the cabin, and nothing bad had to happen to either of us.
 p So this is the outside world. It's... cold.
-linebreak
-truth Something reaches out and folds her into its myriad arms.
-linebreak
+claim end
 
 jumpanchor endFirstVessel
 truth But you don't get the chance to respond. Something has taken her away, and it's left something else in her stead.
@@ -616,15 +614,13 @@ n You open the cabin door, ready to return to a world saved from certain doom.
 n Only, a world saved from certain doom isn't what you find. Instead, what you find is -- wait, no, that's not right.
 truth The Princess slowly opens her eyes.
 p Well played.
-
+quietcreep
 n This is -- this -- this is the end of the world, isn't it? I always thought I'd at least have time to explain myself before I had to watch it happen, but it's already --
 hero ... Over? Is He gone?
 skeptic But we're still here. Maybe it wasn't the end of the world after all. Maybe it was just the end of His.
 p Thanks for carrying me up here. I had to take it on faith that you would know what to do. I'm glad I was right to trust you.
 p So this is the outside. Maybe it's just my lack of body, but... it's colder than I expected.
-linebreak
-truth Something reaches out and folds her into its myriad arms.
-linebreak
+claim end
 
 // Return upstairs with the Princess dead //
 

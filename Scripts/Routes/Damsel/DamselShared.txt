@@ -383,19 +383,15 @@ smitten Or she's innocent. How could a beauty like her be capable of ending the 
 jumpanchor deconEnding
 truth She degrades even further, her outline becoming sketchy and smudged from being erased over and over. She looks like a child's first attempt at following an art tutorial.
 hero Is it just me or... does it feel like we're alone right now? Like we're the only ones here.
-linebreak
+claim deconEnd
 
-jumpanchor deconEndingFirstVessel
-truth Something reaches out and folds her into its myriad arms.
-linebreak
+jumpanchor deconEndFirstVessel
 truth You don't get the chance to ask another question. Something has taken her away, and it's left something else in her place.
-jumpto deconEndingJoin
+jumpto deconEndJoin
 
-jumpanchor deconEndingNotFirst
-truth Something reaches out and folds her into its myriad arms.
-linebreak
+jumpanchor deconEndNotFirstVessel
 truth You don't get the chance to ask another question. Nor will you ever. It's time for you to leave. Memory returns.
-jumpanchor deconEndingJoin
+jumpanchor deconEndJoin
 smitten No! She was our perfect match!
 
 // Leave the basement //
@@ -486,7 +482,7 @@ p That's the way out. We're going to leave together, just like you wanted!
 // "Romantic Haze" ending; claim the Damsel //
 jumpanchor leaveEnding
 n Yes, I suppose you are going to do that, aren't you? You cross the room, opening the door to the cabin.
-
+quietCreep
 n And then you step outside.
 p We did it! What should we do now?
 
@@ -495,9 +491,7 @@ hero ... Where did He go?
 smitten Oh, is he gone? I hadn't noticed. I was too busy staring deep into our beloved's eyes.
 p I'm cold. Is being happy supposed to be so cold?
 smitten She's cold? Quick, our feathers! Pluck them all and weave her a coat worthy of a Princess!
-linebreak
-truth Something reaches out and folds her into its myriad arms.
-linebreak
+claim leaveEnd
 
 jumpanchor leaveEndFirstVessel
 truth But you don't get the chance to make that jacket. Something has taken her away, and it's left something else in her place.

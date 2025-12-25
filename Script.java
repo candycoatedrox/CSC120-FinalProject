@@ -15,6 +15,8 @@ public class Script {
     
     private int cursor = 0; // The current line index
 
+    private static final DialogueLine CLAIMFOLD = new DialogueLine("Something reaches out and folds her into its myriad arms.");
+
     // --- CONSTRUCTORS ---
 
     /**
@@ -215,6 +217,28 @@ public class Script {
     }
 
     /**
+     * Executes this script while claiming a vessel, redirecting to one of two sections depending on whether the player has already claimed at least one vessel
+     * @param anchorName the prefix of the jump anchor to start executing at
+     * @param skipFirstLineBreak whether to skip the first line break of the pre-claim sequence
+     */
+    public void runClaimSection(String anchorName, boolean skipFirstLineBreak) {
+        Cycle currentCycle = manager.getCurrentCycle();
+        boolean firstVessel = (currentCycle == null) ? false : currentCycle.isFirstVessel();
+        String anchorSuffix = (firstVessel) ? "FirstVessel" : "NotFirstVessel";
+
+        this.claimFoldLine(skipFirstLineBreak);
+        this.runSection(anchorName + anchorSuffix);
+    }
+
+    /**
+     * Executes this script while claiming a vessel, redirecting to one of two sections depending on whether the player has already claimed at least one vessel
+     * @param anchorName the prefix of the jump anchor to start executing at
+     */
+    public void runClaimSection(String anchorName) {
+        this.runClaimSection(anchorName, false);
+    }
+
+    /**
      * Executes this script from the cursor until the given line index
      * @param endIndex the index to stop executing at
      */
@@ -386,12 +410,37 @@ public class Script {
         String[] split = lineContent.split(" ", 2);
 
         String prefix = split[0];
-        String argument = (split.length == 2) ? split[1] : "";
+        String argument;
+        try {
+            argument = split[1];
+        } catch (IndexOutOfBoundsException e) {
+            argument = "";
+        }
 
         boolean cont = true;
         switch (prefix) {
+            case "//":
+                // Comment; skip
+                break;
+
+            case "jumpanchor":
+                // Skip to next line
+                break;
+
+            case "claim":
+                if (argument.isEmpty()) {
+                    // Invalid line; print error message and skip to next line
+                    System.out.println("[DEBUG: Invalid claim command in file " + source.getName() + " at line " + (this.cursor + 1) + "]");
+                    break;
+                }
+
+                this.runClaimSection(argument);
+            case "":
+                cont = false;
+                break;
+
             case "linebreak":
-                lineBreak(argument);
+                this.lineBreak(argument);
                 break;
 
             case "jumpto":
@@ -405,20 +454,16 @@ public class Script {
 
                 break;
 
-            case "jumpanchor":
-                // Skip to next line
-                break;
-
             case "nowplaying":
                 manager.setNowPlaying(argument);
                 break;
 
-            case "":
-                cont = false;
+            case "quietcreep":
+                this.quietCreep();
                 break;
 
-            case "//":
-                // Comment; skip
+            case "claimfold":
+                this.claimFoldLine();
                 break;
 
             default:
@@ -467,6 +512,31 @@ public class Script {
      */
     public void jumpTo(String jumpAnchor) {
         this.jumpTo(this.getJumpAnchorIndex(jumpAnchor));
+    }
+
+    /**
+     * Prints a line about the Long Quiet beginning to creep closer, used in most endings right before a vessel is claimed
+     */
+    private void quietCreep() {
+        Cycle currentCycle = parser.getCurrentCycle();
+        if (currentCycle != null) currentCycle.quietCreep();
+    }
+
+    /**
+     * Prints out the short sequence of the Shifting Mound taking the current vessel away
+     * @param skipFirstLineBreak whether to skip the first line break of the sequence
+     */
+    public void claimFoldLine(boolean skipFirstLineBreak) {
+        if (!skipFirstLineBreak) System.out.println();
+        parser.printDialogueLine(CLAIMFOLD);
+        System.out.println();
+    }
+
+    /**
+     * Prints out the short sequence of the Shifting Mound taking the current vessel away
+     */
+    public void claimFoldLine() {
+        this.claimFoldLine(false);
     }
 
     /**
@@ -601,7 +671,7 @@ public class Script {
 /*
 --- SCRIPT SYNTAX GUIDE ---
 
-// This is a comment, and will be ignored during execution //
+// This is a comment, and will be ignored during execution. //
 Trailing spaces and indentation will also be ignored during execution.
 
 Indentation is usually used to indicate conditional dialogue, i.e. dialogue that only triggers if you have certain Voices.
@@ -611,19 +681,25 @@ Different functions a script can perform:
   - linebreak [n]
         Prints out a line break. Can print out multiple line breaks at once if you specify a number, such as "linebreak 2".
 
+  - jumpanchor [id]
+        Essentially acts as a label the script can move its cursor to at any time.
+
   - jumpto [n]
   - jumpto [anchor]
         Moves the cursor to a given line index or jump anchor.
 
-  - jumpanchor [id]
-        Essentially acts as a label the script can move its cursor to at any time.
+  - claim [prefix]
+        Used while claiming a vessel at the end of a StandardCycle. Runs the section of the script at the jumpanchor starting with the given prefix and ending with either "EndFirstVessel" or "EndNotFirstVessel", depending on whether the player has already claimed at least one vessel.
 
   - nowplaying [song]
         Sets the song currently playing.
 
+  - quietcreep
+        Triggers StandardCycle.quietCreep(). Used in most endings right before a vessel is claimed.
+
   - [character] Dialogue line goes here
   - [character] Dialogue line goes here /// [modifiers]
-        Modifiers are optional.
+        Modifiers are optional. Multiple modifiers can be used together.
         The first word specifies the ID of the speaking character, then anything after that is considered the actual dialogue line.
         Including " /// " at the end of the line allows you to toggle additional modifiers for this dialogue line.
 

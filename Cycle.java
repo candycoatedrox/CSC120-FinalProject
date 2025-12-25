@@ -51,6 +51,14 @@ public abstract class Cycle {
     // --- ACCESSORS & MANIPULATORS ---
 
     /**
+     * Returns whether the player has not yet claimed their first vessel
+     * @return whether the player has not yet claimed their first vessel
+     */
+    public boolean isFirstVessel() {
+        return false;
+    }
+
+    /**
      * Checks whether a given Voice is currently present
      * @param v the Voice to check for
      * @return true if v is currently present; false otherwise
@@ -705,6 +713,15 @@ public abstract class Cycle {
      */
     protected void giveDefaultFailResponse() {
         parser.printDialogueLine("You have no other choice.");
+    }
+
+    /**
+     * Prints a line about the Long Quiet beginning to creep closer, used in most endings right before a vessel is claimed
+     */
+    public void quietCreep() {
+        System.out.println();
+        parser.printDialogueLine("A textured nothingness begins to creep into the edges of your vision.");
+        System.out.println();
     }
 
     // --- CYCLE MANAGEMENT ---

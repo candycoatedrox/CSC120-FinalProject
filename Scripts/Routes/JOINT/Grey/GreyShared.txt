@@ -360,11 +360,9 @@ hero I get it! We shouldn't have killed her! Just get it away from us, please!
 cold The past is the past. There's no changing it. There's nothing to fix.
 skeptic And there's not a lot we can do about the present, either. Not unless we think. Like we should have been doing all along!
 n But there is no thinking as you drown. You desperately try to pull yourself back to the surface again, and again, and again, your icy limbs flailing desperately against the grip of her rotting corpse. And all the while her ghastly figure stares down at you, expressionless, as unfeeling as the weight around your ankle.
-
+quietcreep
 p Your lungs fill with water the same way mine filled with blood. In the end, we're not so different.
-linebreak
-truth Something reaches out and folds her into its myriad arms.
-linebreak
+claim drownedEnd
 
 jumpanchor drownedEndFirstVessel
 truth But your lungs don't fill, and both she and her bones are gone. Something has taken them away, and it's left something else in their place.
@@ -442,12 +440,10 @@ hero It *was* so bad! But somehow, the nothing is so much worse.
 cold You'll get used to it.
 smitten There are still the feelings of the heart. Those never go away.
 cold Oh, they always do in the end. You just haven't experienced enough. Eventually you'll want them to stop, too. You'll make them stop. Trust me.
-
+quietcreep
 n The Princess' smile never fades. Her skin peels away, and then her muscle, until all you can see is her charring skull, locked in an eternal grin.
 smitten It's very romantic, really. We got our happy ending after all. We can die happy.
-linebreak
-truth Something reaches out and folds her into its myriad arms.
-linebreak
+claim burnedEnd
 
 jumpanchor burnedEndFirstVessel
 truth But despite your best efforts, you do not die, and she is gone. Something has taken her away, and it's left something else in her place.
@@ -459,11 +455,12 @@ truth But despite your best efforts, you do not die. It's time for you to leave.
 
 jumpanchor drownedAbort
 skeptic Sure. We've already seen what happens if we slay her, we might as well explore our surroundings. Get a lay of the land.
+jumpto abortJoin
 
 jumpanchor burnedAbort
 smitten You can't run from your consequences forever. One way or another, you'll have to face what you've done!
-
 jumpanchor abortJoin
+quietcreep
 cold Let's see what we can find. It's bound to be more interesting than doing the same thing over again.
 n Wait... something isn't right. Can you still hear me? You're supposed to wind up back at the cabin again, but everything is getting... fuzzy.
 hero W-what's going on? Where are we?

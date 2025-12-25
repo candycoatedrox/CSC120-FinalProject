@@ -170,13 +170,11 @@ n Do something! Do *anything* that isn't taking her hand!
 n You extend your hand to hers. For all her past cruelties, the moment feels gentle, tender even. I can't believe you just made me say that. I hate you.
 n The motion is difficult at first, as if something still resists your efforts, but then that resistance gives way, and it's over.
 p *Ahhhh.*
-
+quietcreep
 p And that's the end! I wonder what we're going to do next.
 p I didn't think I'd be so... tired.
 p Why is it so cold?
-linebreak
-truth Something reaches out and folds her into its myriad arms.
-linebreak
+claim end
 
 jumpanchor endFirstVessel
 truth You do not have an opportunity to respond. Something has taken her away, and it's left something else in her place.

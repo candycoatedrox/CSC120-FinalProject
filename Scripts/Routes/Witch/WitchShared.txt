@@ -469,15 +469,13 @@ jumpanchor betrayalEndJoin
 hero Wait... are we both just stuck here?
 n It certainly seems that way. What a way to go. But look on the bright side! In all this chaos, you may have actually managed to deliver a lethal wound. The world could be saved after all.
 p We're going to die together. Isn't that a lovely treat! I wonder how long it'll take. Maybe I'll get to watch the worms lick your bones clean.
-
+quietcreep
 hero Is that really what's going to happen now?
 hero ... Hello? Are you still there? What happens next?
 oppo I think He's gone...
 p Something strange is twisting this place out of shape.
 p I wasn't feeling much of anything. But now I feel... cold.
-linebreak
-truth Something reaches out and folds her into its myriad arms.
-linebreak
+claim witchEnd
 
 // Locked in the basement (peacefully followed the Witch) //
 
@@ -543,6 +541,7 @@ p I do. But I just couldn't help myself. And we both know that you're already sc
 p So we're going to stay exactly as we are right now. For as long as either of us lives.
 
 jumpanchor lockedEnd
+quietcreep
 hero ...
 oppo ...
 hero Why isn't He saying anything?
@@ -552,9 +551,7 @@ truth Around you, the cabin fades away, replaced entirely by the textured nothin
 truth The Princess grins smugly down at you from what was once the top of the stairs, but as the door disappears and you lock eyes, her face freezes in wide-eyed shock.
 p O-oh! I didn't think I'd have to see you face-to-face again, otherwise I might have given you a little more courtesy at the top of the stairs. No hard feelings, I'm sure.
 p Why is everything going away? I feel... cold.
-linebreak
-truth Something reaches out and folds her into its myriad arms.
-linebreak
+claim witchEnd
 
 // Offer her the blade //
 

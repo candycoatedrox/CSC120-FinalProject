@@ -319,14 +319,6 @@ broken Not even He could refuse her in the end. What are you supposed to do? We'
 jumpanchor refuseBlade
 p I see.
 
-// General ending lines //
-
-jumpanchor endingFirstVessel
-truth A textured nothingness begins to creep into the edges of your vision.
-
-jumpanchor endingNotFirstVessel
-truth A textured nothingness begins to creep into the edges of your vision. Somehow, it feels familiar.
-
 // Pledge yourself to her //
 
 jumpanchor menuPledge
@@ -365,6 +357,7 @@ broken There's nothing to be sorry about. This is how it was always going to be,
 hero All right. I'm done with this. I'm just going to sit in the corner. Let me know if we get our agency back.
 
 jumpanchor pledgeBreak
+quietcreep
 np Her chains shatter, and the cuff falls from her wrist. She is loose, and the end is upon us.
 truth Just over the voice in your head, you hear the Princess describe it differently: "I am free, and the end is upon us."
 p What a good disciple you are. Come. It's time for us to leave.
@@ -373,13 +366,9 @@ jumpanchor pledgeExplore
 p Nothing. And then everything.
 
 jumpanchor pledgeEndFirstVessel
-truth Something reaches out and folds her into its myriad arms.
-linebreak
 truth But you do not take her hand, nor will you ever. It's time to leave. Memory returns.
 
 jumpanchor pledgeEndNotFirstVessel
-truth Something reaches out and folds her into its myriad arms.
-linebreak
 truth But you do not take her hand. Something has taken her away, and it's left something else in her place.
 
 // Resist her //

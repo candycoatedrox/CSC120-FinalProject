@@ -1,0 +1,306 @@
+pint We are a path in the woods. We have no beginning, and we have no end, but something cold and unnatural sits watching us from just beyond our edge.
+pint His gaze pushes against our borders, curling them in on themselves, preventing them from stretching to the places they need to reach.
+n No, no, no. That's all wrong. You're not *a* path in the woods, you're *on* a path in the woods. Who's even saying that?
+n That's not... that's not the Princess, is it? Oh no, how many times have you been here?
+hero I think... this is our third?
+n That's bad. That's very, very bad. It wasn't even supposed to reach two. If you're at three, well... no wonder things aren't the way they're supposed to be.
+    contra Oh, isn't that fun! He's upset. /// checkvoice
+        n Of course I'm upset! The world is at stake here, as I'm sure you already know. /// checkvoice-contra
+n *Sigh.* Let's get our facts straight. What happened last time? What could you have possibly done for things to be like *this?*
+pint The thing that sits beyond our edge speaks His logic into us. He tries to grasp at things that cannot be grasped.
+pint He tries to stare with wide pupils at that which can only be held from the corner of the eye or with a passing glance.
+n Shut up! The rest of you, talk. What happened? What did you *do?*
+
+jumpanchor startBeastBrokenStubborn
+    hunted We're part of her because she consumed us. Can she hear us if we talk? /// checkvoice-stubborn
+    hunted Can she hear us if we talk? /// checknovoice-stubborn
+pint I can hear everything, little one, but you don't have to be afraid of me. There's no place where you end and I begin. Nothing can hurt you here. Not anymore.
+    broken That's just because she devoured us and we dissolved away. We don't even exist as a body anymore... /// checkvoice
+    stubborn It shouldn't count as her eating us if we offed ourselves. /// checkvoice
+hunted We're still here, though. And if we're safe, isn't that better?
+    stubborn I guess this is... fine. Doesn't feel half bad. Miles better than being dissolved, anyway. /// checkvoice
+jumpto startBeastJoin
+
+jumpanchor startBeastContraOppo
+hunted Can she hear us if we talk?
+pint I can hear everything, little one, but you don't have to be afraid of me. There's no place where you end and I begin. Nothing can hurt you here. Not anymore.
+hunted O-oh. I like that. I don't feel so small anymore when you put it like that.
+pint That's because you aren't small, even if you act that way. We're both so much more together than we were apart. And we can be so much more still. Vast. Unfathomable.
+    oppo You're not mad at us for stabbing you in the heart, are you? /// checkvoice
+        pint No. Are you mad at me for swallowing you whole? /// checkvoice-oppo
+        oppo Nah, not really. It all seems so... petty right now. /// checkvoice
+    contra If you really want to know what happened, we tried playing dead, and she ate us. /// checkvoice
+jumpanchor startBeastJoin
+n She *ate* you? And now you're convinced that you're stuck together? What a mess.
+jumpto startJoin
+
+jumpanchor startWitchCheated
+oppo There's no reason to keep secrets. We tried fighting her, and then she made the cabin itself come to life and squished us into paste.
+cheated All that unfairness... what if it was just pushing us in the right direction? Helping us become this? It's almost worth being squished by a cabin.
+jumpto startWitchJoin
+
+jumpanchor startWitchParanoid
+para Why does he want to know? I don't mind where we are right now. It's... rather nice. I can hear what everyone is thinking.
+oppo There's no reason to keep secrets. We tried leaving her in the basement, but she made the cabin come to life, and it crushed both of us into a fine paste. And now we're here. Existing.
+oppo And for what it's worth, I'm with him. This is nice.
+jumpto startWitchJoin
+
+jumpanchor startWitchStubborn
+oppo Sure. There's no reason to keep secrets. Someone decided to go in guns blazing last time, and that someone got us killed.
+stubborn And what should we have done, let you draw things out with all that... conniving? Everyone knows a straight fight is best. It's honest.
+oppo There's no need to bicker about it, I wasn't trying to start anything. I don't mind what happened to us. I kind of like it now that we aren't actively being crushed.
+stubborn Yeah... now that you mention it, this isn't so bad.
+hero And it's not like the fight is what killed us, anyway. It was the cabin. No point worrying about who charged who when that place ground us all into paste in the end, the Princess included.
+jumpanchor startWitchJoin
+pint It was a fitting end. I'm sorry if it hurt. But doesn't *this* make it all seem so small?
+n I see... so the cabin ground you into paste, and now you're convinced you're stuck together. What a mess.
+
+jumpanchor startJoin
+pint He doesn't understand. We aren't convinced of anything, and we aren't stuck together. We're one. This is how we're supposed to be, can't you feel it?
+    contra Sure, "being one with the Princess" is pretty great, but what can we even do right now? I hope we're not supposed to just passively *exist* like this. I did not sign up for passive existence when we faked our own death. /// checkvoice
+    broken I guess that's that, then. This is us now. We're the woods. Okay. /// checkvoice
+
+// First menu //
+
+jumpanchor askNarrator
+n I'm not "watching you." I'm trying to help you.
+hero That's not an answer to our question.
+pint I don't know what He is. I only know that He is something other, and that He wishes for you and I to tear ourselves apart.
+n I do want that, but only because it's in your best interests. It's in everyone's best interests. You won't be able to slay her unless you remove yourself from her.
+pint He wants us to kill each other.
+n I don't. I want you to kill *her.* Don't be charmed by her faux-solidarity. You're not "in this together."
+n She's the only one who poses a threat to the world, and she's trying to make you go along with it. You don't have to enable her, especially when you have what it takes to stop her.
+
+jumpanchor passive
+    contra No, please, anything but that! /// checkvoice
+n You can't just passively exist forever. Not with her. That isn't how it works.
+
+n I don't care if it was the cabin that killed you, because it seems to me like she was the reason the cabin could even do something like that in the first place.
+
+jumpanchor abomination
+pint How could you say that? Look at us. We're almost everything. And we can be even more than this. Don't you feel our potential?
+n Great! You can start by remembering that you exist. And not just as some dissolved component of a gestalt entity formed from you and the Princess.
+jumpto pushMenuJoin
+
+jumpanchor notMe
+pint How could you say that? Look at us. We're almost everything. And we can be even more than this. Don't you feel our potential?
+n No, you're spot on. You exist. And not as some part of a gestalt entity mushed together with bits of you and the Princess. You're an individual!
+jumpto pushMenuJoin
+
+jumpanchor pushMenu
+n You can start by remembering that you exist. And not as some part of a gestalt entity formed with the Princess.
+jumpanchor pushMenuJoin
+n You exist as your own self, complete with your own physical body separate from hers.
+hero I'm not so sure about that. We were something like that once, but now...?
+n And if thinking about that isn't enough to startle you back to reality, consider this:
+
+n She committed a murder-suicide using a living cabin.
+hero ... Right. That was unpleasant. We weren't big fans of that. I think.
+oppo I'm sure I would have had us do the same thing if we were in her shoes. We really do make a great pair. He's probably just jealous.
+
+jumpanchor princessAsk
+pint We push back. It may feel like He's everywhere, but presence isn't strength. Otherwise he would have torn us apart by now. There must be a crack in the walls of this prison. There must be a way for us to be free from him.
+n She's trying to use you. After everything she's done, you should be able to see that. I may not have been around to witness it, but clearly you remember what happened. How about you try remembering how it all *felt?*
+
+// The Narrator pushes you to separate //
+
+jumpanchor witchPushEarlyJoin
+n You need to remember that you and the Princess are enemies. Don't let bygones be bygones. Remember what she's done to you, and how much it hurt.
+
+jumpanchor witchPush
+pint We can't go back to that! We can't go back to the doubting and the hatred and the schemes! Not after being something as beautiful as this.
+pint Doesn't all that conflict feel so far away right now? So petty? We've been posed against each other by something that understands the strength of our unity.
+oppo Spoken like... honestly, a real puppetmaster. Have we considered that maybe she's the one trying to trick us?
+pint I'm not.
+hero But there's a feeling isn't there? That petty feeling she mentioned. It's fuzzy but... it's there. Almost like... she still hates us.
+oppo It feels mutual.
+pint Please, stop. If you pay attention to that feeling we'll fall apart.
+pint DON'T LOOK AT IT!
+n She's trying to turn you away from the truth. There's something she doesn't want you to see, and I think you already know you have to look at it.
+    cheated They're both playing their hands. What's the move? Do we pick a side? Do we figure out how to make everyone unhappy? /// checkvoice
+    para Everyone's pulling us in different directions. But that feeling... that feeling doesn't have a motive. It just exists. Maybe we should look at it. /// checkvoice
+jumpto pushStubborn
+
+jumpanchor witchGaze
+pint Please... don't make us remember how we were.
+
+jumpanchor beastPushEarlyJoin
+n The Princess ate you last time. Stop passively... *vibing* with a literal predator, and remember that you're enemies. Remember what she's done to you, and how much it hurt.
+
+jumpanchor beastPush
+pint We can't go back to that! We can't go back to the fear and the hunger and the pain. Not after being something as beautiful as this.
+pint Doesn't all that conflict feel so far away right now? So petty? We've been posed against each other by something that understands the strength of our unity.
+hunted I can feel a thumping. A heartbeat.
+hero Like a distant terror that keeps getting louder the more we pay attention.
+pint Please, stop. If you let it in, we'll fall apart.
+pint DON'T LOOK AT IT!
+    contra Maybe a little peek wouldn't hurt. Aren't you curious? /// checkvoice
+        n I'm curious. You should look. /// checkvoice-contra
+        contra Nevermind. If He wants to look then I don't want to. /// checkvoice
+    oppo I think we should hear out whatever it is that's trying to be heard. I like to take all options into account before making any big decisions, and what's the harm in just listening? /// checkvoice
+jumpanchor pushStubborn
+    stubborn Hold yourself together. We're no strangers to effort. We can push this back down. Something might do us in eventually, but I'll be damned if that something is a thought. /// checkvoice
+
+jumpanchor beastGaze
+pint Please... don't make us remember how I was.
+
+jumpanchor pushBury
+n No. You can't bury that feeling. You can't hide from your past.
+pint The past doesn't have to exist. Our freedom is within us. We just have to find it.
+
+// Separate from the Princess //
+
+// "The Wound" ending; claim the Wounded Wild //
+
+jumpanchor witchFallApart
+n And just like that, you start to fall apart.
+oppo Right. She really does hate us. And we hate her. It hurts thinking about us as separate things, but we're separate. We can't hate ourself. I love me.
+    stubborn We never got to see the end of that fight, did we? And we can't both be winners. One of us has to beat the other, right? /// checkvoice
+    cheated Honestly I can't believe I ever thought being crushed to death with a cabin was forgiveable. Did she put that thought in our head? Is she able to change what we think?! That's not fair! ... I think. /// checkvoice
+    para What were we thinking! Giving in to absolute madness. We exist! We're real! We're separate from her! Of course we are! ... But what are we? I can't remember. /// checkvoice
+hero I don't want to remember what it felt like to be killed. It was so much nicer when it didn't feel like it mattered.
+n And yet, you keep remembering. You remember the loathing and animosity you've shared with the Princess, the pain and the anger and the betrayal. And you start to remember something else, too.
+jumpto fallApartJoin
+
+jumpanchor witchFallApartCont
+pint Maybe bygones can't be bygones. I don't know why I ever wanted to share a body with you of all things. It's like my very soul reeks of yours! That was horrible! This is better! Finally, I'll be able to hurt you like you deserve.
+pint I wish I didn't have to.
+jumpto fallApartContJoin
+
+jumpanchor witchCabinStart
+p Kill me, then, if you hate me so much. Just get it over with.
+jumpto cabinStartJoin
+
+jumpanchor beastFallApart
+n And just like that, you start to fall apart.
+hunted I can remember it now. I didn't like being eaten.
+hero I'd forgotten how much it burned. And the air was so hard to breathe, and she didn't care. She didn't care at all.
+    stubborn At least we didn't have to sit through it to the end. But I think she owes us, don't you, lads? She barely felt more than a little indigestion while we burned away inside of her. /// checkvoice
+    oppo All of that digging with the knife and we didn't even get to win. That was hard work! I wanted to win! And what's the point of being part of a larger whole if we're not the one in charge of that whole? /// checkvoice
+n As you remember the terror and pain you've felt at the hands of the Princess, you start to remember something else, too.
+jumpanchor fallApartJoin
+n You remember that you are a distinct being with a finite form and a mortal body. And you can feel it. There is a shifting of the space around you, the infinitesimal movement of your molecules rearranging back into the shape of what you're meant to be.
+    contra Finally, something is happening! I honestly didn't know what to make of all of this. Bit too metaphysical for me. It's hard to have a goof when you're stuck being metaphysical. /// checkvoice
+    broken I don't like this. It's better for us to be the woods. I don't want to go back. /// checkvoice
+
+jumpanchor beastFallApartCont
+pint No! I devoured you! I won! I put things back the way they were supposed to be!
+jumpanchor fallApartContJoin
+n Some divisions, when sown, can never truly be mended. A cavernous gash rips across whatever it was you thought you were.
+n A cabin comes into being among the trees. It approaches, and it swallows your body whole.
+linebreak
+n And then you find yourself, blade in hand, exactly where you need to be.
+n At the center of it all is the Princess -- a wooden and fleshy heart beating with an unbroken rhythm. You're filled with a sense of purpose. Strike at her. End this, once and for all.
+
+jumpanchor beastCabinStart
+p I feel empty. Don't you?
+jumpanchor cabinStartJoin
+truth Her body merges with the thick tree trunk at the center of the cabin, making it nearly impossible to tell where flesh ends and bark begins. Her ribcage has been torn open, her heart exposed at its center. She looks up at you, exhaustion in her eyes.
+    stubborn This doesn't feel like a fight. This isn't what I wanted. Where's the victory in this? /// checkvoice
+    broken We're just like her. And she's just like us. We never should have left her. /// checkvoice
+    contra I don't think we should kill her. It would annoy Him if we didn't, right? /// checkvoice
+    hunted I feel safe. She isn't dangerous anymore. We could leave her. We could both live. /// checkvoice
+    para I don't like this. What he wants us to do... it's just cruel. It feels like we'd be killing a part of ourself. /// checkvoice
+    oppo Well, this should be easy! If you're... sure about it. I mean, what's the point of being king of the hill if there's no one around to be better than? We'd just be sitting on a hill. /// checkvoice
+    cheated This hardly seems fair to any one. It's an easy win if we want it, but I'm not sure whose win it is. /// checkvoice
+hero Do we have to do this?
+n You have to. You know you have to.
+
+jumpanchor woundedFree
+n You devious little bastard. If you think I'm going to just let you free her, you have another thing coming.
+    cheated I know a bluff when I see one. He can use words, sure, but he doesn't have any real power. /// checkvoice
+        n I'm not bluffing. You won't be so smug when it happens. /// checkvoice-cheated
+    para He's not in our head anymore. At least not like before. I don't think he can stop us now. /// checkvoice
+        n I'm not bluffing. You won't be so smug when it happens. /// checkvoice-para
+    hero And that other thing is...? /// checknovoice-cheated-para
+        n You'll just have to wait and find out when it happens. /// checknovoice-cheated-para
+    stubborn Just ignore him. What's he going to do, lecture us into submission? He can talk all he wants. /// checkvoice
+    hunted Ignore him. His words only confuse us. Just do it. /// checkvoice checknovoice-stubborn
+    oppo He's weak. Thinks he can boss us around when he doesn't have any authority. We're clearly the ones with authority around here, so we can do whatever we like! /// checkvoice
+hero You're tired, aren't you?
+n No I'm not, I'm... fine. Whatever.
+n You cut the Princess down from the roots that bind her. I hope you're happy, and good luck getting her out of here.
+quietcreep
+    contra Ha! That's right! *Seethe* at us! I *thrive* on your frustration! /// checkvoice
+    broken I think we are happy, actually. We might not be part of her. But being around her is almost the same. Almost. /// checkvoice
+p I didn't think you would do that. After everything.
+p It's... so cold without you.
+claim woundedFree
+
+jumpanchor woundedFreeFirstVessel
+truth But you don't get the chance to respond. Something has taken her away, and it's left something else in her place.
+
+jumpanchor woundedFreeNotFirstVessel
+truth But you don't get the chance to respond, nor will you ever. It's time to leave. Memory returns.
+
+jumpanchor woundedSlay
+n You raise the blade, taking aim at her heart. And then you strike.
+quietcreep
+p I'm sorry.
+claim woundedSlay
+
+jumpanchor woundedSlayFirstVessel
+truth But you never see her die. Something has taken her away, and it's left something else in her place.
+
+jumpanchor woundedSlayNotFirstVessel
+truth But you never see her die. It's time to leave. Memory returns.
+
+// Stay merged with the Princess //
+
+// "A Glimpse of Something Bigger" ending; claim the Networked Wild //
+jumpanchor networkStart
+n You fall inward, into a network of connections too vast for your mind to occupy. Are you a path in the woods? Are you a body? Can you even grasp the fuzziest edges of the shapes that confine you?
+pint We can change to fill them together.
+    hunted We don't need to be everywhere. We just need to test the boundaries. /// checkvoice
+        oppo We just need to find the right place to be at the right time. /// checkvoice-hunted-oppo
+    oppo We don't need to be everywhere at once. Just in the right place at the right time. /// checknovoice-hunted
+truth As the Narrator speaks, there is a rising intensity in His voice.
+n You'd do best to remember that some wounds will never heal. Some rifts can never be mended. Even in rebirth, some things never come back the same.
+hero What is he going on about? What does he know about us?
+    broken This is all too much. Why can't we just let her do as she sees fit? She's the one who can handle being vast. It's not for us. It's not for me. /// checkvoice
+    stubborn He can't make us quit, no matter how much he tries. He knows that talking's all he can do. Of course he's going to try and confuse us. /// checkvoice
+    contra Screw all of this, and screw this guy in particular! Always telling us what we can and can't do. Always going on and on about rules and the fate of the world. I've had enough! /// checkvoice
+    cheated I think it's high time we all finally stopped listening to him. He doesn't actually make the rules. He's just flying by the seat of his pants like the rest of us. /// checkvoice
+n You aren't whole. You'll *never* be whole again. This struggle is meaningless. Whatever you think you're doing, you. Will. Fall. Apart.
+pint We don't need to be made whole. All we need to do is find a single corner of His cage and break it.
+
+n You stretch and search and stretch and search, growing as you decay and decaying as you grow. As you strain beyond your limits, the ground around you becomes dry and unstable and crumbles into nothing beneath you.
+truth There's a frantic edge to His tone, now, His determination finally beginning to falter.
+n This place will *fall apart* before you find its end.
+n This task -- whatever it is you think you're doing -- is impossible.
+    para He wouldn't be trying to discourage us if that were true. /// checkvoice
+    hunted All he has are words. And words aren't real. We're real. /// checkvoice
+    stubborn All the more reason to keep trying. Come on, we aren't tired yet! /// checkvoice
+    oppo That's right. I know a loser when I see one. Call His bluff. /// checkvoice
+    contra Yeah! Ruin His day! /// checkvoice
+pint I can hold us together for a little while longer. So long as you trust me.
+    cheated It doesn't matter if the world is falling apart. It's time for us to commit to something. /// checkvoice
+    broken Of course we do. To the ends of the earth. /// checkvoice
+
+n You won't find *anything.* If I have to starve you, if I have to sacrifice *my world* to keep the Princess at bay, I'll do it!
+truth But you do find something. It's cold and smooth, and gently buckles, then cracks under the pressure of your consciousness flattening against it.
+n DON'T. MOVE. AN INCH. Don't grow another blade of grass or harvest the remains of another dying creature so you can expand *just that much further.* Stop all of this RIGHT NOW!
+hero I think it's too late for *that,* mate.
+pint I'm at your side. Shatter it, and free us all.
+
+n No, no -- no no no no no, STOP -- /// interrupt
+truth But His pleas disappear at the sound of breaking glass. For a moment, you and she gaze through the tiniest hole in the world at the place you need to be.
+    para We... we found it. I knew it. I knew there was something he was keeping from us. Is that really all it took? /// checkvoice
+    oppo A job well done, team. Just like I'd planned. /// checkvoice
+        stubborn Oh, can it. This was all of us. Fighting as one. /// checkvoice-oppo-stubborn
+quietcreep
+pint Is this what He kept from us? Is this why He made us kill each other?
+hero It's... *beautiful.*
+    hunted We need to be there. We won't be safe until we are. We won't be whole. /// checkvoice
+    cheated He thought he could keep us blind forever. And he almost did. /// checkvoice
+    contra Eh... doesn't look that great. I like it better in here. /// checkvoice
+    stubborn This was all of us. Fighting as one. /// checkvoice checknovoice-oppo
+truth And then it's gone.
+pint Where did it go? Why is everything so cold?
+claim networkEnd
+
+jumpanchor networkEndFirstVessel
+truth But you never get the chance to answer her. You turn to see her gone behind you, replaced by something else.
+
+jumpanchor networkEndNotFirstVessel
+truth But you never get the chance to answer her. You turn to see her gone behind you. Memory returns.

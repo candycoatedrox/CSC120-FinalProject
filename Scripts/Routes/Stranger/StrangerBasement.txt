@@ -256,11 +256,11 @@ n You can feel yourself rupture. The room spins, your perception multiplying in 
 
 jumpanchor endingBlade
 n All at once you charge forward, knife gleaming to slay the Princess, just as you strike at her bindings and leave her to languish alone.
-jumpto endingBladeJoin
+jumpto endingJoin
 
 jumpanchor endingNoBlade
 n You find the blade suddenly in your hands. All at once you use it to strike at her bindings as you remain upstairs and slay her and leave her to languish alone.
-jumpanchor endingBladeJoin
+jumpanchor endingJoin
 n Is this what the end of the world looks like? What an unbearable mess...
 contra But this... w-we can't --
 hero ... Do you not have anything *witty* to say? I could use a good bit of wit right now.
@@ -271,8 +271,7 @@ hero ... Falls apart?
 contra I think He's gone.
 hero We were never going to salvage this, were we?
 truth The Princess in front of you is all wrong, multiple faces and bodies smashed together in ways you can't begin to make sense of. Their skin stretches and contorts, veins bulging. They have too many fingers on too few hands. The pristine blade still sticks out of one of their chests, the face above it staring blankly into the distance.
-
-jumpanchor endingJoin
+quietcreep
 p What happened to us? What are we? There are parts of us that are dead, and the others.... they just don't fit.
 p We can feel them moving around in spaces they don't belong. It's all so uncomfortable.
 p Did you do this? Did we do this? Can... can you pull us back apart? Can you fix us?
@@ -280,25 +279,17 @@ contra We should help her. I think... we did this.
 hero How... surprisingly sincere.
 contra I didn't actually think our actions had consequences.
 hero It's a little late for regret, isn't it?
-p Please?
 linebreak
+p Please?
 
 jumpanchor endSilentFirstVessel
-truth Something reaches out and folds her into its myriad arms.
-linebreak
 truth But you don't know if she had the chance to hear your silence. She's gone, replaced with something else.
 
 jumpanchor endSilentNotFirstVessel
-truth Something reaches out and folds her into its myriad arms.
-linebreak
 truth But you'll never know if she hears your silence. She's gone. Memory returns.
 
 jumpanchor endReplyFirstVessel
-truth Something reaches out and folds her into its myriad arms.
-linebreak
 truth But you don't know if she had the chance to hear your reply. She's gone, replaced with something else.
 
 jumpanchor endReplyNotFirstVessel
-truth Something reaches out and folds her into its myriad arms.
-linebreak
 truth But you'll never know if she hears your reply. She's gone. Memory returns.

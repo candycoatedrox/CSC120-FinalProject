@@ -26,8 +26,8 @@ public class StandardCycle extends Cycle {
     private boolean skipHillDialogue = false; // Used in Chapter 1 and all Chapter 2s; if you backed out of Stranger / aborting the Chapter
 
     // Variables that persist between chapters
-    private HashMap<String, Boolean> ch2SpecificA; // Used to store Chapter-specific variables that carry over from Chapter 2 to Chapter 3
-    private HashMap<String, String> ch2SpecificB;
+    private HashMap<String, Boolean> ch2SpecificA; // Used to store Chapter-specific boolean variables that carry over from Chapter 2 to Chapter 3
+    private HashMap<String, String> ch2SpecificB; // Used to store Chapter-specific variables with more than 2 possibilities that carry over from Chapter 2 to Chapter 3
     private boolean mirrorComment = false; // Used in all Chapter 2s and 3s
     private boolean touchedMirror = false; // Used in all Chapter 2s and 3s
     private boolean knowsDestiny = false; // Used in Chapter 1, Adversary, Tower, Fury
@@ -74,7 +74,15 @@ public class StandardCycle extends Cycle {
         }
     }
 
-    // --- MANIPULATORS ---
+    // --- ACCESSORS & MANIPULATORS ---
+
+    /**
+     * Returns whether the player has not yet claimed their first vessel
+     * @return whether the player has not yet claimed their first vessel
+     */
+    public boolean isFirstVessel() {
+        return this.isFirstVessel;
+    }
 
     /**
      * Adds a given Voice to the list of active Voices
@@ -346,7 +354,8 @@ public class StandardCycle extends Cycle {
     /**
      * Prints a line about the Long Quiet beginning to creep closer, used in most endings right before a vessel is claimed
      */
-    private void quietCreep() {
+    @Override
+    public void quietCreep() {
         System.out.println();
         if (this.isFirstVessel && manager.nVesselsAborted() == 0) {
             parser.printDialogueLine("A textured nothingness begins to creep into the edges of your vision.");
@@ -5894,14 +5903,9 @@ public class StandardCycle extends Cycle {
         }
 
         mainScript.runSection("directFinalStart");
-
         this.currentVoices.put(Voice.NARRATOR, false);
-        this.quietCreep();
-        mainScript.runSection();
 
         if (this.isFirstVessel) {
-            mainScript.runSection("noAnswerFirstVessel");
-
             this.activeMenu = new OptionsMenu(true);
             activeMenu.add(new Option(this.manager, "chin", "\"Chin up! Isn't this what we wanted? Just you and me forever?\""));
             activeMenu.add(new Option(this.manager, "ok", "\"Are you okay?\""));
@@ -5911,18 +5915,17 @@ public class StandardCycle extends Cycle {
 
             switch (parser.promptOptionsMenu(activeMenu)) {
                 case "silent":
-                    mainScript.runSection();
+                    mainScript.claimFoldLine();
                     mainScript.runSection("directFinalEndSilent");
                     break;
 
                 default:
-                    mainScript.runSection();
+                    mainScript.claimFoldLine();
                     mainScript.runSection("directFinalEndReply");
                     break;
             }
         } else {
-            mainScript.runSection("noAnswerNotFirstVessel");
-            mainScript.runSection();
+            mainScript.claimFoldLine();
             mainScript.runSection("directFinalEndNotFirstVessel");
         }
     }
@@ -7070,7 +7073,6 @@ public class StandardCycle extends Cycle {
             }
         }
 
-        this.quietCreep();
         mainScript.runSection("pledgeBreak");
 
         this.activeMenu = new OptionsMenu(true);
@@ -7090,11 +7092,7 @@ public class StandardCycle extends Cycle {
             }
         }
 
-        if (this.isFirstVessel) {
-            mainScript.runSection("pledgeEndFirstVessel");
-        } else {
-            mainScript.runSection("pledgeEndNotFirstVessel");
-        }
+        mainScript.runClaimSection("pledgeEnd", true);
     }
 
     /**
@@ -8299,12 +8297,6 @@ public class StandardCycle extends Cycle {
 
         mainScript.runSection();
 
-        if (this.isFirstVessel) {
-            mainScript.runSection("possessEndFirstVessel");
-        } else {
-            mainScript.runSection("possessEndNotFirstVessel");
-        }
-
         return ChapterEnding.HITCHHIKER;
     }
 
@@ -8968,15 +8960,6 @@ public class StandardCycle extends Cycle {
         
         // Step outside
         mainScript.runSection("leaveCabinEnd");
-        this.quietCreep();
-        mainScript.runSection();
-
-        if (this.isFirstVessel) {
-            mainScript.runSection("leaveEndFirstVessel");
-        } else {
-            mainScript.runSection("leaveEndNotFirstVessel");
-        }
-        
         return ChapterEnding.WORLDOFTERROR;
     }
 
@@ -9336,14 +9319,6 @@ public class StandardCycle extends Cycle {
 
         parser.promptOptionsMenu(activeMenu, "There is no other ending here.");
         mainScript.runSection();
-        this.quietCreep();
-        mainScript.runSection();
-
-        if (this.isFirstVessel) {
-            mainScript.runSection("endFirstVessel");
-        } else {
-            mainScript.runSection("endNotFirstVessel");
-        }
 
         mainScript.runSection("mirrorStart");
 
@@ -10456,22 +10431,11 @@ public class StandardCycle extends Cycle {
                     break;
             }
         }
-        
-        if (this.isFirstVessel) {
-            mainScript.runSection("empty2FirstVessel");
-        } else {
-            mainScript.runSection("empty2NotFirstVessel");
-        }
+
+        mainScript.runClaimSection("empty2");
 
         if (this.hasBlade) {
             mainScript.runSection("endBlade");
-
-            if (this.isFirstVessel) {
-                mainScript.runSection("endBladeFirstVessel");
-            } else {
-                mainScript.runSection("endBladeNotFirstVessel");
-            }
-
             return ChapterEnding.MUTUALLYASSURED;
         } else {
             mainScript.runSection("endBlade");
@@ -10989,29 +10953,11 @@ public class StandardCycle extends Cycle {
                     
                 case "freedom":
                     mainScript.runSection("freedomEaten");
-                    this.quietCreep();
-                    mainScript.runSection();
-
-                    if (this.isFirstVessel) {
-                        mainScript.runSection("surrenderFirstVessel");
-                    } else {
-                        mainScript.runSection("surrenderNotFirstVessel");
-                    }
-
                     return ChapterEnding.DISSOLVINGWILLACCIDENT;
                     
                 case "surrenderA":
                 case "surrenderB":
                     mainScript.runSection("eatenSurrender");
-                    this.quietCreep();
-                    mainScript.runSection();
-
-                    if (this.isFirstVessel) {
-                        mainScript.runSection("surrenderFirstVessel");
-                    } else {
-                        mainScript.runSection("surrenderNotFirstVessel");
-                    }
-
                     return ChapterEnding.DISSOLVINGWILL;
                     
                 case "slay":
@@ -11170,26 +11116,206 @@ public class StandardCycle extends Cycle {
             - Opportunist + Cheated
          */
 
-        if (this.hasVoice(Voice.HUNTED)) this.source = "beast";
-        else this.source = "witch";
+        if (this.hasVoice(Voice.HUNTED)) {
+            this.source = "beast";
+        } else {
+            this.source = "witch";
+        }
 
+        mainScript.runSection();
 
+        if (source.equals("beast")) {
+            switch (this.ch3Voice) {
+                case BROKEN:
+                case STUBBORN:
+                    mainScript.runSection("startBeastBrokenStubborn");
+                    break;
+                
+                default: mainScript.runSection("startBeastContraOppo");
+            }
+        } else {
+            switch (this.ch3Voice) {
+                case CHEATED:
+                    mainScript.runSection("startWitchCheated");
+                    break;
+                
+                case PARANOID:
+                    mainScript.runSection("startWitchParanoid");
+                    break;
+                
+                default: mainScript.runSection("startWitchStubborn");
+            }
+        }
 
+        boolean pushEarlyJoin = true;
+        Condition askedNarrator = new Condition();
+        InverseCondition noAskNarrator = askedNarrator.getInverse();
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "askNarrator", "(Explore) This... thing watching us. What is He?"));
+        activeMenu.add(new Option(this.manager, "princessAskA", "I've had enough of this guy. How do we stop him?", askedNarrator));
+        activeMenu.add(new Option(this.manager, "pushA", "Okay. Let's say I want to stop her. What do I do? I feel like I can't do much of anything right now.", askedNarrator));
+        activeMenu.add(new Option(this.manager, "passiveA", "[Passively exist.]", this.hasVoice(Voice.CONTRARIAN)));
+        activeMenu.add(new Option(this.manager, "passiveB", "Why should anyone do anything right now? This is fine! I like being this."));
+        activeMenu.add(new Option(this.manager, "passiveWitch", "Why are you being nice to me? Don't you hate me? Don't we sort of hate each other?", source.equals("witch")));
+        activeMenu.add(new Option(this.manager, "passiveBeast", "Why are you being nice to me? Aren't you a monster? Didn't you eat me?", source.equals("beast")));
+        activeMenu.add(new Option(this.manager, "pushB", "He's right! I don't want a passive existence. I want things to do. So someone give me some options!", this.hasVoice(Voice.CONTRARIAN), noAskNarrator));
+        activeMenu.add(new Option(this.manager, "princessAskB", "I can feel the pressure of the outside pushing in on us. What are we supposed to do about it?"));
+        activeMenu.add(new Option(this.manager, "princessAskC", "This is how we're supposed to be. But what do we do now?", noAskNarrator));
+        activeMenu.add(new Option(this.manager, "abomination", "Whatever we are right now is an abomination, and I want out!"));
+        activeMenu.add(new Option(this.manager, "notMe", "I don't like this. I'm supposed to be me, and you're supposed to be something that isn't me."));
+        activeMenu.add(new Option(this.manager, "pushC", "Okay, you, Narrator. How do I stop her?"));
+        activeMenu.add(new Option(this.manager, "passiveC", "[Do nothing.]", !this.hasVoice(Voice.CONTRARIAN)));
 
+        VoiceDialogueLine pExclusiveOverride = new VoiceDialogueLine(Voice.PRINCESS, "This is what we are. There is no other path.");
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            this.activeOutcome = parser.promptOptionsMenu(activeMenu, pExclusiveOverride);
+            switch (activeOutcome) {
+                case "askNarrator":
+                    askedNarrator.set();
+                    mainScript.runSection("askNarrator");
+                    break;
 
+                case "passiveA":
+                case "passiveB":
+                case "passiveC":
+                    this.repeatActiveMenu = false;
+                    mainScript.runSection("passive");
+                    if (source.equals("witch")) mainScript.runSection();
+                    break;
 
-        // temporary templates for copy-and-pasting
-        /*
-        parser.printDialogueLine("XXXXX");
-        parser.printDialogueLine(new PrincessDialogueLine("XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "(Explore) \"XXXXX\""));
-        activeMenu.add(new Option(this.manager, "q1", "XXXXX"));
-        activeMenu.add(new Option(this.manager, "q1", "\"XXXXX\""));
-        */
+                case "abomination":
+                case "notMe":
+                    this.repeatActiveMenu = false;
+                    mainScript.runSection(activeOutcome);
+                    if (source.equals("witch")) mainScript.runSection();
+                    break;
 
-        // PLACEHOLDER
-        return null;
+                case "pushA":
+                case "pushB":
+                case "pushC":
+                    this.repeatActiveMenu = false;
+                    mainScript.runSection("pushMenu");
+                    if (source.equals("witch")) mainScript.runSection();
+                    break;
+
+                case "princessAskA":
+                case "princessAskB":
+                case "princessAskC":
+                    mainScript.runSection("princessAsk");
+
+                    this.activeMenu = new OptionsMenu(true);
+                    activeMenu.add(new Option(this.manager, "remember", "[Remember how it felt.]"));
+                    activeMenu.add(new Option(this.manager, "freedom", "[Turn inwards and find your freedom.]"));
+
+                    switch (parser.promptOptionsMenu(activeMenu, pExclusiveOverride)) {
+                        case "freedom":
+                            this.wildNetworked(pExclusiveOverride);
+                            return ChapterEnding.GLIMPSEOFSOMETHING;
+
+                        default:
+                            this.repeatActiveMenu = false;
+                            pushEarlyJoin = false;
+                            break;
+                    }
+
+                    break;
+
+                case "passiveWitch":
+                case "passiveBeast":
+                    this.repeatActiveMenu = false;
+                    pushEarlyJoin = false;
+                    break;
+            }
+        }
+
+        // The Narrator pushes the player to separate from the Princess
+        if (pushEarlyJoin) mainScript.runSection(this.source + "PushEarlyJoin");
+        mainScript.runSection(this.source + "Push");
+
+        String gazeDisplayChange = (source.equals("witch")) ? "hatred" : "terror";
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "narrator", "[Gaze at the " + gazeDisplayChange + " in your heart.]"));
+        activeMenu.add(new Option(this.manager, "princess", "[Bury it. Now. Before it's too late.]"));
+
+        if (parser.promptOptionsMenu(activeMenu, pExclusiveOverride).equals("narrator")) {
+            mainScript.runSection(this.source + "Gaze");
+            return this.wildWounded();
+        }
+
+        // Bury the feeling
+        mainScript.runSection("pushBury");
+        
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "narrator", "But the past does exist. I remember it."));
+        activeMenu.add(new Option(this.manager, "princess", "[Turn inwards and find your freedom.]"));
+
+        if (parser.promptOptionsMenu(activeMenu, pExclusiveOverride).equals("narrator")) {
+            return this.wildWounded();
+        } else {
+            this.wildNetworked(pExclusiveOverride);
+            return ChapterEnding.GLIMPSEOFSOMETHING;
+        }
+    }
+
+    /**
+     * The player chooses to remain merged with the Princess, leading to the "A Glimpse of Something Bigger" ending and claiming the Networked Wild
+     * @param pExclusiveOverride The line used during an exclusive options menu during this Chapter
+     */
+    private void wildNetworked(VoiceDialogueLine pExclusiveOverride) {
+        mainScript.runSection("networkStart");
+
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "cont", "[There is a place you need to be. You just need to find it.]"));
+        parser.promptOptionsMenu(activeMenu, pExclusiveOverride);
+        mainScript.runSection();
+
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "cont", "I trust you. [Find the way out.]"));
+        parser.promptOptionsMenu(activeMenu, pExclusiveOverride);
+        mainScript.runSection();
+
+        this.activeMenu = new OptionsMenu(true);
+        activeMenu.add(new Option(this.manager, "cont", "[Shatter the cage.]"));
+        parser.promptOptionsMenu(activeMenu, pExclusiveOverride);
+        mainScript.runSection();
+    }
+
+    /**
+     * The player separates from the Princess
+     * @return the Chapter ending reached by the player
+     */
+    private ChapterEnding wildWounded() {
+        this.currentLocation = GameLocation.CABIN;
+        this.hasBlade = true;
+        this.withPrincess = true;
+        this.canSlayPrincess = true;
+
+        mainScript.runSection(this.source + "FallApart");
+        mainScript.runSection(this.source + "FallApartCont");
+        mainScript.runSection(this.source + "CabinStart");
+
+        this.activeMenu = new OptionsMenu();
+        activeMenu.add(new Option(this.manager, "free", "\"I never wanted to kill you. Not really. But we can't be the same thing as each other. I had to put an end to whatever happened to us.\" [Cut her free.]"));
+        activeMenu.add(new Option(this.manager, "slay", "[Slay the Princess.]"));
+
+        this.repeatActiveMenu = true;
+        while (repeatActiveMenu) {
+            switch (parser.promptOptionsMenu(activeMenu)) {
+                case "free":
+                    mainScript.runSection("woundedFree");
+                    return ChapterEnding.WOUNDSAVE;
+
+                case "cSlayPrincess":
+                case "slay":
+                    mainScript.runSection("woundedSlay");
+                    return ChapterEnding.WOUNDSLAY;
+
+                default: this.giveDefaultFailResponse();
+            }
+        }
+        
+        throw new RuntimeException("No ending reached");
     }
 
 
@@ -11706,15 +11832,6 @@ public class StandardCycle extends Cycle {
         } else {
             mainScript.runSection("betrayalEndNohare");
         }
-
-        this.quietCreep();
-        mainScript.runSection();
-
-        if (this.isFirstVessel) {
-            mainScript.runSection("witchEndFirstVessel");
-        } else {
-            mainScript.runSection("witchEndNotFirstVessel");
-        }
     }
 
     /**
@@ -11775,14 +11892,7 @@ public class StandardCycle extends Cycle {
             }
         }
 
-        this.quietCreep();
         mainScript.runSection("lockedEnd");
-
-        if (this.isFirstVessel) {
-            mainScript.runSection("witchEndFirstVessel");
-        } else {
-            mainScript.runSection("witchEndNotFirstVessel");
-        }
     }
 
     /**
@@ -12581,6 +12691,7 @@ public class StandardCycle extends Cycle {
         }
 
         // Chapter ends here
+        this.currentVoices.put(Voice.NARRATOR, false);
         mainScript.runSection("endingStart");
 
         if (this.hasBlade) {
@@ -12588,10 +12699,6 @@ public class StandardCycle extends Cycle {
         } else {
             mainScript.runSection("endingNoBlade");
         }
-
-        this.currentVoices.put(Voice.NARRATOR, false);
-        this.quietCreep();
-        mainScript.runSection("endingJoin");
 
         this.activeMenu = new OptionsMenu(true);
         activeMenu.add(new Option(this.manager, "okay", "\"It's going to be okay...\""));
@@ -12602,17 +12709,9 @@ public class StandardCycle extends Cycle {
         activeMenu.add(new Option(this.manager, "silent", "[Say nothing.]"));
 
         if (parser.promptOptionsMenu(activeMenu).equals("silent")) {
-            if (this.isFirstVessel) {
-                mainScript.runSection("endSilentFirstVessel");
-            } else {
-                mainScript.runSection("endSilentNotFirstVessel");
-            }
+            mainScript.runClaimSection("endSilent", true);
         } else {
-            if (this.isFirstVessel) {
-                mainScript.runSection("endReplyFirstVessel");
-            } else {
-                mainScript.runSection("endReplyNotFirstVessel");
-            }
+            mainScript.runClaimSection("endReply", true);
         }
         
         if (this.isFirstVessel) manager.updateMoundValues(0, 1);
@@ -13189,14 +13288,6 @@ public class StandardCycle extends Cycle {
         }
 
         mainScript.runSection("chainedEnd");
-        this.quietCreep();
-        mainScript.runSection();
-
-        if (this.isFirstVessel) {
-            mainScript.runSection("endFirstVessel");
-        } else {
-            mainScript.runSection("endNotFirstVessel");
-        }
     }
 
     /**
@@ -13333,14 +13424,6 @@ public class StandardCycle extends Cycle {
         }
 
         mainScript.runSection();
-        this.quietCreep();
-        mainScript.runSection();
-
-        if (this.isFirstVessel) {
-            mainScript.runSection("endFirstVessel");
-        } else {
-            mainScript.runSection("endNotFirstVessel");
-        }
 
         return ChapterEnding.TALKINGHEADS;
     }
@@ -13600,8 +13683,6 @@ public class StandardCycle extends Cycle {
                     }
 
                     mainScript.runSection(this.source + "Abort");
-                    this.quietCreep();
-                    mainScript.runSection("abortJoin");
                     mainScript.runSection(this.source + "Abort2");
                     this.abortVessel(true);
                     return ChapterEnding.ABORTED;
@@ -13856,14 +13937,6 @@ public class StandardCycle extends Cycle {
 
         // Run out of time
         mainScript.runSection(this.source + "End");
-        this.quietCreep();
-        mainScript.runSection();
-
-        if (this.isFirstVessel) {
-            mainScript.runSection(this.source + "EndFirstVessel");
-        } else {
-            mainScript.runSection(this.source + "EndNotFirstVessel");
-        }
             
         switch (this.source) {
             case "drowned": return ChapterEnding.ANDALLTHISLONGING;
@@ -14140,13 +14213,6 @@ public class StandardCycle extends Cycle {
 
                 case 4:
                     mainScript.runSection("deconEnding");
-
-                    if (this.isFirstVessel) {
-                        mainScript.runSection("deconEndingFirstVessel");
-                    } else {
-                        mainScript.runSection("deconEndingNotFirst");
-                    }
-
                     return ChapterEnding.ANDTHEYLIVEDHAPPILY;
             }
 
@@ -14445,16 +14511,8 @@ public class StandardCycle extends Cycle {
         }
 
         mainScript.runSection("leaveEnding");
-        this.quietCreep();
-        mainScript.runSection();
         mainScript.runSection("quietCont", true);
         mainScript.runSection();
-
-        if (this.isFirstVessel) {
-            mainScript.runSection("leaveEndFirstVessel");
-        } else {
-            mainScript.runSection("leaveEndNotFirstVessel");
-        }
 
         return ChapterEnding.ROMANTICHAZE;
     }
@@ -14580,12 +14638,7 @@ public class StandardCycle extends Cycle {
                     }
                 }
 
-                if (this.isFirstVessel) {
-                    mainScript.runSection("mirrorFirstVessel");
-                } else {
-                    mainScript.runSection("mirrorNotFirstVessel");
-                }
-
+                mainScript.runClaimSection("mirror");
                 break;
 
             case MUTUALLYASSURED:

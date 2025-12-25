@@ -790,9 +790,7 @@ p Guess I'm not! All's well that ends well, right? You lived up to your end of t
 jumpanchor possessEndJoin
 hero Don't mention it.
 p I think... this is where I'm meant to be...
-linebreak
-truth Something reaches out and folds her into its myriad arms.
-linebreak
+claim possessEnd
 
 jumpanchor possessEndFirstVessel
 truth You don't get the chance to respond. Something has taken her away, and it's left something else in her stead.

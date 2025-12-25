@@ -416,12 +416,10 @@ n You feel her take another massive step, and then another, and then --
 hero And then?
 hunted It's gone quiet, hasn't it?
 truth You can feel a churning in the forms around you, and then a wet tunneling before you are ejected to a place that is nowhere at all.
-
+quietcreep
 p I guess I don't need you to be a part of me. How lucky for you.
 p This place is cold.
-linebreak
-truth Something reaches out and folds her into its myriad arms.
-linebreak
+claim surrender
 
 jumpanchor surrenderFirstVessel
 truth But before you can say anything, something takes her away, and it leaves something else in her place.
