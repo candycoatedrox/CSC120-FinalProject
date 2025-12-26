@@ -107,6 +107,14 @@ public abstract class Cycle {
         }
     }
 
+    /**
+     * Returns whether the player currently has the blade
+     * @return whether the player currently has the blade
+     */
+    public boolean hasBlade() {
+        return this.hasBlade;
+    }
+
     // --- COMMANDS ---
 
     /**

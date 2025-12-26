@@ -1,81 +1,81 @@
-jumpanchor startFree
+label startFree
 p There's a world beyond the endless walls of The Long Quiet. We're supposed to be there.
 p Do you know what we'll find out there?
 
-jumpanchor startKept
+label startKept
 p There's a world beyond the endless walls of The Long Quiet. I am curious to see what it means for us to know it.
 
-jumpanchor peopleSatisfy
+label peopleSatisfy
 p It doesn't matter if there are. People are too small for us. You and I are the only things that interest me.
 
-jumpanchor peopleDeny
+label peopleDeny
 p It doesn't matter if there are. People are frail and impermanent. You and I are the only things that interest me.
 
-jumpanchor rhetorical
+label rhetorical
 p Rhetorical. I am not rhetorical. I have only known these spaces, and I have known flickers of the lives you've brought me. Short and violent and full of passion. But all of those flickers end where The Long Quiet begins.
 p I'm asking you because I cannot know your mind. Do you know what we'll find out there?
 
-jumpanchor trees
+label trees
 p There is a warmth and sadness in me at the thought of people. Fresh tears on a winter's day. They are not like us. They do not last.
 
-jumpanchor real
+label real
 p We are real. 'Nothing' is an idea that dwells in the absence of 'something.' But 'nothing' cannot exist on its own. And because of that, 'nothing' can't exist.
 
-jumpanchor awakenSatisfy
+label awakenSatisfy
 p If I did, I would already be awake.
 
-jumpanchor awakenDeny
+label awakenDeny
 p No. The point of awakening is to find out.
 
-jumpanchor narratorMet
+label narratorMet
 p I know him through the memories of my vessels. But they have nothing like him on their own. Do you think he lives in the spaces beyond?
 
-jumpanchor narratorFree
+label narratorFree
 p No. Their thoughts are quiet. Do you think your Narrator lives in the spaces beyond?
 
-jumpanchor narratorKept
+label narratorKept
 p No. Their minds are empty. Existent, but constantly shifting into something new. Do you think your Narrator lives in the spaces beyond?
 
-jumpanchor factNarrator
+label factNarrator
 p I am on the cusp of my awakening. Perhaps you are on the cusp of yours.
 
-jumpanchor dunnoNarrator
+label dunnoNarrator
 p There's no need for you to know what you are going to do before you do it. If you find him, remember that I'll be waiting for you on the other side.
 
-jumpanchor answersNarrator
+label answersNarrator
 p Do not look to one who fears me for your truth. The only answers worth knowing are those we can find within ourselves.
 
-jumpanchor killNarratorFree
+label killNarratorFree
 p If he drives you towards my destruction, then he is steeped in delusion, for he does not know me. Just as I hold compassion for you, and you hold compassion for me, you can hold compassion for those who have wronged you.
 
-jumpanchor killNarratorKept
+label killNarratorKept
 p If he is anything other than us, he isn't worth the effort to destroy.
 
-jumpanchor silentNarrator
+label silentNarrator
 p It's nice to be with someone whose thoughts I can never know as mine.
 
-jumpanchor howMany
+label howMany
 p One. Whatever you bring me next will be enough, and then gravity will pull the others back to me. I will be singular. A final multitude.
 
-jumpanchor requests
+label requests
 p These gifts are a conversation, and each one shows me the contours of your heart. The only thing I want to see is what you choose for me when the thread is fully drawn.
 
-jumpanchor threatSatisfy
+label threatSatisfy
 p We may fight, and we may not. But not all fights end in destruction, just as not all conversations end in peace.
 p Even if you destroy me, it will have been worth it to finally know what I am and to have had the chance to know you.
 
-jumpanchor threatDeny
+label threatDeny
 p Conflict is my nature. There is nothing I want more than to finally perceive the shape of myself from every angle, and to turn that shape on you.
 p But not all fights end in destruction, just as not all conversations end in peace.
 
-jumpanchor refuseA
+label refuseA
 p You've already tried waiting, but I understand if you need more time. I'll wait with you.
 
-jumpanchor refuseB
+label refuseB
 p You have already chosen to walk along this path, and we both know you will see it to completion. But if you need more time, then I will wait with you.
 
 // Ending //
 
-jumpanchor end
+label end
 p The next time I see you, each of us will finally know what we are.
 p I will be here. Waiting for you.

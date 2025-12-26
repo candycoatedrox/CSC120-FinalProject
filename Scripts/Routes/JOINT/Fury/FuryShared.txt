@@ -8,10 +8,10 @@
 
 
 
-jumpanchor surviveMirrorCold
+label surviveMirrorCold
 cold So that's a wrap. I didn't think we'd ever get here. There's only one thing left to do.
 
-jumpanchor surviveMirrorBroken
+label surviveMirrorBroken
 broken So the world's gone, and she's gone with it. There's only one thing left for you to do here. You need to look at yourself. Whatever you see, it's going to be okay.
 
-jumpanchor surviveMirrorApproach
+label surviveMirrorApproach

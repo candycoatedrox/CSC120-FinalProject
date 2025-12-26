@@ -17,12 +17,12 @@ smitten To be given an ounce of kindness from something so cruel would be more p
 cheated Why are there so many of us? There aren't supposed to be so many of us.
 n This is bad. You need to get a grip. What did you let happen? How many times have you been here?
 
-jumpanchor wrong
+label wrong
 broken Of course we're wrong.
 smitten She's the only thing that's right.
 n Yes, obviously they're all wrong. What are you going to do about it?
 
-jumpanchor howMany
+label howMany
 skeptic Many, many, many, *many* times.
 para It feels like we've been here forever, but it also feels like we've barely been here at all.
 broken It doesn't matter.
@@ -32,7 +32,7 @@ oppo It will be for us. She said so.
 n You're part of everything. If things aren't fine for everything, they won't be fine for you.
 contra There's no difference between Fine and Not Fine. It just goes on and on.
 
-jumpanchor decider
+label decider
 contra What does here even mean, if you really think about it?
 stubborn Shut up. You were here.
 broken Every single time.
@@ -41,7 +41,7 @@ smitten And our cruel and beautiful goddess sits atop it, right where she's alwa
 hero You're lucky. What I would give to be able to forget.
 cold I've tried to keep them numb, but they're all too soft. A shame, really.
 
-jumpanchor notMe
+label notMe
 n Don't think about that too hard. All it will do is weaken your resolve and make it that much harder for you to slay her.
 broken Maybe you're shattered in your own way.
 skeptic Are you your memories, or are you the one perceiving the present moment?
@@ -54,19 +54,19 @@ broken And then she smashes us into smaller pieces.
 cold If you all just stopped feeling we could have been done with this ages ago.
 n Your thoughts are far too scattered to rein back in. Your only option is to silence them.
 
-jumpanchor dontGo
+label dontGo
 contra We've *tried* that.
 hero It doesn't work.
 smitten Our heart's always brought us back to her.
 cheated The deck is stacked.
 hunted So many paths and they're all circles.
 
-jumpanchor sense
+label sense
 n There's nothing worth making sense of. They're clearly all traumatized.
 skeptic And yet you aren't. We break apart and you stay the same.
 cheated Yeah, what's your secret? Why can you break the rules when we can't?
 
-jumpanchor disjointed
+label disjointed
 n I don't care how you feel. You have to slay her. You have to pull yourself together. You have to snap out of it.
 cold You're lucky you haven't been stuck here like the rest of them. There's no other way to keep going. You either need to forget, or you need to stop feeling much of anything. They can't do either.
 oppo He's not wrong. He's the only smart one left, if you ask me.
@@ -74,7 +74,7 @@ broken He's worse than her.
 
 // Hill dialogue //
 
-jumpanchor hillApproach
+label hillApproach
 n You slowly make your way through the umbral forest, bumping against unseen trees as you grasp through the darkness for a way forward.
 n But eventually, you do make it to the cabin, or rather, you make it to the place a cabin should have been. Instead, all you find is an empty hill.
 n No, no. This isn't right. There's a cabin there. There's always supposed to be a cabin there.
@@ -87,14 +87,14 @@ n Stay focused. You still have a job to do, and it's best not to be distracted b
 hunted She's still here. Buried deep inside the earth.
 cold Just walk up the hill. You always give too much space to the others. It's why you always lose.
 
-jumpanchor hillExplore
+label hillExplore
 cold They've been heard too much. It's why they are the way they are.
 n Exactly. They are delusions, and all that catering to them will do is drag you down to their level. You have to keep moving.
 hero Or you could just give up.
 
 // "Cabin" dialogue //
 
-jumpanchor cabinApproach
+label cabinApproach
 n You walk up the hill, hesitating just beyond the bounds of "the cabin."
 skeptic The cabin that isn't there.
 smitten You've got to clean the mirror, haven't you? You've got to see what's in it.
@@ -104,15 +104,15 @@ para It's the only way we can have our thoughts back.
 contra Just go around it.
 cold Just do something. It doesn't matter what.
 
-jumpanchor proceedNothingAttempt
+label proceedNothingAttempt
 n ... proceed? Proceed to where? I'm afraid you're going to have to be a little more specific.
 hero That's another new one. How do you keep coming up with new things? I hope this works better than nothing did.
 jumpto proceedJoin
 
-jumpanchor proceedNoNothing
+label proceedNoNothing
 n ... proceed? Proceed to where? I'm afraid you're going to have to be a little more specific.
 hero That's a new one. Do you think it'll work?
-jumpanchor proceedJoin
+label proceedJoin
 oppo Of course it'll work. He always makes the best decisions. It's why he gets to make them!
 cold And it already has worked. It's gone, don't you see?
 broken We're one step closer to her.
@@ -121,14 +121,14 @@ n The only object of note is a pristine blade buried in the dirt floor, a hint o
 n The blade is your implement. You'll need it if you're going to do this right.
 cold Take it. It's the only way forward.
 
-jumpanchor takeBlade
+label takeBlade
 n You reach down to take the blade, but as you do, the ground beneath it shifts, the weapon sinking deep into the earth.
 n You lean over the hole and gaze into the abyss. It is so very deep.
 n Deep in the bowels of the earth, you see something staring back at you. It fills you with dread.
 hero It's her.
 para She's watching us. She never stops watching us.
 
-jumpanchor emergeRun
+label emergeRun
 p There you are! My toy has finally come to finish his job.
 n With every word she speaks, the Princess in the pit blinks closer.
 truth Her gloved arms are disconnected from her body, her mask shattered into pieces that float just in front of her face.
@@ -143,7 +143,7 @@ n And closer.
 p Everything stops running eventually.
 jumpto emergeJoin
 
-jumpanchor emergeOther
+label emergeOther
 p You really are a coward!
 n With every word she speaks, the Princess in the pit blinks closer.
 truth Her gloved arms are disconnected from her body, her mask shattered into pieces that float just in front of her face.
@@ -155,7 +155,7 @@ truth She has more arms now. Three, then four, then five.
 p Watching over me forever? That was so brave!
 n And closer.
 p But forever is so so long, and time erodes everything.
-jumpanchor emergeJoin
+label emergeJoin
 p Except for me!
 p I've already taken your will and you're not getting it back.
 linebreak
@@ -176,13 +176,13 @@ p I didn't think I'd be so... tired.
 p Why is it so cold?
 claim end
 
-jumpanchor endFirstVessel
+label endFirstVessel
 truth You do not have an opportunity to respond. Something has taken her away, and it's left something else in her place.
 
-jumpanchor endNotFirstVessel
+label endNotFirstVessel
 truth You do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.
 
-jumpanchor mirrorStart
+label mirrorStart
 broken She's gone.
 skeptic Yeah. I can finally think again. Almost.
 hero That mirror's back...
@@ -196,13 +196,13 @@ smitten What do we say, boys? One last vain attempt to look at ourselves?
 hero Yeah. I think I'd like that.
 oppo Seems we've got a majority. All that's left is to give it a look.
 
-jumpanchor mirrorFirstVessel
+label mirrorFirstVessel
 truth You step towards the mirror. It holds a truth that you must witness.
 jumpto mirrorJoin
 
-jumpanchor mirrorNotFirstVessel
+label mirrorNotFirstVessel
 truth You step towards the mirror. Its secrets remain hidden. Its mysteries remain unresolved.
-jumpanchor mirrorJoin
+label mirrorJoin
 hero Something tells me that this is the end of the line, but I don't feel bad about it. I'm ready.
 broken It feels okay.
 para The fear's gone.
@@ -217,7 +217,7 @@ oppo Boys, it's been an honor.
 
 // Attempt to abort the vessel //
 
-jumpanchor nothing
+label nothing
 n You do... nothing? You can't just do nothing. You have to do something.
 hero That's... a new one. Huh. Do you think it'll work?
 broken No. Nothing ever works.

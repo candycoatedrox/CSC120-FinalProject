@@ -3,7 +3,7 @@ n You're on a path in the woods...
 jumpto skip
 
 n Hey, you can't just ignore me!
-jumpanchor skip
+label skip
 contra Yes we absolutely can!
 linebreak 2
 n Nuh uh -- /// interrupt
@@ -12,7 +12,7 @@ contra Yuh huh!
 
 n Don't you dare!
 
-jumpanchor checkTest
+label checkTest
 linebreak
 hero Are you sure about that?
     contra I sure am! /// checkvoice
@@ -22,10 +22,22 @@ hero Are you sure about that?
     broken No... /// checknovoice-contra
         stubborn Oh, shut up. Let's get moving already! /// checkvoice checknovoice-contra
 
-jumpanchor extTest
+label extTest
 np Testing.
 heroext Testing!
 dragon Who knows who I am? Muahaha...
 coldext Opportunist.
 oppoext Oh, you just hate fun.
 pint Um... hello?
+
+label conditionTest
+n Testing, testing.
+switchjump testTrue testFalse
+
+label testTrue
+
+label testFalse
+
+label testZero
+
+label testTwo

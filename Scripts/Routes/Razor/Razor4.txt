@@ -1,7 +1,8 @@
 n You're on a -- /// interrupt
 cheated Don't lose your head. We're in a cabin, and we'll take it from here.
+bladeswitch start
 
-jumpanchor startBlade
+label startBlade
 hunted Everything feels like it finally fits, doesn't it? We're up here which is different, and different is good. And our steel claw is already in our hand.
 contra Oho! What if we throw it out the window?
 stubborn Over my dead body.
@@ -13,7 +14,7 @@ para How about we stop thinking about horrible ways to die? I don't want us to a
 oppo The only thing we're going to manifest is finally ending up on top.
 jumpto startJoin
 
-jumpanchor startNoBlade
+label startNoBlade
 hunted No steel claw though.
 contra Was tossing it the only thing we've done that was permanent? That's a sick joke, universe. A sick, sick joke.
 skeptic If it's gone for good, then maybe we never actually needed it.
@@ -23,30 +24,32 @@ smitten Who needs violence when you have love?
 cold Who needs love when you've mastered yourself?
 broken Who needs anything when we don't matter?
 oppo Well, boys? Are we ready?
-jumpanchor startJoin
+label startJoin
 n There are entirely too many of you. How many times have you been here?! This isn't good, this is -- /// interrupt
 cheated How about you stick to describing things, and we'll stick to doing them?
+bladeswitch stubbornStart
 
-jumpanchor stubbornStartBlade
+label stubbornStartBlade
 stubborn Yeah. Leave it to the pros. We'll notch up that win in no time.
 jumpto startJoin2
 
-jumpanchor stubbornStartNoBlade
+label stubbornStartNoBlade
 stubborn Yeah. Leave it to the pros.
-jumpanchor startJoin2
+label startJoin2
 smitten Narrator! We heroically stride through the door and towards our destined final encounter with our star-crossed lover!
 n Fine by me. You walk to the door and onto the basement stairs, only -- /// interrupt
 cheated It's more of a slide? We know.
 n Fine. I'll just shut up and speed this whole thing along.
 n ... Are you sure you don't want me to describe the stairs? Or this room? Or anything? It feels like I'm hardly a part of this.
+bladeswitch stairs
 
-jumpanchor stairsBlade
+label stairsBlade
 cheated Don't care. Just want to win.
 jumpto stairsJoin
 
-jumpanchor stairsNoBlade
+label stairsNoBlade
 cheated Don't care. Just want to see how this ends.
-jumpanchor stairsJoin
+label stairsJoin
 linebreak
 n Fine. you make your way to the basement.
 p You know, this last time I killed you and you didn't pop right back up again?
@@ -74,14 +77,15 @@ cold That looked... painful.
 skeptic How is she still alive?
 hunted Heart's still beating. That's all she needs.
 para This is fake! This is all fake! That's all! Just made up!
+bladeswitch voicesCont
 
-jumpanchor voicesContBlade
+label voicesContBlade
 oppo She doesn't even have a back anymore. How are we supposed to stab her in it?
 jumpto voicesContJoin
 
-jumpanchor voicesContNoBlade
+label voicesContNoBlade
 oppo I'd say we bow down to her right now if that had ever even slightly worked for us.
-jumpanchor voicesContJoin
+label voicesContJoin
 broken This is all just a sick joke. I hate existing.
 cheated We're screwed. I quit! I'm done! Forget it!
 linebreak
@@ -89,24 +93,25 @@ truth They begin to talk over one another. Their arguments go in circles, never 
 
 // Menu //
 
-jumpanchor empty
+label empty
 truth All at once, it is blessedly quiet.
 truth You stand in front of the Princess in a basement identical to the one you first encountered oh so long ago.
 n ... What just happened? It's so quiet.
 
-jumpanchor empty2FirstVessel
+label empty2FirstVessel
 truth The basement is gone, replaced by a textured nothingness.
 jumpto empty2Join
 
-jumpanchor empty2NotFirstVessel
+label empty2NotFirstVessel
 truth The basement is gone, replaced by a textured nothingness. Somehow, it feels familiar.
-jumpanchor empty2Join
+label empty2Join
 p Something feels different about you. It almost makes *me* feel different. Like I should actually take this seriously for once.
+bladeswitch end
 
 // Endings //
 
 // "Water and Steel" ending: claim the Razor (Full) //
-jumpanchor endBlade
+label endBlade
 truth You do not act, and yet through that inaction your body moves on its own. The Princess strikes as you approach, but as her blow finishes its arc, you're already somewhere else.
 p You're incredible.
 truth Your weapons clash again and again, you and her entering a rhythm free of thought and free of self.
@@ -117,14 +122,14 @@ truth Your blade strikes free of volition, and hers strikes, too.
 truth Both strikes are lethal. Neither of you will survive, but neither of you fear what's to come. This is a good ending.
 claim endBlade
 
-jumpanchor endBladeFirstVessel
+label endBladeFirstVessel
 truth You do not get to see each other die. Something has taken her away, and it's left something else in her place.
 
-jumpanchor endBladeNotFirstVessel
+label endBladeNotFirstVessel
 truth You do not get to see each other die. Nor will you ever. It's time for you to leave. Memory returns.
 
 // "Be formless, shapeless" ending: claim the Razor's heart //
-jumpanchor endNoBlade
+label endNoBlade
 truth You do not act as the Princess approaches, instead allowing her to crash against your form. And yet, there is seemingly nothing for her to crash against.
 truth Again and again she swings at "you," but there never really was a "you" to swing at.
 p This worked before. I was able to make you dead before!
@@ -136,14 +141,15 @@ truth She hurls herself at you, but as she does, her metal body bends outward, t
 truth The din of shrieking metal subsides, and something small and delicate falls into your hand. It's her heart. It beats gently, calmly, in your palm.
 linebreak
 truth Something reaches out from the darkness and gently takes her away.
+claim endNoBlade
 
-jumpanchor endNoBladeFirstVessel
+label endNoBladeFirstVessel
 truth Not another word is spoken. She's gone, replaced with something else.
 
-jumpanchor endNoBladeNotFirstVessel
+label endNoBladeNotFirstVessel
 truth Not another word is spoken. It's time for you to leave. Memory returns.
 
 // Mirror //
 
-jumpanchor mirrorGaze
+label mirrorGaze
 truth Silence as you reach towards the glass. It's time for you to see what's in it.

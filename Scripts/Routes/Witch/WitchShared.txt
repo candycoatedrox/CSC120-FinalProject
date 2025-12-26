@@ -3,73 +3,73 @@ oppo Brilliant. We need to keep our cards close to our chest, and I'm not sure w
 n You know I can hear you, right? It's going to be a lot harder than you think to keep secrets from me.
 oppo Did I say "I'm not sure we can trust *Him?"* Slip of the tongue. Bit of the old brain fog. I meant to say that we should probably head over to the cabin and slay that Princess. We already know we can't trust *her,* so let's get on with the show.
 
-jumpanchor assume
+label assume
 oppo We were just weighing our options in a morally ambiguous situation. You can't blame us for weighing our options.
 n I can if you failed to slay the Princess, which you apparently did. So, great. Congratulations. You've been given another chance to actually do this right.
 
-jumpanchor assumeSlain
+label assumeSlain
 oppo We were just weighing our options in a morally ambiguous situation. You can't blame us for weighing our options.
 hero We did our best with the information we were given. And we *did* kill her.
 n And yet you still died, didn't you? So congratulations. You've been given another chance to actually do this right.
 
-jumpanchor assume2
+label assume2
 oppo That's a very good point. This Princess character seems like a lot of trouble. And if you think about it, actually slaying her probably breaks us out of this cycle, right? We don't want to be stuck here forever, do we?
 hero You're laying it on a little thick, aren't you?
 oppo Laying it on a little thick? What are you talking about? I'm sharing my honest opinions.
 n What matters is that almost everyone seems to be on the same page. So whenever you're ready, you can stop dawdling, get to the cabin, and save the world.
 
-jumpanchor princessHowDangerLocked
+label princessHowDangerLocked
 n She just can. But that doesn't mean you're not fully up to the task that's been given to you. Have a little faith in yourself, and maybe try to not get tricked this time.
 
-jumpanchor princessSpecial
+label princessSpecial
 oppo Good point. That really explains almost everything.
 hero I'm not so sure about *that.*
 oppo You know, you're right. But it explains *almost* everything.
 
-jumpanchor princessCagey
+label princessCagey
 oppo I don't think either of you really need to press the man on this. He wants us to slay the Princess, so why would He have anything to hide? He seems like a nice guy to me!
 n I appreciate the vote of confidence, but you should really stop wasting time chatting amongst yourselves in the woods, so if we could move this along...
 
 // Hill dialogue //
 
-jumpanchor hillDialogue
+label hillDialogue
 oppo Don't worry. You can trust us to get the job done.
 
-jumpanchor hillDialogueSharedLoop
+label hillDialogueSharedLoop
 oppo Don't worry. I think we've taken that lesson to heart at this point. You can trust us to get the job done.
 
 // Abort attempt //
 
-jumpanchor abortStart
+label abortStart
 oppo Well, you're the boss.
 
-jumpanchor abortReturn
+label abortReturn
 oppo This is probably for the best.
 
 // Cabin //
 
-jumpanchor cabinIntro
+label cabinIntro
 nowplaying The Witch
 n The interior of the cabin is a mess of twisted roots, the walls a chaotic weave of knotted wood that, almost as if by accident just happened to resemble a room. The floor is damp and earthy, and the only furniture of note is a slab of mud in the shape of a shelf, with a pristine blade perched on its edge.
 n The blade is your implement. You'll need it if you want to do this right.
 
-jumpanchor takeBlade
+label takeBlade
 n You take the blade from the shelf. It would be difficult to slay the Princess and save the world without a weapon.
 oppo Well, if we're grabbing a weapon, we should probably keep it hidden behind our backs. She doesn't have to know we have it.
 hero That's not... actually a bad idea.
 
 // Ask about the mirror //
 
-jumpanchor askMirror
+label askMirror
 n That's because there isn't a mirror. There's the muddy shelf, the blade sitting on the muddy shelf, and the door to the basement. There's nothing else in here.
 
-jumpanchor askMirrorStart
+label askMirrorStart
 oppo But He says there isn't one. That's got to count for something, right?
 
-jumpanchor mirrorWhyLie
+label mirrorWhyLie
 oppo Come on, now. He's pretty much in charge here. When have authority figures ever lied about anything? If there were a mirror in this cabin and we were supposed to look at it, He would have told us about it.
 
-jumpanchor mirrorHandsome
+label mirrorHandsome
 oppo Oh, I'm sure we'd look great. If only there were some sort of reflective surface we could examine. Absolute shame there isn't anything like that around here.
 hero You... you *do* see it, right? I don't know how to read you.
 oppo I-I... see all sorts of things.
@@ -77,48 +77,51 @@ hero But do you see the mirror? It's a simple yes or no question.
 oppo Uh... I, um... help me out here, will you?
 n I'm not lying to you. Use your eyes, there is no mirror. Why would I lie about something so meaningless? What good would a mirror even do? Let you waste time preening yourself instead of doing what needs to be done?
 
-jumpanchor mirrorGone
+label mirrorGone
 oppo Well, at least we can all agree now that there's nothing to see here. Case closed. Good work everyone.
 
 // Stairs //
 
-jumpanchor stairsNoBlade
+label stairsNoBlade
 hero No blade. I hope you know what you're getting us into.
-jumpanchor stairsNoBladeJoin
+label stairsNoBladeJoin
 oppo It'll always be here if we need it. Sure, that was also true last time, and we still died. But we definitely know what we're doing *this* time.
 linebreak
 
-jumpanchor stairsNoBladeSharedLoop
+label stairsNoBladeSharedLoop
 hero No blade? Leaving it behind didn't work out so well for us last time...
 jumpto stairsNoBladeJoin
 
-jumpanchor stairsStart
+label stairsStart
 n The door to the basement creaks open, revealing a staircase dug into the muddy earth below. The ceiling is thick with roots that hang like locks of tangled hair.
 n The weak starlight from the cabin windows behind you can barely penetrate the gloom here, only illuminating the edges of an opening below. It shines in the darkness like some kind of massive maw, waiting to swallow you up into the earth.
 n The air smells of dirt and copper. It's thick and wet, as if your lungs are being coated in mud with each intake of breath. If the Princess lives here, slaying her would probably be doing her a favor.
 n Her voice skitters up the stairs.
 p Something nasty finds itself on my stairs. Come on down, don't be scared. I probably won't bite.
 
-jumpanchor stairsNotNasty
+label stairsNotNasty
 p But you are. You're a wretched little thing.
-jumpanchor stairsHello
+label stairsHello
 p I recognize that voice as easily as I recognized your nervous little footsteps coming up the path. I know who you are, and I remember what you've done.
 
-jumpanchor stairsSilent
+label stairsSilent
 p Silence, I see. Don't think I've forgotten about you. I recognized the sound of your nervous little footsteps as soon as they came into my home. I know who you are, and I remember what you've done.
 
-jumpanchor stairsEndNoShare
+label stairsEnd
+numswitchjump stairsEndNoShare stairsEndNoShare stairsEndSharedLoop
+
+label stairsEndNoShare
 n She must have you confused with someone else.
 jumpto basementStart
 
-jumpanchor stairsEndSharedLoop
+label stairsEndSharedLoop
 hero See? She knows us. Is this enough for you to believe what we've been saying?
 n Maybe, but you shouldn't let that cloud your judgment. She's just a Princess. As long as you remember that and remain focused, slaying her will be *easy.*
 jumpto basementStart
 
 // Basement //
 
-jumpanchor basementStart
+label basementStart
 oppo She seems friendly enough. Maybe we can talk our way out of this whole situation.
 n *Sigh.* You can't. Unless you slay her right away, she's going to break free and end the world. There's no reasoning with what she is.
 oppo Look, I'm just throwing ideas out there. I like to think out loud. I'm the kind of guy who likes a *discussion,* don't we want to hear what everyone has to say before making any big decisions?
@@ -129,46 +132,52 @@ n Thank you. You descend the basement steps, entering the dark room below.
 linebreak
 n You can just make out the shape of the Princess in the gloom. She's huddled against the far wall, her eyes bright and glaring from amid the thick roots.
 truth Her appearance is unkempt, her hair wild and littered with twigs, her dress in tatters. The tail of a lion swishes behind her, and her nose and mouth resemble those of a cat.
+bladeswitch basementStart
 
-jumpanchor basementStartNoBlade
-p And there you are, once again seeming to offer a helping hand while likely hiding the other behind your back. Fine. I'll play along for now. What do you want?
-
-jumpanchor basementStartBlade
+label basementStartBlade
 n And there you are, one hand tucked away behind your back, gripping that sharp, sharp blade, no doubt.
 oppo That's no fair, how would she know that?
 p So we've dropped the pretenses.
 p Good.
 
-jumpanchor basementSharedLoopInsist
+label basementStartNoBlade
+p And there you are, once again seeming to offer a helping hand while likely hiding the other behind your back. Fine. I'll play along for now. What do you want?
+
+label basementStartShareSwitch
+numswitchjump basementNoShare basementSharedLoop basementSharedInsist
+
+label basementSharedInsist
 n She's acting like she already knows you. I guess what you said back in the woods really was true.
-oppo That's pretty sharp! How'd you figure that one out?
-n Call it deductive reasoning.
-oppo Well, you seem to be great at it!
+jumpto basementAllShareJoin
+
+label basementSharedJoin
 hero So... you really don't remember us, do you?
 n No, I don't. But you and the Princess clearly have a shared reality, even if I'm not a part of it. I won't waste time fighting you on something that's clearly true.
+numswitchjump basementJoin basementJoin
+label basementInsistCont
 hero You fought us on it back in the woods.
 n That was when the only perspectives we had were yours and mine.
 jumpto basementJoin
 
-jumpanchor basementSharedLoop
+label basementSharedLoop
 n You made a comment back in the woods about having been here before, and now she's acting like the two of you already know each other.
-n Oh no. You've already been here, haven't you?
-oppo That's pretty sharp! How'd you figure that one out?
-n Call it deductive reasoning.
-oppo Well, you seem to be great at it!
-hero So... you really don't remember us, do you?
-n No, I don't. But you and the Princess clearly have a shared reality, even if I'm not a part of it. I won't waste time fighting you on something that's clearly true.
-jumpto basementJoin
+jumpto basementNoInsistJoin
 
-jumpanchor basementNoShare
+label basementNoShare
 n She's acting like the two of you already know each other.
+label basementNoInsistJoin
 n Oh no. You've already been here, haven't you?
+label basementAllShareJoin
 oppo That's pretty sharp! How'd you figure that one out?
 n Call it deductive reasoning.
 oppo Well, you seem to be great at it!
+numswitchjump basementNoShareCont
+jumpto basementSharedJoin
+
+label basementNoShareCont
 hero Do you remember us, then? Do you remember last time?
 n No, I don't. But you and the Princess clearly have a shared reality, even if I'm not a part of it. I won't waste time fighting you on something that's clearly true.
-jumpanchor basementJoin
+label basementJoin
 oppo I'm just glad we could put all this behind us!
 hero Is it all behind us?
 n Just focus on the task at hand. I don't care if you've been here before, and I don't care if you think you'll go somewhere else after this. My world is on the line right now. So I'd appreciate it if you would take this seriously, and slay her.
@@ -178,33 +187,33 @@ p Well? I seem to remember you having a tongue.
 
 // Conversation menu //
 
-jumpanchor sorryMenu
+label sorryMenu
 oppo Oooh, smart. Let's apologize. Get us back on the right foot.
 p Oh, you're sorry! Isn't that nice! You're such a gracious little monster.
 p If you're sorry, then let me out of here. Prove it.
 
-jumpanchor mistakeMenu
+label mistakeMenu
 oppo Oooh, smart. Let's apologize. Get us back on the right foot.
 p The only mistake I ever made was thinking you would help me. And I'm not going to make the same mistake twice.
 hero Well, that leaves us at a stalemate.
 p But unfortunately -- *ugh* -- I *need* you if I'm ever going to leave this place.
 
-jumpanchor notHappyMenu
+label notHappyMenu
 p Is that a *joke?* Do you think a *joke* will charm my trust back? You'll have to try harder than that.
 
-jumpanchor scaredMenu
+label scaredMenu
 p Things did get out of hand, didn't they? But it's hard to let bygones be bygones when they led to murder.
 p And you started it.
 
-jumpanchor goodWillMenu
+label goodWillMenu
 p You came to me with empty hands last time, too, but that didn't mean you hadn't been plotting something nasty all along. What you did showed me as much.
 hero But we didn't plot anything! We just made an informed decision based on the information we had at the time.
 oppo I think you're both making perfectly valid points. Sure, we didn't plot anything, but it's easy to see how she might think we did.
 
-jumpanchor bygonesMenu
+label bygonesMenu
 p You were the one who stabbed me in the back when I was still in chains. A dirty little thing like you doesn't get to decide when all is fair.
 
-jumpanchor lockedMenu
+label lockedMenu
 oppo That is an exceptionally good point.
 p And you were the conniving beast that left in search of steel to slay me. Just because I won and you lost doesn't mean I'm to blame for bad blood.
 oppo Also a good point.
@@ -214,45 +223,45 @@ p But I must confess, this place never let me out into the world. While you were
 p It seems that you get to come and go as you please. So you may be a bigger part of the answer to this riddle than I'd like you to be. Maybe bygones can be bygones.
 p But you'll have to let me out first.
 
-jumpanchor trustedRescueMenu
+label trustedRescueMenu
 p You were the one who tried to kill me when my back was turned. You were the one who started all of this! Only a poor loser twists their own failures around on the winner.
 
-jumpanchor trustedMenu
+label trustedMenu
 p You were the one who went to get that knife. You were the one who started all of this! Only a poor loser twists their own failures around on the winner.
 
-jumpanchor messyMenu
+label messyMenu
 p I suppose you didn't come into my hovel of your own accord, did you...? All right. I suppose I could... "team up." I need a way out, after all, and unfortunately you're the only one I have.
 oppo Seems to me like she's offering a mutually beneficial arrangement. We should take it!
 n Do you know what the word "mutually" means? Because it sounds to me like she's offering an arrangement that benefits her, and her alone.
 
-jumpanchor impasseMenu
+label impasseMenu
 p Just because I'll never trust you doesn't mean I won't use you to get what I want.
 p The cabin lets prying little beasts like you come as you please, but it insists I stay where I am.
 p If I'm to leave, I'm to leave with you, and you alone.
 
-jumpanchor getOutBMenu
+label getOutBMenu
 p Oh, of course. They're nothing to me.
 jumpto chainsFall
 
-jumpanchor cutMenu
+label cutMenu
 p Oh, I don't need you to cut me out.
 jumpto chainsFall
 
-jumpanchor chainsFall
+label chainsFall
 p The Princess grins as the chains fall from her wrist.
 hero She could have gotten out of those the whole time! That sneaky little...
 
-jumpanchor chainsHeartComment
+label chainsHeartComment
 oppo A woman after my own heart, really. She knows how to hold her cards close to her chest.
 
-jumpanchor chainsFallCont
+label chainsFallCont
 n This is why she can't just be abandoned here. If left to her own devices, she'll find a way out. Now *stop her!*
 
-jumpanchor freeMenu
+label freeMenu
 p The cabin lets prying little beasts like you come as you please, but it insists I stay where I am. That binding I shed is just a symbol of the crueler magic at work in this place.
 p If I'm to leave, I'm to leave with you, and you alone.
 
-jumpanchor betrayMenu
+label betrayMenu
 p And why would I do such a thing? Is someone's guilty conscience getting to them?
 p But I wouldn't worry. As much as I may hate you, letting you live is in my best interests. If you get me out of here, the only thing that will be dead and buried is the bad blood between us.
 oppo Oh, that nagging feeling you mentioned is me, by the way. I'm actually a little anxious about a potential back-stabbing event.
@@ -264,7 +273,7 @@ oppo See? He gets it. There's nothing wrong with looking out for number one.
 
 // Leave with her //
 
-jumpanchor leaveStart
+label leaveStart
 p Yes. Let's.
 linebreak
 n She creeps forward, taking one cautious step at a time, until you and she are face to face.
@@ -274,21 +283,22 @@ p After you, darling. You're the one it lets come and go. It's best if I follow.
 oppo Oh no, we can't have that. If anyone is going to turn their back on anyone else, she's going to turn her back on us.
 hero It shouldn't matter who leads and who follows. We're working together here.
 oppo Well, if it doesn't matter, then she can go first. We may be in this together, but that doesn't mean we have to trust her.
+bladeswitch leaveStart
 
-jumpanchor leaveStartBlade
+label leaveStartBlade
 hero We're armed and she's not. What's she going to do, bite us when we're not looking?
 jumpto leaveStartJoin
 
-jumpanchor leaveStartNoBlade
+label leaveStartNoBlade
 hero Somebody has to go first, and it might as well be us. We're the ones who broke her trust last time.
-jumpanchor leaveStartJoin
+label leaveStartJoin
 n You're talking a lot about trusting someone who, by her very definition, cannot be trusted. I don't know how many more warnings I have to dole out, but if you help her out of here, you're going to regret it.
 
-jumpanchor leaveStartExplore
+label leaveStartExplore
 p And turn my back on you? Do you think me a fool? Your tricks are one of the only things I've known. And I've learned better by now.
 hero Just go first.
 
-jumpanchor leaveStartImplore
+label leaveStartImplore
 n The Princess leans close, her nose twitching as she sniffs your neck inquisitorially.
 hero What is she doing?
 oppo I think she's trying to figure out if we're lying, so it's a good thing we didn't lie!
@@ -297,27 +307,28 @@ hero Eyes on the back of her head?! Does she really?
 oppo Nooooo. We're fine.
 n The Princess pointedly turns her back on you and starts up the stairs.
 
-jumpanchor witchEndFirstVessel
+label witchEndFirstVessel
 truth But you don't get the chance to respond. Something has taken her away, and it's left something else in her place.
 
-jumpanchor witchEndNotFirstVessel
+label witchEndNotFirstVessel
 truth But you don't get the chance to respond, nor will you ever. It's time to leave. Memory returns.
 
 // Go first up the stairs //
 
 // "The Frog" ending; claim the Witch //
-jumpanchor leadStart
+label leadStart
 p That's right! You're the one who's going first. Don't worry. I'll be right behind you, watching every single thing you do.
 oppo That's exactly what I'm worried about.
 n You step onto the stairs and begin your ascent from the basement. The Princess follows close on your heels, perhaps even a little closer than you'd like.
+bladeswitch leadStart
 
-jumpanchor leadStartBlade
+label leadStartBlade
 hero You're only saying that because you want us to feel nervous! You want us to turn around and kill her.
 jumpto leadStartJoin
 
-jumpanchor leadStartNoBlade
+label leadStartNoBlade
 You're only saying that because you want us to feel nervous!
-jumpanchor leadStartJoin
+label leadStartJoin
 n I do want those things, but I want them for a good reason. I don't need you to trust me for my sake, because I already know that I'm right. This is for you.
 oppo Can we walk backwards up the stairs? I think that's the smarter idea. She can't sneak in an attack if we're facing her.
 n No. The stairs are a bunch of overgrown roots. You'll trip and hurt yourself.
@@ -344,26 +355,29 @@ p You must have known this was coming. The arrogance of turning your back to me 
 
 // Follow her up the stairs //
 
-jumpanchor followStartBlade
+label followStart
 n You follow close behind her, the two of you walking on tiptoes through the knotted roots of the basement stairs.
+bladeswitch followStart
+
+label followStartBlade
 oppo It's time boys! Stab her in the back! Do it! Do it now!
 hero Wait, I thought we were helping her escape.
 oppo Of course we're not! You didn't buy all of that noise I was putting down, did you? I was just waiting for a moment for us to strike. She has it in for us, you know.
 
-jumpanchor followRefuse
+label followRefuse
 oppo You do realize that she hates us, right? If we don't make the first move now, she's going to find a way to make the first move herself.
 hero Why would she do that? She wants to leave, which means we need to work together. She knows that! She wouldn't just act against her best interests.
 oppo I dunno. If I were her, I'd betray us. Look at me right now, suggesting betrayal! You really need to learn to put yourself in someone else's shoes.
 n I'm with that little weasel. You have an opportunity to save the world. You should take it.
 
 // "The Scorpion" ending; claim the Witch //
-jumpanchor backStabPraise
+label backStabPraise
 oppo Wow! You said exactly the thing I imagined you would say as soon as you heard my brilliant plan. This whole day is a dream come true, really.
 jumpto backStabJoin
 
-jumpanchor backStabUgh
+label backStabUgh
 oppo Oh, you're no fun. But at least you get how important it is that we leave this basement at the top of the pecking order.
-jumpanchor backStabJoin
+label backStabJoin
 n You plunge the blade deep into the Princess' back, driving her to her knees amid the roots.
 oppo Would you look at that! No need to thank me, but... y'know... please, do thank me.
 p Of course you'd betray me the moment I turned my back on you.
@@ -378,54 +392,54 @@ p Did you really think you could stab me in the back without suffering the conse
 
 // Shared betrayal menu (went first or stabbed her in the back) //
 
-jumpanchor brokenBetrayal
+label brokenBetrayal
 p Oh, I broke your back, did I? You were the one who started this little game. You were the one who chose spite and violence and conflict! If not for your betrayal, I could have had my freedom a lifetime ago.
 p But I'm the victor now! And that means I get to select my prize. If only I could decide which is better... do I kill you with my own hands? Or do I let you suffer the way you decided to let me suffer?
 p Maybe I'll do a bit of both.
 
-jumpanchor helpBetrayal
+label helpBetrayal
 p Maybe you were and maybe you weren't. But even more than I wanted my freedom... I really, really wanted to hurt you.
 p And you know as well as I that by our very natures, only one of us could make it up those stairs unscathed. Someone had to make the first move. Better me than you.
 
-jumpanchor damnBetrayal
+label damnBetrayal
 n The Princess lets out a mocking laugh.
 p I could see your scheme twitching in every muscle. I understand you too well for there to be secrets between us. We're the same creatures at our core, spite runs through our very marrow.
 p By our very natures, only one of us could make it up those stairs unscathed. Better me than you.
 
-jumpanchor neverBetrayalLocked
+label neverBetrayalLocked
 p Of course not. By our very natures, only one of us could make it upstairs unscathed. Someone had to make the first move. If I had the chance, I would have locked you down in this basement again.
 jumpto betrayalJokeJoin
 
-jumpanchor neverBetrayalOther
+label neverBetrayalOther
 p Of course not. By our very natures, only one of us could make it upstairs unscathed. Someone had to make the first move. If I had the chance, I would have locked you down in this basement.
 jumpto betrayalJokeJoin
 
-jumpanchor trustBetrayalLocked
+label trustBetrayalLocked
 p You should have known I would never walk hand-in-hand with a loathsome thing like you.
 
-jumpanchor trustBetrayalOther
+label trustBetrayalOther
 p Why would I ever trust you? Your hands have spilled my blood. And knowing that, you should never have trusted me, either. You should have known I would never walk hand-in-hand with a loathsome thing like you.
 
-jumpanchor silentBetrayalFollow
+label silentBetrayalFollow
 p By our very natures, only one of us could make it upstairs unscathed.
 
-jumpanchor betrayalJokeLocked
+label betrayalJokeLocked
 p Somebody had to make the first move. And if I had the chance, I would have locked you in this basement again.
 jumpto betrayalJokeJoin
 
-jumpanchor betrayalJokeOther
+label betrayalJokeOther
 p Somebody had to make the first move. And if I had the chance, I would have locked you in this basement.
-jumpanchor betrayalJokeJoin
+label betrayalJokeJoin
 p It would have been funny. Even if it meant I couldn't leave. I really, truly detest you.
 
-jumpanchor betrayalGenericLead
+label betrayalGenericLead
 p By our very natures, only one of us could make it upstairs unscathed. Someone had to make the first move. Better me than you.
 
-jumpanchor betrayalContLeadBlade
+label betrayalContLeadBlade
 oppo See, this is why I wanted her to go first. I had this whole little scheme planned where she'd turn her back on us, and I'd say "now stab her in the back! Do it now!"
 jumpto betrayalContLeadJoin
 
-jumpanchor betrayalContLeadBlade2
+label betrayalContLeadBlade2
 hero Why didn't you tell us your plan *before* we agreed to go first?
 oppo Because then you'd have had to lie to her. And you're a terrible liar.
 hero That's not -- okay, that's actually a good point.
@@ -433,22 +447,23 @@ n It would have been a good point if it had actually worked. But it didn't work,
 oppo Well, it's not my fault that nobody listened to me.
 jumpto betrayalContLead2Join
 
-jumpanchor betrayalContLeadNoBlade
+label betrayalContLeadNoBlade
 oppo See, this is why I wanted her to go first. I had this whole little scheme planned where once she'd passed by the table upstairs, I'd have said "now pick up the blade and stab her in the back."
-jumpanchor betrayalContLeadJoin
+label betrayalContLeadJoin
 oppo And then you'd say something like "wow, that's an amazing idea that I never saw coming, thanks for looking out for us!"
 oppo And then you would've done it! And we wouldn't be stuck down here with a broken back!
+bladeswitch betrayalContLead 2
 
-jumpanchor betrayalContLeadNoBlade2
+label betrayalContLeadNoBlade2
 hero There's just one problem with that.
 oppo And what's that?
 hero She was clearly planning to betray us. And if she was in front of us, she would've gotten to the blade first.
 oppo Ugh. You're right, aren't you? I thought this whole thing was ironclad, but really it was doomed from the start, wasn't it?
-jumpanchor betrayalContLead2Join
+label betrayalContLead2Join
 n The Princess' body twitches as she tries to get up.
 oppo Oh! So she's got it as bad as us.
 
-jumpanchor betrayalContFollow
+label betrayalContFollow
 oppo At least we can all agree that it was a good idea to make her go first.
 hero How?
 oppo Well, she was going to betray us, wasn't she? And we struck first!
@@ -457,15 +472,15 @@ oppo But we gave it our all! No regrets! Besides, she's got to have it as bad as
 n The Princess' body twitches as she tries to get up.
 oppo Oh! So she does have it as bad as us.
 
-jumpanchor betrayalEndBrokenShare
+label betrayalEndBrokenShare
 p It seems you're not the only one who's broken.
 jumpto betrayalEndJoin
 
-jumpanchor betrayalEndNoShare
+label betrayalEndNoShare
 p Something inside me is... broken. Isn't that a cruel twist of the knife? Isn't that so, so funny?
 n She eyes you with intensity, silence falling between you for a long moment as her gaze travels up and down your battered form.
 p Seems I'm not the only one, though.
-jumpanchor betrayalEndJoin
+label betrayalEndJoin
 hero Wait... are we both just stuck here?
 n It certainly seems that way. What a way to go. But look on the bright side! In all this chaos, you may have actually managed to deliver a lethal wound. The world could be saved after all.
 p We're going to die together. Isn't that a lovely treat! I wonder how long it'll take. Maybe I'll get to watch the worms lick your bones clean.
@@ -481,15 +496,14 @@ claim witchEnd
 
 // "The Frog" ending; claim the Witch //
 
-jumpanchor followTopStartBlade
+label followTopStartBlade
 oppo And that's a great idea! See, this is why you're in charge and I'm not. You think things through! You stick to your guns! It shows *real* leadership, and more people should be like you.
 p We're almost there. You'd better not try anything. I know you're thinking it.
 oppo Us? No. Never! I can't believe she'd even suggest that. The gall!
 n The Princess reaches the top of the stairs and crosses over the threshold, turning back to smile at you.
 jumpto followTopBetray
 
-jumpanchor followStartNoBlade
-n You follow close behind her, the two of you walking on tiptoes through the knotted roots of the basement stairs.
+label followStartNoBlade
 p We're almost there. You'd better not try anything. I know you're thinking it.
 oppo Us? No. Never! Just keep your eyes peeled when you get out of the basement, if you catch my drift.
 hero I don't follow.
@@ -499,48 +513,48 @@ n But something catches her eye. Oh no.
 hero Oh no?
 oppo It's the blade, isn't it? I was going to tell you to grab it once we got upstairs. That was the whole "keep your eyes peeled" thing. And then you would have stabbed her in the back, and we would've been winners!
 p I wonder if perhaps you were planning to bury this in my back. What an awful little scheme that would be. Too bad I got here first. And I don't even need it.
-jumpanchor followTopBetray
+label followTopBetray
 p Bye-bye, you loathsome little nuisance!
 n And then she slams the door on you. Its lock swiftly clicks into place.
 
-jumpanchor lockedNotAgain
+label lockedNotAgain
 hero No! Not *again!*
 
-jumpanchor lockedBlade
+label lockedBlade
 oppo Maybe not stabbing her in the back wasn't such a great idea.
 p The Princess cackles from the other side of the door.
 
-jumpanchor lockedNoBlade
+label lockedNoBlade
 oppo Locked in the basement? I thought for sure she was just going to stab us.
 p The Princess cackles from the other side of the door.
 
-jumpanchor lockedReplyAgain
+label lockedReplyAgain
 p I can't believe you let me do that to you again!
 
-jumpanchor lockedReplyOther
+label lockedReplyOther
 p How does it feel to be locked away and forgotten by the world? Isn't it just awful?
 
-jumpanchor tryLockedMenu
+label tryLockedMenu
 n You try the door. It's locked.
 
-jumpanchor forceLockedMenu
+label forceLockedMenu
 n You throw yourself against the door. It won't budge.
 
-jumpanchor tryAgainLockedMenu
+label tryAgainLockedMenu
 n You throw yourself against the door again. It still refuses to budge.
 
-jumpanchor funnyLockedMenu
+label funnyLockedMenu
 p No! You're going to sit down there forever. Languishing!
 
-jumpanchor pleadLockedMenu
+label pleadLockedMenu
 p As if I could ever trust you after everything you've done to me. And after what I've done to you, you can't trust me, either. Neither of us is ever getting out of here.
 p It's in our nature to be trapped.
 
-jumpanchor needLockedMenu
+label needLockedMenu
 p I do. But I just couldn't help myself. And we both know that you're already scheming about how to get back at me if I ever open this door.
 p So we're going to stay exactly as we are right now. For as long as either of us lives.
 
-jumpanchor lockedEnd
+label lockedEnd
 quietcreep
 hero ...
 oppo ...
@@ -555,53 +569,53 @@ claim witchEnd
 
 // Offer her the blade //
 
-jumpanchor offerStart
+label offerStart
 n You -- you can't be serious.
 oppo Now hold on, we should put this to a vote. That blade is one of our most valuable assets. We can't just give it to her! What if she uses it to kill us? I vote no.
 n As do I.
 hero I, uh... abstain?
 oppo You abstain?! She's going to kill us if we give it to her!
 
-jumpanchor offerBackOut
+label offerBackOut
 n Good.
 p Oh? Have you decided to rescind your "gesture?" I wouldn't trust me with it, either.
 
-jumpanchor offerCommitStairs
+label offerCommitStairs
 n You're going to get everyone killed. You know that, right? *Sigh.* But of course you do.
 n You hand the blade to the Princess, who quickly snatches it from you, her eyes darting between you and the weapon with a nervous curiosity.
 p I wouldn't have done that. Why did you?
 p What do *you* think happens now?
 
-jumpanchor offerCommitBasement
+label offerCommitBasement
 n You're going to get everyone killed. You know that, right? *Sigh.* But of course you do.
 n You toss the blade at the Princess's feet.
 n She eyes it with suspicion before kneeling down to pick it up.
 p I wouldn't have done that. Why did you?
 
-jumpanchor offerCommitBasementNotFree
+label offerCommitBasementNotFree
 n You hear a clanging of metal against the dirt floor, and the chains fall from the Princess' wrist.
 hero She could have gotten out of those the whole time! That sneaky little...
 
-jumpanchor offerCommitBasementHeartComment
+label offerCommitBasementHeartComment
 oppo It's a shame we just gave her a weapon, because if I were her, I'd use it on us right now.
 jumpto offerCommitBasementHeartJoin
 
-jumpanchor offerCommitBasementNoHeartComment
+label offerCommitBasementNoHeartComment
 oppo A woman after my own heart. It's a shame we just gave her a weapon, because if I were her, I'd use it on us right now.
-jumpanchor offerCommitBasementHeartJoin
+label offerCommitBasementHeartJoin
 hero Luckily for us, you're not her.
 oppo Oh, we sure think alike, though. I can promise you that. Whatever you say next, you'd better make it count.
 
-jumpanchor offerCommitBasementCont
+label offerCommitBasementCont
 n She creeps forward, taking one cautious step at a time, until you and she are face to face.
 p What do you think happens now?
 
-jumpanchor trickOffer
+label trickOffer
 n Her shoulders tense and her eyes dart away.
 p This is another trick. You're trying to sow doubt. But it's not going to work on me!
 jumpto offerJoin
 
-jumpanchor beautifulOffer
+label beautifulOffer
 n She pulls back, clearly caught off-guard by whatever nonsense you just said to her.
 hero I thought it was nice.
 oppo Whether it's nice depends on if we meant it. We didn't mean it... did we?
@@ -610,16 +624,16 @@ p What?! What do you mean by that? What kind of game are you playing?!
 n The look of surprise that momentarily softened her features vanishes as she steels her nerves.
 jumpto offerJoin
 
-jumpanchor someoneOffer
+label someoneOffer
 oppo Oh hey, that someone is me! And yes, you're right, that is exactly what I would do.
 n Her shoulders tense and her eyes dart away.
 p You know me too well.
 n The Princess grits her teeth, and her cunning gaze once again meets yours.
 jumpto offerJoin
 
-jumpanchor silentOffer
+label silentOffer
 n You and the Princess share a knowing look.
-jumpanchor offerJoin
+label offerJoin
 n And then she buries the blade in your heart.
 hero What?! No. No, come on that's not right!
 oppo I told you. I *told* you this is what she was going to do.
@@ -634,7 +648,7 @@ n Everything goes dark, and you die.
 // Try to leave //
 
 // Leads to Chapter III: The Wild with the Voice of the Paranoid //
-jumpanchor abandonStart
+label abandonStart
 oppo Very pragmatic. *That* is why *you're* in charge.
 p Abandoning me, are you? Fine then, run! Tuck your tail between your legs and scamper away!
 p You might be able to escape me, but you can't escape from what you are and what you've done. If I don't take you, the wilds will!
@@ -653,37 +667,37 @@ p Do you hear that, you loathsome thing? Those are the roots of the wild, and th
 
 // Fight her //
 
-jumpanchor fightStartYap
+label fightStartYap
 p Do you think that being direct with your ill-will frees you from its wickedness?
 p Murder and betrayal are still murder and betrayal, whether you state your intentions or keep them hidden behind your back.
 oppo See? This is why we never tell people what we're actually thinking! She's just as mad, only now she's ready for us.
 p Still, better a violent fool than a plotting coward. Better for me, I mean.
 
-jumpanchor fightStartSilentTalked
+label fightStartSilentTalked
 n There's nothing more for you to say. Blade at the ready, you charge the Princess.
 jumpto fightStartSilentJoin
 
-jumpanchor fightStartSilentNoTalk
+label fightStartSilentNoTalk
 n Without uttering a word, you charge the Princess.
-jumpanchor fightStartSilentJoin
+label fightStartSilentJoin
 oppo So much for finding an easy way out! I can't believe you're making us work for it.
 p Better a violent fool than a plotting coward. Better for me, at least.
 
-jumpanchor fightStartFree
+label fightStartFree
 p As you close the distance, readying your strike, she throws a fistful of dirt into your eyes.
 jumpto fightStartJoin
 
-jumpanchor fightStartNotFree
+label fightStartNotFree
 n As you close the distance, readying your strike, the Princess' chain falls from her wrist.
 n She takes advantage of your split second of surprise, and throws a fistful of dirt into your eyes.
 hero She could have gotten out of those the whole time! That sneaky little...
 
-jumpanchor fightHeartComment
+label fightHeartComment
 oppo A woman after my own heart, really. It's a shame we're playing opposite teams.
 
-jumpanchor fightStartNotFreeCont
+label fightStartNotFreeCont
 n This is why you couldn't just abandon her here. Left to her own devices, she would always find her way out. Now stop her!
-jumpanchor fightStartJoin
+label fightStartJoin
 p You must have known I would be ready for you. Deep in your heart, you know the same things about me I know about you. We're both so very awful.
 n As you brush the silt from your eyes, the Princess tackles you, flattening you against the dirt floor.
 p We were always going to kill each other here, weren't we? I can't trust you and you can't trust me and those doubts spin and spin and spin into HATE.
@@ -720,59 +734,59 @@ p That's right. They're coming for you, and they won't stop until there's nothin
 
 // Shared Wild menu //
 
-jumpanchor rootsComment1
+label rootsComment1
 n The roots grow ever closer.
 hero We know. We can see them.
 
-jumpanchor rootsComment2
+label rootsComment2
 n You feel something against your back. A thick root pushing its way into the cavern, an unstoppable, unyielding wall of bark. You're running out of time.
 hero *Shit,* what do we do, what do we do?!
 oppo We should probably get back to stabbing. The only way out of this is through her, right?
 
-jumpanchor mutualWildFight
+label mutualWildFight
 p As long as you suffer while you die, I'll gladly suffer with you. Especially if I get to see it happen.
-jumpanchor mutualComment
+label mutualComment
 oppo This doesn't help anyone! I can't believe she'd kill us both just to spite me.
 n See? This is exactly why you've been tasked to slay her. She's an antisocial monster who'll gladly burn the whole world for her satisfaction.
 
-jumpanchor mutualWildFlee
+label mutualWildFlee
 p As long as you suffer while you die, I'll gladly suffer with you. Especially if I get to hear it happen.
 oppo This doesn't help anyone! I can't believe she'd kill us both just to spite me.
 n See? This is exactly why you were tasked to slay her and why you shouldn't have left her in the basement. She's an antisocial monster who'll gladly burn the whole world for her satisfaction.
 
-jumpanchor stopWildFight
+label stopWildFight
 p I could. But who says I want to? As long as you suffer while you die, I'll gladly suffer with you. Especially if I get to see it happen.
 jumpto mutualComment
 
-jumpanchor stopWildFlee
+label stopWildFlee
 p I could. But who says I want to? They're coming for me, too, but as long as you suffer while you die, I'll gladly suffer with you. Especially if I get to hear it happen.
 jumpto mutualComment
 
-jumpanchor stopWildMutual
+label stopWildMutual
 p I could, but as I've already made so so clear, I. Don't. Want to.
 
-jumpanchor whyWildFight
+label whyWildFight
 p Because it's in my nature. Just like you coming down here to kill me is in yours. It's who I am.
 oppo That is extremely not us. We're just doing what we're told, and making the best out of a difficult situation.
 n Exactly. You're in the right here. Now focus up, and win.
 
-jumpanchor whyWildFlee
+label whyWildFlee
 p Because it's in my nature. Just like you coming here to hurt me is in yours. It's who I am.
 oppo That is extremely not us. We're just doing what we're told, and making the best out of a difficult situation. We didn't even try to kill her! We just left her here.
 hero It's the same thing.
 n It isn't.
 
-jumpanchor sucksWildFight
+label sucksWildFight
 p Awww, what's the matter? You're scared of a few thorny roots digging into your neck? Scared of suffocating in this dark, dark place as I watch you die? Good!
 oppo That one made me feel bad inside. I don't want people to think we're *scared.* Nobody likes someone who's *scared* of things.
 hero I for one think this is a perfectly reasonable situation to be scared in. This is starting to hurt! I don't want to die like this!
 
-jumpanchor sucksWildFlee
+label sucksWildFlee
 p Awww, what's the matter? You're scared of thorny roots digging into your neck? Are you scared of suffocating in this dark, dark place alone? Good!
 oppo That one made me feel bad inside. I don't want people to think we're *scared.* Nobody likes someone who's *scared* of things.
 hero I for one think this is a perfectly reasonable situation to feel scared in. This place is getting awful tight...
 
-jumpanchor animalsWildFight
+label animalsWildFight
 p But we are animals! We are! You're nothing but fear and instinct and that's all I am, too! We don't have to make things better! We can't make things better!
 p We're just meant to chase each other in the dark until one of us catches the other. And then we'll do it again, and again, and again!
 oppo You know, I don't think she's actually a go-getter at all. I think we may have misread the situation.
@@ -780,23 +794,23 @@ hero I think *you* misread the situation.
 oppo Everyone makes mistakes. The important thing is that we can move on from them *together,* with no hard feelings.
 n *Sigh.* Just focus up. You aren't dead yet. You can figure this out.
 
-jumpanchor animalsWildFlee
+label animalsWildFlee
 p But we are animals! We are! You're nothing but fear and instinct and that's all I am, too! We don't have to make things better! We can't make things better!
 p We're just meant to chase each other in the dark until one of us catches the other.
 
-jumpanchor sorryWildFight
+label sorryWildFight
 p Too little, too late! We're both going to die a splintery and miserable death! And you're going to hate it just as much as you hate me and I hate you!
 
-jumpanchor sorryWildFlee
+label sorryWildFlee
 p Too late! We're both going to die! We're both going to die a splintery and miserable death! And you're going to hate it just as much as you hate me and I hate you!
 
-jumpanchor waitWildFight
+label waitWildFight
 n The blade tumbles uselessly from your palm as the roots continue to expand into the cramped basement.
 oppo *Sigh.* We're never going to make something of ourselves with that attitude.
 n The Princess finally puts down her guard, arms falling to her sides, a look of smug satisfaction screwed on her face despite her torn and bloodied skin and the insistent roots pressing in from all directions.
 hero At least she isn't going to "make something of herself" either.
 
-jumpanchor crushedFight
+label crushedFight
 n The roots twist around you both, binding your limbs and rendering you helpless. As your fates close in, all you can do is watch her, and all she can do is watch you.
 n At first it's almost gentle, the two of you lifted delicately off the ground. But the cradle of the growing roots soon gives way to tightness, and that tightness gives way to bulging pressure as they begin to constrict.
 n The sound of creaking wood is drowned out by the snaps and pops of your bones, pain flooding your senses as you feel your skin deform, being shaped unnaturally by the living basement.
@@ -806,7 +820,7 @@ n The pressure is unbearable. You can't breathe, your vision swimming with red, 
 linebreak
 n And then you pop. Everything goes dark, and you die.
 
-jumpanchor crushedFlee
+label crushedFlee
 n You slump to the floor as the roots continue to expand into the cabin.
 oppo *Sigh.* We're never going to make something of ourselves with that attitude.
 hero At least she isn't going to "make something of herself" either.
@@ -817,7 +831,7 @@ n The pressure is unfathomable. You can't breathe, your vision swimming with red
 linebreak
 n And then you pop. Everything goes dark, and you die.
 
-jumpanchor fightWild
+label fightWild
 n You attack the Princess once more, and once more the two of you fall into a vicious brawl. The basement continues to shrink as you fight, but neither of you pay it any more mind. Not until it's too late.
 
 
@@ -828,5 +842,5 @@ n You attack the Princess once more, and once more the two of you fall into a vi
 
 // Miscellaneous //
 
-jumpanchor alreadyTried
+label alreadyTried
 truth You have already tried that.

@@ -690,7 +690,7 @@ public class Finale extends Cycle {
     }
 
     private void vesselArgumentResponse(Vessel vessel, String nArgument) {
-        // redirect to script jumpanchor [vessel][nArgument]
+        // redirect to script label [vessel][nArgument]
 
         String vesselID = "";
         switch (vessel) {
