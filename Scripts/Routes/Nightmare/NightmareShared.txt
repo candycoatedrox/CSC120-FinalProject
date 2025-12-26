@@ -75,18 +75,17 @@ label cabinIntro
 nowplaying The Nightmare
 n The interior of the cabin is plain, the smooth wood of the walls almost featureless. The only furniture of note is a lone table, knocked on its side in the corner of the room. A pristine blade stands between you and the open, inviting basement doorway.
 n The blade is your implement. You'll need it if you want to do this right.
-
-label cabinIntro2SharedLoop
-para Hold on. What happened to the door? There was a door here last time.
-jumpto cabinIntro2Join
-
-label cabinIntro2
+switchjump cabinIntro2SharedLoop
 para Hold on. What happened to the door?
 label cabinIntro2Join
 hero It's just an empty frame...
 para She's already gotten out, hasn't she? And she's ready for us. She's been *waiting.* Can't you feel her eyes on us?
 n I'm going to need all of you to pull yourselves together. The Princess has *not* already gotten out, but if you keep getting stuck in your head like this, you're going to struggle to get the job done.
 n So. Deep breath in, deep breath out. Your task awaits, and only you can do it.
+
+label cabinIntro2SharedLoop
+para Hold on. What happened to the door? There was a door here last time.
+jumpto cabinIntro2Join
 
 label cabinDifferent
 hero *Very* different.
@@ -137,8 +136,7 @@ para More eyes, too. You never mention the eyes!
 n The air seeping up from below reminds you of fresh lightning and static, as if you're descending into a place that isn't meant for a creature of flesh and blood. If the Princess lives here, slaying her would probably be doing her a favor.
 n Her cruel and playful voice prances up the stairs.
 p I didn't think you'd come back. We're going to have a lot of fun, you and I.
-
-label stairsStartNoShare
+switchjump stairsStartSharedLoop
 n "Come back?" She must have you confused with someone else.
 hero You really don't remember, do you? It doesn't matter. We need a game plan. We *know* we can't just go down there unprepared.
 

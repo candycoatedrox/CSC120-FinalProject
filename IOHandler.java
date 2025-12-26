@@ -37,7 +37,11 @@ public class IOHandler {
      * Waits until the player presses enter to progress
      */
     public void waitForInput() {
-        if (!manager.autoAdvance()) this.input.nextLine();
+        if (manager.autoAdvance()) {
+            System.out.println();
+        } else {
+            this.input.nextLine();
+        }
     }
 
     /**

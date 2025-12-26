@@ -28,6 +28,7 @@ n Oh, believe me, the last thing I want is for you and I to be *friends.* But I'
 // Hill dialogue //
 
 label hillDialogue
+switchjump hillDialogueSharedLoop
 smitten If only you knew what you did to us, you villain.
 n Excuse me?
 hero Forget he said anything.
@@ -73,16 +74,15 @@ n So focus up. Stop letting yourself get distracted.
 
 label takeBlade
 n You take the blade from the table. It would be difficult to slay the Princess and save the world without a weapon.
+switchjump takeBladeSharedLoop
 smitten I suppose if we're to play the role of dashing knight we need an equally dashing sword. That way she'll know we can defend her from her enemies.
 hero Hopefully it doesn't put her on edge.
-label takeBladeJoin
-n There's no use arguing over *motivations* right now. It's good that you took the blade. You'll need it to do your job.
+jumpto takeBladeJoin
 
 label takeBladeSharedLoop
-n You take the blade from the table. It would be difficult to slay the Princess and save the world without a weapon.
-smitten I suppose if we're to play the role of dashing knight we need an equally dashing sword. That way she'll know we can defend her from her enemies.
 hero Hopefully it doesn't put her on edge. And hopefully it doesn't get turned on us... again.
-jumpto takeBladeJoin
+label takeBladeJoin
+n There's no use arguing over *motivations* right now. It's good that you took the blade. You'll need it to do your job.
 
 // Ask about the mirror //
 
@@ -103,16 +103,15 @@ n The door to the basement creaks open, revealing an intricate stairwell. Gold-t
 n But it's still a stone basement. If the Princess lives here, slaying her is probably doing her a favor.
 n A soft voice carries up the stairs.
 p Hello? Is someone there?
+switchjump stairsSharedLoop
+smitten Her voice... it's somehow even more beautiful than last time. I think we're in love...
+hero Okay, I'm with you that we should be doing whatever we can to save her, but saying we're in love is a bit much, don't you think?
+hero We don't even *know* the Princess. We can still do right by her without all this... fawning.
+jumpto stairsJoin
 
 label stairsSharedLoop
 smitten Her voice... it's somehow even more beautiful than last time. I can hear wedding bells already...
 hero I've held my tongue 'til now, but you're taking this a little too far. We barely even know the Princess. We can still do right by her without all this over-the-top fawning.
-jumpto stairsJoin
-
-label stairsNoShare
-smitten Her voice... it's somehow even more beautiful than last time. I think we're in love...
-hero Okay, I'm with you that we should be doing whatever we can to save her, but saying we're in love is a bit much, don't you think?
-hero We don't even *know* the Princess. We can still do right by her without all this... fawning.
 label stairsJoin
 n Yes. For everyone's sake, you're not in love. *Sigh.* Just remember that her charms are all part of the manipulation.
 linebreak
@@ -487,7 +486,7 @@ p That's the way out. We're going to leave together, just like you wanted!
 // "Romantic Haze" ending; claim the Damsel //
 label leaveEnding
 n Yes, I suppose you are going to do that, aren't you? You cross the room, opening the door to the cabin.
-quietCreep
+quietcreep
 n And then you step outside.
 p We did it! What should we do now?
 

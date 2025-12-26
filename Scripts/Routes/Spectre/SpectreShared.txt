@@ -219,16 +219,17 @@ label trickMenuConfirmed
 n Nobody "tricked you." I'm sure that other me gave you wholly accurate information that you wisely chose to act on.
 jumpto trickMenuJoin
 
+label trickMenuSwitch
+switchjump trickMenuSharedLoop
+n Okay... I didn't want to be open to the idea, but there's no denying it now. You've clearly been here before.
+cold Oh? What tipped you off? Was it the corpse?
+n It doesn't matter. The only thing that matters is that nobody "tricked you." I've done nothing but give you wholly accurate information, and I'm sure whatever version of me you met in whatever other world you came from gave you accurate information, as well.
+jumpto trickMenuJoin
+
 label trickMenuSharedLoop
 n Nobody "tricked you" and the fact that the Princess's spirit has risen from the dead should be more than enough evidence that she isn't exactly sweet and innocent. It's all been an act. She's pretending.
 cold I wouldn't say she's ever pretended to be sweet or innocent.
 hero She does have a little bit of an attitude... but I can't blame her, we did kill her after all. I wouldn't be nice to my murderer if I was killed.
-jumpto trickMenuJoin
-
-label trickMenuNoShare
-n Okay... I didn't want to be open to the idea, but there's no denying it now. You've clearly been here before.
-cold Oh? What tipped you off? Was it the corpse?
-n It doesn't matter. The only thing that matters is that nobody "tricked you." I've done nothing but give you wholly accurate information, and I'm sure whatever version of me you met in whatever other world you came from gave you accurate information, as well.
 label trickMenuJoin
 p 'The enemy of my enemy...'
 n The Princess circles you again, her icy fingertips trailing up your spine, sending shivers rippling across your flesh.

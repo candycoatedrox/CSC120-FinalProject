@@ -33,6 +33,7 @@ n I appreciate the vote of confidence, but you should really stop wasting time c
 // Hill dialogue //
 
 label hillDialogue
+switchjump hillDialogueSharedLoop
 oppo Don't worry. You can trust us to get the job done.
 
 label hillDialogueSharedLoop
@@ -83,6 +84,7 @@ oppo Well, at least we can all agree now that there's nothing to see here. Case 
 // Stairs //
 
 label stairsNoBlade
+switchjump stairsNoBladeSharedLoop
 hero No blade. I hope you know what you're getting us into.
 label stairsNoBladeJoin
 oppo It'll always be here if we need it. Sure, that was also true last time, and we still died. But we definitely know what we're doing *this* time.
@@ -318,7 +320,7 @@ truth But you don't get the chance to respond, nor will you ever. It's time to l
 // "The Frog" ending; claim the Witch //
 label leadStart
 p That's right! You're the one who's going first. Don't worry. I'll be right behind you, watching every single thing you do.
-oppo That's exactly what I'm worried about.
+oppo That's *exactly* what I'm worried about.
 n You step onto the stairs and begin your ascent from the basement. The Princess follows close on your heels, perhaps even a little closer than you'd like.
 bladeswitch leadStart
 
@@ -327,11 +329,11 @@ hero You're only saying that because you want us to feel nervous! You want us to
 jumpto leadStartJoin
 
 label leadStartNoBlade
-You're only saying that because you want us to feel nervous!
+hero You're only saying that because you want us to feel nervous!
 label leadStartJoin
-n I do want those things, but I want them for a good reason. I don't need you to trust me for my sake, because I already know that I'm right. This is for you.
+n I do want those things, but I want them for a good reason. I don't need you to trust me for *my* sake, because *I* already know that I'm *right.* This is for you.
 oppo Can we walk backwards up the stairs? I think that's the smarter idea. She can't sneak in an attack if we're facing her.
-n No. The stairs are a bunch of overgrown roots. You'll trip and hurt yourself.
+n No! The stairs are a bunch of *overgrown roots,* you'll trip and hurt yourself.
 oppo But -- /// interrupt
 n The Princess is silent as you both continue the climb, and in no time at all, the upstairs of the cabin is within reach.
 hero Isn't that a relief? We're fine! Nothing happened.
@@ -349,7 +351,7 @@ oppo You know what. I'll say it! That sucks! I don't like having a broken back.
 hero We were going to help her! Why?! Why did she do that?
 oppo It's what I would've done.
 hero Have you considered *not* being like that?
-oppo Of course not! It's what keeps us alive.
+oppo Of course not! It's what *keeps us alive.*
 hero And yet here we are, paralyzed and stuck with someone who hates us in the basement of a remote cabin.
 p You must have known this was coming. The arrogance of turning your back to me after everything you'd done!
 
@@ -368,7 +370,7 @@ label followRefuse
 oppo You do realize that she hates us, right? If we don't make the first move now, she's going to find a way to make the first move herself.
 hero Why would she do that? She wants to leave, which means we need to work together. She knows that! She wouldn't just act against her best interests.
 oppo I dunno. If I were her, I'd betray us. Look at me right now, suggesting betrayal! You really need to learn to put yourself in someone else's shoes.
-n I'm with that little weasel. You have an opportunity to save the world. You should take it.
+n I'm... with that little *weasel.* You have an opportunity to save the world. You should take it.
 
 // "The Scorpion" ending; claim the Witch //
 label backStabPraise
@@ -441,17 +443,17 @@ jumpto betrayalContLeadJoin
 
 label betrayalContLeadBlade2
 hero Why didn't you tell us your plan *before* we agreed to go first?
-oppo Because then you'd have had to lie to her. And you're a terrible liar.
+oppo Because then you'd have had to lie to her. And you're a *terrible* liar.
 hero That's not -- okay, that's actually a good point.
 n It would have been a good point if it had actually worked. But it didn't work, did it?
-oppo Well, it's not my fault that nobody listened to me.
+oppo Well, it's not *my* fault that nobody listened to me.
 jumpto betrayalContLead2Join
 
 label betrayalContLeadNoBlade
 oppo See, this is why I wanted her to go first. I had this whole little scheme planned where once she'd passed by the table upstairs, I'd have said "now pick up the blade and stab her in the back."
 label betrayalContLeadJoin
-oppo And then you'd say something like "wow, that's an amazing idea that I never saw coming, thanks for looking out for us!"
-oppo And then you would've done it! And we wouldn't be stuck down here with a broken back!
+oppo And then you'd say something like... "wow, that's an *amazing* idea that I never saw coming, thanks for looking out for us."
+oppo And then you would've done it! And we wouldn't be stuck down here with a broken back.
 bladeswitch betrayalContLead 2
 
 label betrayalContLeadNoBlade2
@@ -461,7 +463,7 @@ hero She was clearly planning to betray us. And if she was in front of us, she w
 oppo Ugh. You're right, aren't you? I thought this whole thing was ironclad, but really it was doomed from the start, wasn't it?
 label betrayalContLead2Join
 n The Princess' body twitches as she tries to get up.
-oppo Oh! So she's got it as bad as us.
+oppo Ohoho! So she's got it as bad as us.
 
 label betrayalContFollow
 oppo At least we can all agree that it was a good idea to make her go first.
@@ -470,7 +472,7 @@ oppo Well, she was going to betray us, wasn't she? And we struck first!
 hero Our back is broken.
 oppo But we gave it our all! No regrets! Besides, she's got to have it as bad as us, right?
 n The Princess' body twitches as she tries to get up.
-oppo Oh! So she does have it as bad as us.
+oppo Oho! So she *does* have it as bad as us.
 
 label betrayalEndBrokenShare
 p It seems you're not the only one who's broken.

@@ -4194,12 +4194,7 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case DAMSEL:
-                    if (this.sharedLoop) {
-                        mainScript.runSection("hillDialogueSharedLoop");
-                    } else {
-                        mainScript.runSection("hillDialogue");
-                    }
-                    
+                    mainScript.runConditionalSection("hillDialogue", this.sharedLoop);
                     break;
 
                 case TOWER:
@@ -4213,12 +4208,7 @@ public class StandardCycle extends Cycle {
                     break;
 
                 case WITCH:
-                    if (this.sharedLoopInsist) {
-                        mainScript.runSection("hillDialogueSharedLoop");
-                    } else {
-                        mainScript.runSection("hillDialogue");
-                    }
-
+                    mainScript.runConditionalSection("hillDialogue", this.sharedLoopInsist);
                     break;
             }
         }
@@ -4787,13 +4777,7 @@ public class StandardCycle extends Cycle {
 
             case BEAST:
                 defaultWhyLie = true;
-
-                if (this.sharedLoop) {
-                    mainScript.runSection("askMirrorStartSharedLoop");
-                } else {
-                    mainScript.runSection("askMirrorStart");
-                }
-
+                mainScript.runConditionalSection("askMirrorStart", this.sharedLoop);
                 break;
 
             case DAMSEL:
@@ -5443,11 +5427,7 @@ public class StandardCycle extends Cycle {
         if (narratorProof.check()) return;
 
         narratorProof.set();
-        if (this.sharedLoop) {
-            mainScript.runSection("narratorProofSharedLoop");
-        } else {
-            mainScript.runSection("narratorProofNoShare");
-        }
+        mainScript.runConditionalSection("narratorProof", this.sharedLoop);
 
         OptionsMenu proofMenu = new OptionsMenu(true);
         proofMenu.add(new Option(this.manager, "apathy", "Just because it bothers you, I'm going to take this even less seriously. You don't know the depths of my apathy!"));
@@ -6826,28 +6806,15 @@ public class StandardCycle extends Cycle {
         if (manager.trueDemoMode()) return ChapterEnding.DEMOENDING;
 
         if (this.knowsDestiny) {
-            mainScript.runSection("startKnowsDestiny");
-            if (this.sharedLoop) {
-                mainScript.runSection("startKnowsDestinySharedLoop");
-            } else {
-                mainScript.runSection("startKnowsDestinyNoShare");
-            }
+            mainScript.runConditionalSection("startKnowsDestiny", this.sharedLoop);
         } else {
-            if (this.hasBlade) {
-                if (source.equals("pathetic")) {
-                    mainScript.runSection("startBladePathetic");
-                } else {
-                    mainScript.runSection("startBlade");
-                }
+            if (source.equals("pathetic") && this.hasBlade) {
+                mainScript.runSection("startBladePathetic");
             } else {
-                mainScript.runSection("startNoBlade");
+                mainScript.runBladeSection("start");
             }
 
-            if (this.sharedLoop) {
-                mainScript.runSection("startSharedLoop");
-            } else {
-                mainScript.runSection("startNoShare");
-            }
+            mainScript.runConditionalSection("startShareSwitch", this.sharedLoop);
 
             this.activeMenu = new OptionsMenu(true);
             activeMenu.add(new Option(this.manager, "cantRefuse", "(Explore) I don't think I can refuse her. Sorry.", new NumCondition(resistCount, 0)));
@@ -7517,20 +7484,17 @@ public class StandardCycle extends Cycle {
 
                     if (!narratorUnconfirmed.check()) {
                         mainScript.runSection("trickMenuConfirmed");
-                    } else if (this.sharedLoop) {
-                        narratorUnconfirmed.set(false);
-                        mainScript.runSection("trickMenuSharedLoop");
                     } else {
                         narratorUnconfirmed.set(false);
-                        mainScript.runSection("trickMenuNoShare");
+                        mainScript.runConditionalSection("trickMenuSwitch", this.sharedLoop);
+                    }
 
-                        switch (this.spectrePossessAsk(noWorldEndExplore, narratorUnconfirmed, shareDied, true)) {
-                            case 1:
-                                return this.spectrePossess();
+                    switch (this.spectrePossessAsk(noWorldEndExplore, narratorUnconfirmed, shareDied, true)) {
+                        case 1:
+                            return this.spectrePossess();
 
-                            case 2:
-                                return this.spectreKill(false);
-                        }
+                        case 2:
+                            return this.spectreKill(false);
                     }
 
                     break;
@@ -8283,13 +8247,7 @@ public class StandardCycle extends Cycle {
         this.source = (this.prevEnding == ChapterEnding.TONIGHTMAREFLED) ? "fled" : "normal";
         if (!this.chapter2Intro(true, false, false)) return ChapterEnding.ABORTED;
 
-        mainScript.runSection("cabinIntro");
-
-        if (this.sharedLoop) {
-            mainScript.runSection("cabinIntro2SharedLoop");
-        } else {
-            mainScript.runSection("cabinIntro2");
-        }
+        mainScript.runConditionalSection("cabinIntro", this.sharedLoop);
 
         Condition canAskMirror = new Condition(true);
         Condition canApproach = new Condition(true);
@@ -8351,13 +8309,7 @@ public class StandardCycle extends Cycle {
         this.currentLocation = GameLocation.STAIRS;
         this.withBlade = false;
         this.mirrorPresent = false;
-        mainScript.runSection("stairsStart");
-
-        if (this.sharedLoop) {
-            mainScript.runSection("stairsStartSharedLoop");
-        } else {
-            mainScript.runSection("stairsStartNoShare");
-        }
+        mainScript.runConditionalSection("stairsStart", this.sharedLoop);
 
         this.activeMenu = new OptionsMenu();
         activeMenu.add(new Option(this.manager, "throw", "(Explore) \"How hard is it to throw a knife?\""));
@@ -8465,23 +8417,23 @@ public class StandardCycle extends Cycle {
             switch (activeOutcome) {
                 case "left":
                     this.repeatActiveMenu = false;
-                    mainScript.runConditionalSection(this.isHarsh, "startLeft");
+                    mainScript.runConditionalSection("startLeft", this.isHarsh);
                     break;
 
                 case "right":
                     this.repeatActiveMenu = false;
-                    mainScript.runConditionalSection(this.isHarsh, "startRight");
+                    mainScript.runConditionalSection("startRight", this.isHarsh);
                     break;
 
                 case "nothing":
                     this.repeatActiveMenu = false;
-                    mainScript.runConditionalSection(this.isHarsh, "startNothing");
+                    mainScript.runConditionalSection("startNothing", this.isHarsh);
                     break;
 
                 case "cGoStairs":
                 case "back":
                     this.repeatActiveMenu = false;
-                    mainScript.runConditionalSection(this.isHarsh, "startBack");
+                    mainScript.runConditionalSection("startBack", this.isHarsh);
                     break;
 
                 default: this.giveDefaultFailResponse(activeOutcome);
@@ -9267,15 +9219,7 @@ public class StandardCycle extends Cycle {
         this.withPrincess = true;
         this.withBlade = false;
         this.mirrorPresent = false;
-        mainScript.runSection("stairsStart");
-
-        if (this.sharedLoop) {
-            mainScript.runSection("stairsStartSharedLoop");
-            mainScript.runSection("basementStartSharedLoop");
-        } else {
-            mainScript.runSection("stairsStartNoShare");
-            mainScript.runSection("basementStartJoin");
-        }
+        mainScript.runConditionalSection("stairsStart", this.sharedLoop);
 
         if (manager.trueDemoMode()) return ChapterEnding.DEMOENDING;
 
@@ -9401,7 +9345,7 @@ public class StandardCycle extends Cycle {
                     mainScript.runSection("leaveAttemptSilent");
                 case "bye":
                 case "rightBack":
-                    mainScript.runConditionalSection(source.equals("revival"), "leaveAttempt");
+                    mainScript.runConditionalSection("leaveAttempt", source.equals("revival"));
                     return ChapterEnding.TOARMSRACELEFT;
 
                 case "cSlayPrincess":
@@ -9426,7 +9370,7 @@ public class StandardCycle extends Cycle {
                     mainScript.runSection("loopCommentNoShare");
                 }
             } else if (followUpFlag) {
-                mainScript.runConditionalSection(source.equals("revival"), "followUp" + followUpCount);
+                mainScript.runConditionalSection("followUp" + followUpCount, source.equals("revival"));
                 if (followUpCount == 4) return ChapterEnding.TOARMSRACEBORED;
                 
                 followUpFlag = false;
@@ -11133,11 +11077,7 @@ public class StandardCycle extends Cycle {
 
         // Enter the basement
         if (!this.hasBlade) {
-            if (this.sharedLoopInsist) {
-                mainScript.runSection("stairsNoBladeSharedLoop");
-            } else {
-                mainScript.runSection("stairsNoBlade");
-            }
+            mainScript.runConditionalSection("stairsNoBlade", this.sharedLoopInsist);
         }
 
         this.currentLocation = GameLocation.STAIRS;
@@ -11184,11 +11124,11 @@ public class StandardCycle extends Cycle {
         int shareLevel = 0;
         if (this.sharedLoop) { shareLevel += 1;
         if (this.sharedLoopInsist) shareLevel += 1;
-        mainScript.runConditionalSection(shareLevel, "stairsEnd");
+        mainScript.runConditionalSection("stairsEnd", shareLevel);
 
         if (manager.trueDemoMode()) return ChapterEnding.DEMOENDING;
         
-        mainScript.runConditionalSection(shareLevel, "basementStartShareSwitch");
+        mainScript.runConditionalSection("basementStartShareSwitch", shareLevel);
 
         boolean heartComment = false;
         Condition witchFree = new Condition();
@@ -11357,6 +11297,8 @@ public class StandardCycle extends Cycle {
         }
         
         throw new RuntimeException("No ending reached");
+    }
+        throw new RuntimeException("No ending reached, also this shouldn't even be possible");
     }
 
     /**
@@ -11984,6 +11926,7 @@ public class StandardCycle extends Cycle {
                     this.canThrowBlade = true;
                     canThrow.set();
                     endChoiceText = "I'm getting you out of here.\" [Try and free her.]\n  (NUM) \"I don't know what you are, but I can't trust you. I can't trust anyone here.\" [Leave her in the basement.]\n  (NUM) [Slay the Princess.]";
+
                     mainScript.runSection("takeBlade");
 
                     OptionsMenu subMenu = new OptionsMenu(true);
@@ -12011,14 +11954,8 @@ public class StandardCycle extends Cycle {
                     this.threwBlade = true;
                     canThrow.set(false);
                     endChoiceText = "I'm getting you out of here.\" [Try and free her.]\n  (NUM) \"I don't know what you are, but I can't trust you. I can't trust anyone here.\" [Leave her in the basement.]\n  (NUM) [Regretfully think about that time you threw the blade out the window.]";
-                    mainScript.runSection("throwBlade");
 
-                    if (this.sharedLoop) {
-                        mainScript.runSection("throwSharedLoop");
-                    } else {
-                        mainScript.runSection("throwNoShare");
-                    }
-
+                    mainScript.runConditionalSection("throwBlade", this.sharedLoop);
                     break;
 
                 case "cGoStairs":
@@ -12143,7 +12080,7 @@ public class StandardCycle extends Cycle {
 
                 switch (schismCount.check()) {
                     case 2:
-                        mainScript.runConditionalSection(shareLevel, "schism2Comment");
+                        mainScript.runConditionalSection("schism2Comment", shareLevel);
                         break;
 
                     case 3:
@@ -12391,6 +12328,8 @@ public class StandardCycle extends Cycle {
         if (this.isFirstVessel) manager.updateMoundValues(0, 1);
         return ChapterEnding.ILLUSIONOFCHOICE;
     }
+        throw new RuntimeException("No ending reached, also this shouldn't even be possible");
+    }
 
     /**
      * Used during Chapter II: The Stranger; for a given ordering of schisms, checks whether a given schism of the Princess is present, then runs the corresponding section in the script
@@ -12525,11 +12464,7 @@ public class StandardCycle extends Cycle {
 
         // Enter the basement
         if (!this.hasBlade) {
-            if (this.sharedLoopInsist) {
-                mainScript.runSection("stairsNoBladeSharedLoop");
-            } else {
-                mainScript.runSection("stairsNoBlade");
-            }
+            mainScript.runConditionalSection("stairsNoBlade", this.sharedLoopInsist);
 
             this.activeMenu = new OptionsMenu();
             activeMenu.add(new Option(this.manager, "hey", "Hey! Don't I get a say here? What's the big idea?"));
@@ -12560,18 +12495,11 @@ public class StandardCycle extends Cycle {
         this.withPrincess = true;
         this.withBlade = false;
         this.mirrorPresent = false;
-        mainScript.runSection("stairsStart");
 
-        if (this.sharedLoopInsist) {
-            mainScript.runSection("stairsSharedLoop");
-            mainScript.runSection("basementStartSharedLoop");
-        } else if (this.sharedLoop) {
-            mainScript.runSection("stairsSharedLoop");
-            mainScript.runSection("basementStartNoShare");
-        } else {
-            mainScript.runSection("stairsNoShare");
-            mainScript.runSection("basementStartNoShare");
-        }
+        int shareLevel = 0;
+        if (this.sharedLoop) { shareLevel += 1;
+        if (this.sharedLoopInsist) shareLevel += 1;
+        mainScript.runConditionalSection("stairsStart", shareLevel);
 
         if (manager.trueDemoMode()) return ChapterEnding.DEMOENDING;
 
@@ -12597,8 +12525,7 @@ public class StandardCycle extends Cycle {
                     }
                 case "leave":
                     locked.set();
-                    if (this.sharedLoopInsist) mainScript.runSection("doorLockSharedLoop");
-                    mainScript.runSection("doorLock");
+                    mainScript.runConditionalSection("doorLock", this.sharedLoopInsist);
                     mainScript.runSection("doorLockCommentStart");
                     break;
 
@@ -12851,8 +12778,7 @@ public class StandardCycle extends Cycle {
                 case "leaveA":
                     locked.set();
                     mainScript.runSection("leaveAttemptA");
-                    if (this.sharedLoopInsist || narratorProof.check()) mainScript.runSection("doorLockSharedLoop");
-                    mainScript.runSection("doorLock");
+                    mainScript.runConditionalSection("doorLock", this.sharedLoopInsist || narratorProof.check());
                     mainScript.runSection("doorLockCommentAbandon");
                     break;
 
@@ -12864,14 +12790,15 @@ public class StandardCycle extends Cycle {
                 case "leaveB":
                     locked.set();
                     mainScript.runSection("leaveAttemptB");
-                    if (this.sharedLoopInsist || narratorProof.check()) mainScript.runSection("doorLockSharedLoop");
-                    mainScript.runSection("doorLock");
+                    mainScript.runConditionalSection("doorLock", this.sharedLoopInsist || narratorProof.check());
                     mainScript.runSection("doorLockCommentAbandon");
                     break;
             }
         }
 
         throw new RuntimeException("No ending reached");
+    }
+        throw new RuntimeException("No ending reached, also this shouldn't even be possible");
     }
 
     /**
@@ -12885,7 +12812,9 @@ public class StandardCycle extends Cycle {
         if (this.sharedLoop) { shareLevel += 1;
         if (this.sharedLoopInsist) shareLevel += 1;
         narratorProof.set();
-        mainScript.runConditionalSection("narratorProof");
+        mainScript.runConditionalSection("narratorProof", shareLevel);
+    }
+        throw new RuntimeException("No ending reached, also this shouldn't even be possible");
     }
 
     /**
@@ -13659,13 +13588,7 @@ public class StandardCycle extends Cycle {
                 case "take":
                     this.hasBlade = true;
                     this.withBlade = false;
-
-                    if (this.sharedLoop) {
-                        mainScript.runSection("takeBladeSharedLoop");
-                    } else {
-                        mainScript.runSection("takeBlade");
-                    }
-
+                    mainScript.runConditionalSection("takeBlade", this.sharedLoop);
                     break;
 
                 case "cGoStairs":
@@ -13682,20 +13605,14 @@ public class StandardCycle extends Cycle {
         this.withPrincess = true;
         this.withBlade = false;
         this.mirrorPresent = false;
-        mainScript.runSection("stairsStart");
-
-        if (this.sharedLoop) {
-            mainScript.runSection("stairsSharedLoop");
-        } else {
-            mainScript.runSection("stairsNoShare");
-        }
+        mainScript.runConditionalSection("stairsStart", this.sharedLoop);
 
         if (manager.trueDemoMode()) return ChapterEnding.DEMOENDING;
 
         int shareLevel = 0;
         if (this.sharedLoop) { shareLevel += 1;
         if (this.sharedLoopInsist) shareLevel += 1;
-        mainScript.runConditionalSection(shareLevel, "basementStart");
+        mainScript.runConditionalSection("basementStart", shareLevel);
 
         boolean howFree = false;
         String endWorldResponse = "";
@@ -13774,6 +13691,8 @@ public class StandardCycle extends Cycle {
         }
 
         throw new RuntimeException("No ending reached");
+    }
+        throw new RuntimeException("No ending reached, also this shouldn't even be possible");
     }
 
     /**

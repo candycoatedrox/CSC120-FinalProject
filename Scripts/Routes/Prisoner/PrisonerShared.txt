@@ -96,6 +96,7 @@ skeptic And now it's gone. If He doesn't want us to know about it, it must be im
 // Stairs //
 
 label stairsNoBlade
+switchjump stairsNoBladeSharedLoop
 skeptic I'm afraid I'm going to insist we take the blade. We're in a dangerous situation, and I'm not letting us go down there without a weapon.
 hero Are you sure? What if she, I don't know... turns it against us? ... Which I'm bringing up in a purely hypothetical manner.
 skeptic Yes. I'm sure.
@@ -127,16 +128,20 @@ label stairsStart
 n The door to the basement creaks open, revealing an old stone staircase. A few sputtering torches attempt to vaguely illuminate your path, dancing across glimmering patches of slimy moss on the stone steps. If the Princess lives here, slaying her would probably be doing her a favor.
 n Her voice, harsh but controlled, carries up the stairs.
 p Is that a visitor I hear? Please, come downstairs. It's been a while since I've had company.
+numswitchjump stairsSharedLoop stairsSharedLoop
+skeptic I wonder what visitors she could be referring to. Are we not the first?
+jumpto basementStartJoin
 
 label stairsSharedLoop
 skeptic Does she remember us?
-jumpto basementStartJoin
-
-label stairsNoShare
-skeptic I wonder what visitors she could be referring to. Are we not the first?
 label basementStartJoin
 linebreak
 n You walk down the stairs and lock eyes with the Princess. She looks up at you, the heavy collar around her neck clanking loudly as she moves, the chains binding both her wrists to the far wall joining the metallic chorus as she adjusts her hands in her lap.
+numswitchjump basementStartSharedLoop
+hero Should we be worried about the one around her neck?
+n Why would you be worried about her restraints. If anything, they'll make your job easier.
+skeptic Have you noticed the empty chain on the wall? Odd that in a place where everything seems to serve a distinct purpose, there would be something so obviously useless.
+jumpto basementStartJoin2
 
 label basementStartSharedLoop
 skeptic So much for cutting her out of here...
@@ -144,12 +149,6 @@ n Do you hear yourself right now? "Cutting her out of here" never should have be
 skeptic Have you noticed the empty chain on the wall? Odd that in a place where everything seems to serve a distinct purpose, there would be something so obviously useless.
 hero That was there last time too, wasn't it?
 skeptic It was.
-jumpto basementStartJoin2
-
-label basementStartNoShare
-hero Should we be worried about the one around her neck?
-n Why would you be worried about her restraints. If anything, they'll make your job easier.
-skeptic Have you noticed the empty chain on the wall? Odd that in a place where everything seems to serve a distinct purpose, there would be something so obviously useless.
 label basementStartJoin2
 p What an interesting development. Why don't you have a seat? The two of us should chat before you bury that thing in my heart.
 
@@ -341,8 +340,11 @@ p Oh, you bastard! You'll regret this.
 
 label doorLockSharedLoop
 skeptic The door locked behind us the last time we tried that, remember?
+jumpto doorLockJoin
 
 label doorLock
+switchjump doorLockSharedLoop
+label doorLockJoin
 n As if by divine will, just as you finish the thought, you hear a door slam. I'm afraid you won't be leaving until the task is finished. It doesn't matter how many chains she's in, without your intervention, she'll find a way out eventually.
 hero That's not fair!
 n Unless you deal with her right here, right now, she will remain an existential threat to the entire world. What seems unfair to you is fair for everyone else.

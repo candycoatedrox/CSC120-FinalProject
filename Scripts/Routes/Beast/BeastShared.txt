@@ -58,6 +58,7 @@ label askMirror
 n That's because there isn't a mirror. There's the table, the blade sitting on the table, and the door to the basement. There's nothing else in here.
 
 label askMirrorStart
+switchjump askMirrorStartSharedLoop
 hunted What a strange thing to lie about. Maybe He doesn't see it.
 
 label askMirrorStartSharedLoop

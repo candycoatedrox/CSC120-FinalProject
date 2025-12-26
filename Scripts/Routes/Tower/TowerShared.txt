@@ -184,6 +184,7 @@ p I could feel its fundamental truth awaken me.
 p The collapse of the old is a necessary prelude to the birth of the new, and the world as it is now is overdue for alterations.
 p It's time for me to seize my destiny, and you, little bird, will help me seize it.
 hero Well that gives away the game, doesn't it?
+switchjump startKnowsDestinySharedLoop startKnowsDestinyNoShare
 
 label startKnowsDestinySharedLoop
 n It certainly does. And beyond that, it more than lends credence to our conversation in the woods. I don't love the thought that in some other reality you failed to destroy her, but what's done is done, and I can only hope it helped you learn a valuable lesson.
@@ -216,15 +217,16 @@ label startJoin
 p What draws you back here beyond the empty halls of death?
 p SPEAK.
 
-label startSharedLoop
-n "The last time we met?" I suppose that lends credence to our conversation in the woods. Still, whatever you do, don't tell her why you're here. It's best not to give her any ideas.
-
-label startNoShare
+label startShareSwitch
+switchjump startSharedLoop
 n "The last time we met?"
 n Nobody should have "met" her before this. You should be the first. You're the only one I trust to deal with her.
 broken Then you shouldn't have trusted us. There was nothing we could do to stop her then, and there's nothing we can do to stop her now.
 hero He's being melodramatic, but yeah, we've been here before, and she absolutely destroyed us. What are we even supposed to do to stop her?
 n That's... worrying. Whatever you do, don't tell her why you're here. It's best not to give her any ideas.
+
+label startSharedLoop
+n "The last time we met?" I suppose that lends credence to our conversation in the woods. Still, whatever you do, don't tell her why you're here. It's best not to give her any ideas.
 
 label motiveCantRefuse
 n Are you serious? Just -- just don't say anything! How hard can it be to not say anything?

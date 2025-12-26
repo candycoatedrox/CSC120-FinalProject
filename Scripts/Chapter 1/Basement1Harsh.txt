@@ -240,7 +240,7 @@ hero Thank you.
 jumpto spectreCommit
 
 // Leads to Chapter II: The Spectre //
-jumpto spectreCommit
+label spectreCommit
 n I *made* this happy little place for you! Is this not a good enough reward for saving the world? An eternity of bliss? You... you ingrate!
 n Fine. Whatever. For the first time since time stopped meaning anything, you throw open the door to the basement and walk down the stairs.
 linebreak

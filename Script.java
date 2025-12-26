@@ -1,17 +1,17 @@
 import java.io.File;  // Import the File class
 import java.io.FileNotFoundException;  // Import this class to handle errors
-import java.util.ArrayList; // Import the Scanner class to read text files
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
+import java.util.Scanner; // Import the Scanner class to read text files
 
 public class Script {
 
-    private final GameManager manager;
-    private final IOHandler parser;
-    private final File source;
+    protected final GameManager manager;
+    protected final IOHandler parser;
+    protected final File source;
 
-    private final ArrayList<String> lines;
-    private final HashMap<String, Integer> labels;
+    protected final ArrayList<String> lines;
+    protected final HashMap<String, Integer> labels;
     
     private int cursor = 0; // The current line index
     private boolean boolCondition = false;
@@ -24,6 +24,7 @@ public class Script {
 
     /**
      * Constructor
+     * @param manager the GameManager to link this Script to
      * @param parser the IOHandler to link this Script to
      * @param source the file containing the text of this Script
      */
@@ -66,6 +67,7 @@ public class Script {
 
     /**
      * Constructor
+     * @param manager the GameManager to link this Script to
      * @param parser the IOHandler to link this Script to
      * @param fileDirectory the file path of the file containing the text of this Script
      */
@@ -76,11 +78,19 @@ public class Script {
     // --- ACCESSORS & CHECKS ---
 
     /**
+     * Returns the number of lines in this script
+     * @return the number of lines in this script
+     */
+    protected int nLines() {
+        return this.lines.size();
+    }
+
+    /**
      * Returns the line at a given index of this script
      * @param lineIndex the index of the line being retrieved
      * @return the line at index lineIndex of this script
      */
-    private String getLine(int lineIndex) {
+    protected String getLine(int lineIndex) {
         return this.lines.get(lineIndex);
     }
 
@@ -89,7 +99,7 @@ public class Script {
      * @param characterID the String to check
      * @return true if characterID corresponds to a valid character; false otherwise
      */
-    private static boolean isValidCharacter(String characterID) {
+    protected static boolean isValidCharacter(String characterID) {
         switch (characterID) {
             case "t":
             case "truth":
@@ -150,7 +160,7 @@ public class Script {
      * @param label the name to check
      * @return true if this script has a label with label as its name; false otherwise
      */
-    private boolean hasLabel(String label) {
+    protected boolean hasLabel(String label) {
         return this.labels.containsKey(label);
     }
 
@@ -921,12 +931,19 @@ public class Script {
     public void boolSwitchJumpTo(String arguments) {
         String[] jumpLabels = arguments.split(" ");
 
-        if (jumpLabels.length >= 2) { // Any labels past the second will be ignored!
-            if (this.boolCondition) this.jumpTo(jumpLabels[0]);
-            else this.jumpTo(jumpLabels[1]);
-        } else {
-            // Invalid line; print error message and skip to next line
-            System.out.println("[DEBUG: Invalid switchjump in file " + source.getName() + " at line " + (this.cursor + 1) + "]");
+        switch (jumpLabels.length) {
+            case 0:
+                // Invalid line; print error message and skip to next line
+                System.out.println("[DEBUG: Invalid switchjump in file " + source.getName() + " at line " + (this.cursor + 1) + "]");
+                break;
+
+            case 1:
+                if (this.boolCondition) this.jumpTo(jumpLabels[0]);
+                break;
+
+            default: // Any labels past the second will be ignored!
+                if (this.boolCondition) this.jumpTo(jumpLabels[0]);
+                else this.jumpTo(jumpLabels[1]);
         }
     }
 
@@ -1126,8 +1143,11 @@ public class Script {
             System.out.println(a + ", " + script.labels.get(a));
         }
 
-        script.runSection();
-        script.runSection();
+        manager.toggleAutoAdvance();
+        script.runConditionalSection("strConditionTest", "revival");
+        script.runConditionalSection("strConditionTest", "mutual");
+        script.runConditionalSection("strConditionTest", "normal");
+        script.runConditionalSection("strConditionTest", "other");
     }
     */
 

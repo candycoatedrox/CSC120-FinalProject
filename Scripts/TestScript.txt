@@ -31,13 +31,39 @@ oppoext Oh, you just hate fun.
 pint Um... hello?
 
 label conditionTest
+linebreak
 n Testing, testing.
 switchjump testTrue testFalse
 
 label testTrue
+contra Oooh, hooray! It's true!
+numswitchjump testZero NOJUMP testTwo
+numautojump autoTest
+hero And it's one, too...
 
 label testFalse
+contra Awww, boo. It's false.
+numswitchjump testZero NOJUMP testTwo
+numautojump autoTest
+hero And it's one, too...
 
 label testZero
+hero Oh, and it's zero!
 
 label testTwo
+hero Oh, and it's two!
+
+label autoTest3
+hero And it's three, too.
+
+label strConditionTest
+linebreak
+n How did you die?
+stringswitchjump revival testRevival mutual testMutual
+cheated You lied and told us she didn't have a weapon, and then she started stabbing us to death!
+
+label testRevival
+cheated We stabbed her in the heart and she just got back up and started stabbing us to death!
+
+label testMutual
+cheated You lied and told us she didn't have a weapon, and then she started stabbing us to death! At least we got her too, though.

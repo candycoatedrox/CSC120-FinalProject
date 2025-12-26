@@ -97,8 +97,7 @@ linebreak
 label stairsStart
 n The door to the basement creaks open, revealing what must once have been stairs. The fractured slats look as if they've been torn from their source and violently jammed into the wall.
 n The air seeping up from below has an almost metallic quality to it. Like the smell of fresh blood. And you can hear what sounds like the rhythmic scraping of metal coming from down below. If the Princess lives here, slaying her would probably be doing her a favor.
-
-label stairsStartNoShare
+switchjump stairsStartSharedLoop
 cheated Scraping? She's not even trying to hide her knife. It's like she wants to get in our head.
 jumpto stairsStartJoin
 
@@ -113,8 +112,7 @@ cheated Yeah. She thinks she's better than us. Like she doesn't even have to put
 linebreak
 n As you descend the final step, the form of the Princess comes into view, her sharp eyes following you from across the room.
 truth Her hair somehow looks sharper than last time, and the bottom of her dress is ripped. She stands with her hands behind her back.
-
-label basementStartSharedLoop
+switchjump NOJUMP basementStartJoin
 hero I wonder if she remembers us.
 label basementStartJoin
 p Finally, *somebody!* Quick, get me out of these chains, we're not safe here.
@@ -178,7 +176,7 @@ cheated I think we all have. But if you want to keep exhausting your questions, 
 // Leads to Chapter III: The Arms Race / No Way Out with Voice of the Broken //
 label followUp4
 p Okay. I'm bored now.
-jumpto intiativeEnd
+jumpto initiativeEnd
 
 // Option-specific dialogue //
 

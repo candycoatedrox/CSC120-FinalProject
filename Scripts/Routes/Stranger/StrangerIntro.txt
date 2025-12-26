@@ -110,8 +110,7 @@ n It really doesn't matter. Just get on with it and deal with the Princess alrea
 label throwBlade
 contra Hahaha, *yes!* Do it!
 n Seriously? *Sigh.* You throw the blade at the window, glass showering the cabin as your weapon flies out into the night. I suppose you'll just have to deal with the Princess without it.
-
-label throwNoShare
+switchjump throwSharedLoop
 contra We'll be fine. Don't worry about it. What's the worst that could happen, the world ends? Oh well. If the Princess wasn't going to do it, the heat death of the universe was going to come for it eventually.
 jumpto throwJoin
 
